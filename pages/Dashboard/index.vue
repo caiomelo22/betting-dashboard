@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div class="mx-12">
     <v-row style="margin-bottom: 16px">
       <v-col cols="12" md="4">
         <div class="general-info">
@@ -56,14 +56,27 @@
         </div>
       </v-col>
     </v-row>
-    <div>
-      <canvas id="lineChart" width="400" height="400"></canvas>
+    <div class="section-div">
+      <p class="chart-header">Bet Progression</p>
+      <div>
+        <canvas id="lineChart" width="400" height="400"></canvas>
+      </div>
+    </div>
+    <div class="section-div">
+      <v-row no-gutters>
+        <v-col cols="12" md="6">
+          <p class="chart-header">Profit by Day</p>
+          <div>
+            <canvas id="barChart" width="400" height="400"></canvas>
+          </div>
+        </v-col>
+      </v-row>
     </div>
     <v-dialog v-model="editDepositedValueDialog" v-if="editDepositedValueDialog" width="700px" max-width="100%">
-      <EditDepositedValueDialog :deposited-value-prop="generalInfo.totalDeposited"
-        @update="update_deposited_value" @close="editDepositedValueDialog = false" />
+      <EditDepositedValueDialog :deposited-value-prop="generalInfo.totalDeposited" @update="update_deposited_value"
+        @close="editDepositedValueDialog = false" />
     </v-dialog>
-  </v-container>
+  </div>
 </template>
 
 <script src="./index">

@@ -52,7 +52,8 @@
 }
 
 
-.text-field-label, .text-field-value {
+.text-field-label,
+.text-field-value {
   font-size: 14px;
   line-height: 21px;
   letter-spacing: 0.15px;
@@ -110,4 +111,15 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.chart-header {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #41b883;
+}
+
+.section-div {
+  margin: 18px 0px;
 }

@@ -13,6 +13,10 @@ export default {
       labels: [],
       datasets: []
     },
+    barChartInfo: {
+      labels: [],
+      datasets: []
+    },
     generalInfo: {},
     myChart: {}
   }),
@@ -24,6 +28,12 @@ export default {
       data: this.chartInfo,
       options: this.options
     });
+    const ctxBar = document.getElementById("barChart");
+    this.myChart = new Chart(ctxBar, {
+      type: "bar",
+      data: this.barChartInfo,
+      options: this.options
+    });
   },
   computed: {
     options() {
@@ -32,6 +42,11 @@ export default {
           line: {
             tension: 0
           }
+        },
+        plugins: {
+            legend: {
+                display: false,
+            }
         },
         maintainAspectRatios: false,
         responsive: true,
@@ -49,6 +64,7 @@ export default {
         .then((resp) => {
           this.chartInfo = resp.data.chartInfo
           this.generalInfo = resp.data.generalInfo
+          this.barChartInfo = resp.data.barChartInfo
         })
         .catch((err) => {
           this.$toast.error(err.message)
