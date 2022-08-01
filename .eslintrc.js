@@ -25,6 +25,8 @@ module.exports = {
     'vue/html-self-closing': 'off',
     'space-before-function-paren': 'off',
     'vue/mustache-interpolation-spacing': 'off',
+    'comma-dangle': 'off',
+    'vue/max-attributes-per-line': 'off',
     indent: 'off'
   }
 }

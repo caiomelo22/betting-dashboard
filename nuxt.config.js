@@ -50,6 +50,16 @@ export default {
     }
   },
 
+  vuetify: {
+    theme: {
+      themes: {
+        light: {
+          primary: '#41b883',
+        }
+      }
+    }
+  },
+
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/bootstrap

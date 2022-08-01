@@ -1,9 +1,14 @@
 import Chart from "chart.js/auto";
 import GeneralServices from "@/services/GeneralServices";
+import EditDepositedValueDialog from "@/components/dialogs/EditDepositedValue/index.vue";
 export default {
   name: 'Dashboard',
+  components: {
+    EditDepositedValueDialog
+  },
   data: () => ({
     generalServices: new GeneralServices(),
+    editDepositedValueDialog: false,
     chartInfo: {
       labels: [],
       datasets: []
@@ -35,6 +40,10 @@ export default {
     }
   },
   methods: {
+    update_deposited_value(value) {
+      this.generalInfo.totalDeposited = value
+      this.editDepositedValueDialog = false
+    },
     async get_dashboard_info() {
       await this.$axios.get(`bet/dashboard`)
         .then((resp) => {
