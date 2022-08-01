@@ -89,7 +89,8 @@ For the bets to receive an outcome, the result of the match must be registered i
 <img width="892" alt="2" src="https://user-images.githubusercontent.com/49076270/171308819-36cb9e9a-5b6a-4cb4-b122-4be0d9b67236.PNG">
 
 
-Finally, you can track your profit as the time passes in the bets dashboard. In this page, you can also check the total value invested and total profit of your bets.
+Finally, you can track your profit as the time passes in the bets dashboard. In this page, you can also edit the deposited value and check out other stats.
 
 
-<img width="902" alt="3" src="https://user-images.githubusercontent.com/49076270/171309260-9b20956b-4409-43dd-a46b-9ca723ed26ab.PNG">
+![Captura de tela 2022-08-01 113441](https://user-images.githubusercontent.com/49076270/182174092-8a87b464-2c33-4105-a566-b18be78e0763.jpg)
+
