@@ -56,18 +56,28 @@
         </div>
       </v-col>
     </v-row>
-    <div class="section-div">
+    <div class="section-div chart-div">
       <p class="chart-header">Bet Progression</p>
       <div>
         <canvas id="lineChart" width="400" height="400"></canvas>
       </div>
     </div>
     <div class="section-div">
-      <v-row no-gutters>
+      <v-row>
         <v-col cols="12" md="6">
-          <p class="chart-header">Profit by Day</p>
-          <div>
-            <canvas id="barChart" width="400" height="400"></canvas>
+          <div class="chart-div">
+            <p class="chart-header">Profit by Day</p>
+            <div>
+              <canvas id="barChart" width="400" height="400"></canvas>
+            </div>
+          </div>
+        </v-col>
+        <v-col cols="12" md="6">
+          <div class="chart-div">
+            <p class="chart-header">Profit by League</p>
+            <div>
+              <canvas id="leagueChart" width="400" height="400"></canvas>
+            </div>
           </div>
         </v-col>
       </v-row>
@@ -106,5 +116,11 @@ p {
   border: 1px solid;
   padding: 16px;
   box-shadow: 5px 10px #41b883;
+}
+
+.chart-div {
+  border: 1px solid;
+  padding: 16px;
+  border-radius: 15px;
 }
 </style>

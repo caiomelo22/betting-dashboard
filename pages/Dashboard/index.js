@@ -18,6 +18,7 @@ export default {
       datasets: []
     },
     generalInfo: {},
+    leagueChartInfo: {},
     myChart: {}
   }),
   async mounted() {
@@ -34,6 +35,12 @@ export default {
       data: this.barChartInfo,
       options: this.options
     });
+    const ctxLeague = document.getElementById("leagueChart");
+    this.myChart = new Chart(ctxLeague, {
+      type: "line",
+      data: this.leagueChartInfo,
+      options: this.league_options
+    });
   },
   computed: {
     options() {
@@ -44,15 +51,27 @@ export default {
           }
         },
         plugins: {
-            legend: {
-                display: false,
-            }
+          legend: {
+            display: false,
+          }
         },
         maintainAspectRatios: false,
         responsive: true,
         maintainAspectRatio: false
       }
-    }
+    },
+    league_options() {
+      return {
+        elements: {
+          line: {
+            tension: 0
+          }
+        },
+        maintainAspectRatios: false,
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    },
   },
   methods: {
     update_deposited_value(value) {
@@ -65,6 +84,7 @@ export default {
           this.chartInfo = resp.data.chartInfo
           this.generalInfo = resp.data.generalInfo
           this.barChartInfo = resp.data.barChartInfo
+          this.leagueChartInfo = resp.data.leagueChartInfo
         })
         .catch((err) => {
           this.$toast.error(err.message)
