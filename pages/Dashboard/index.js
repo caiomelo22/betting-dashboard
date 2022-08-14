@@ -33,17 +33,17 @@ export default {
     this.myChart = new Chart(ctxBar, {
       type: "bar",
       data: this.barChartInfo,
-      options: this.options
+      options: this.options_no_legend
     });
     const ctxLeague = document.getElementById("leagueChart");
     this.myChart = new Chart(ctxLeague, {
       type: "line",
       data: this.leagueChartInfo,
-      options: this.league_options
+      options: this.options
     });
   },
   computed: {
-    options() {
+    options_no_legend() {
       return {
         elements: {
           line: {
@@ -60,7 +60,7 @@ export default {
         maintainAspectRatio: false
       }
     },
-    league_options() {
+    options() {
       return {
         elements: {
           line: {
