@@ -10,7 +10,7 @@
       <v-col cols="12" md="4">
         <div class="general-info">
           <p class="dashboard-info-title">Red/Green Ratio</p>
-          <p class="dashboard-info-value" style="color: black"><span style="color: red">{{ generalInfo.totalReds
+          <p class="dashboard-info-value" style="color: black"><span style="color: #990000">{{ generalInfo.totalReds
           }}</span>:<span style="color: green">{{ generalInfo.totalGreens }}</span></p>
         </div>
       </v-col>
@@ -62,13 +62,19 @@
         <canvas id="lineChart" width="400" height="400"></canvas>
       </div>
     </div>
+    <div class="section-div chart-div">
+      <p class="chart-header">Profit by Day</p>
+      <div>
+        <canvas id="barChart" width="400" height="400"></canvas>
+      </div>
+    </div>
     <div class="section-div">
       <v-row>
         <v-col cols="12" md="6">
           <div class="chart-div">
-            <p class="chart-header">Profit by Day</p>
+            <p class="chart-header">Profit by Outcome</p>
             <div>
-              <canvas id="barChart" width="400" height="400"></canvas>
+              <canvas id="outcomeChart" width="400" height="400"></canvas>
             </div>
           </div>
         </v-col>
@@ -81,6 +87,12 @@
           </div>
         </v-col>
       </v-row>
+    </div>
+    <div class="section-div chart-div">
+      <p class="chart-header">Profit by Team</p>
+      <div>
+        <canvas id="teamChart" width="400" height="400"></canvas>
+      </div>
     </div>
     <v-dialog v-model="editDepositedValueDialog" v-if="editDepositedValueDialog" width="700px" max-width="100%">
       <EditDepositedValueDialog :deposited-value-prop="generalInfo.totalDeposited" @update="update_deposited_value"

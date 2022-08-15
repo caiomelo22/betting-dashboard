@@ -13,7 +13,15 @@ export default {
       labels: [],
       datasets: []
     },
+    teamChartInfo: {
+      labels: [],
+      datasets: []
+    },
     barChartInfo: {
+      labels: [],
+      datasets: []
+    },
+    outcomeChartInfo: {
       labels: [],
       datasets: []
     },
@@ -40,6 +48,18 @@ export default {
       type: "line",
       data: this.leagueChartInfo,
       options: this.options
+    });
+    const ctxTeamBar = document.getElementById("teamChart");
+    this.myChart = new Chart(ctxTeamBar, {
+      type: "bar",
+      data: this.teamChartInfo,
+      options: this.options_no_legend
+    });
+    const ctxOutcomeBar = document.getElementById("outcomeChart");
+    this.myChart = new Chart(ctxOutcomeBar, {
+      type: "pie",
+      data: this.outcomeChartInfo,
+      options: this.pie_options
     });
   },
   computed: {
@@ -72,6 +92,13 @@ export default {
         maintainAspectRatio: false
       }
     },
+    pie_options() {
+      return {
+        maintainAspectRatios: false,
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    },
   },
   methods: {
     update_deposited_value(value) {
@@ -85,6 +112,8 @@ export default {
           this.generalInfo = resp.data.generalInfo
           this.barChartInfo = resp.data.barChartInfo
           this.leagueChartInfo = resp.data.leagueChartInfo
+          this.teamChartInfo = resp.data.teamChartInfo
+          this.outcomeChartInfo = resp.data.outcomeChartInfo
         })
         .catch((err) => {
           this.$toast.error(err.message)
