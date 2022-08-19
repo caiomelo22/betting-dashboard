@@ -27,7 +27,7 @@ export default {
       matchDate: null,
       value: null,
       odds: null,
-      type: null,
+      type: 'Moneyline',
       prediction: null,
       line: null
     },
