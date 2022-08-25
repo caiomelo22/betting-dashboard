@@ -28,8 +28,8 @@
         <div class="general-info">
           <v-row align="center" no-gutters>
             <div>
-              <p class="dashboard-info-title">Total Deposited</p>
-              <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalDeposited) }}</p>
+              <p class="dashboard-info-title">Betting Pool</p>
+              <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalDeposited + generalInfo.totalProfit) }}</p>
             </div>
             <v-spacer />
             <v-icon color="primary" @click="editDepositedValueDialog = true">mdi-pencil</v-icon>
@@ -51,7 +51,7 @@
       <v-col cols="12" md="3">
         <div class="general-info">
           <p class="dashboard-info-title">ROI</p>
-          <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / generalInfo.totalDeposited).toFixed(2) }}%
+          <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalDeposited + generalInfo.totalProfit)).toFixed(2) }}%
           </p>
         </div>
       </v-col>
