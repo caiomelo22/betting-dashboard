@@ -49,7 +49,7 @@
                 style="color: blue"
               />
               <font-awesome-icon
-                v-else-if="bet.won"
+                v-else-if="bet.won || bet.earlyPayout"
                 :icon="['fa', 'check']"
                 style="color: green"
               />

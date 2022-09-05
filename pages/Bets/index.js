@@ -43,7 +43,7 @@ export default {
       }
 
       let profit = 0
-      if (bet.won) {
+      if (bet.won || bet.earlyPayout) {
         profit = bet.value * bet.odds - bet.value
       } else {
         profit -= bet.value
