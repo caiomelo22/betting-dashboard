@@ -28,8 +28,8 @@
         <div class="general-info">
           <v-row align="center" no-gutters>
             <div>
-              <p class="dashboard-info-title">Betting Pool</p>
-              <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalDeposited + generalInfo.totalProfit) }}</p>
+              <p class="dashboard-info-title">Deposited Value</p>
+              <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalDeposited) }}</p>
             </div>
             <v-spacer />
             <v-icon color="primary" @click="editDepositedValueDialog = true">mdi-pencil</v-icon>
