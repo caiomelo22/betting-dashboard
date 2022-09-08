@@ -42,7 +42,7 @@
                             </td>
                             <td>
                                 <font-awesome-icon v-if="bet.match.scoreHomeTeam == null"
-                                    :icon="['fa', 'arrows-rotate']" style="color: blue" />
+                                    :icon="['fa', 'arrows-rotate']" style="color: #9FC9F3" />
                                 <font-awesome-icon v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
                                     style="color: green" />
                                 <font-awesome-icon v-else :icon="['fa', 'xmark']" style="color: red" />
