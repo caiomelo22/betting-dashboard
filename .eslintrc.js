@@ -27,6 +27,7 @@ module.exports = {
     'vue/mustache-interpolation-spacing': 'off',
     'comma-dangle': 'off',
     'vue/max-attributes-per-line': 'off',
+    'no-new': 'off',
     indent: 'off'
   }
 }

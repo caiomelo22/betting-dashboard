@@ -1,5 +1,5 @@
 <template>
-  <div class="footer">by Caio Graça Melo, 2022</div>
+  <div class="footer">by Caio Graça Melo @{{$moment().year()}}</div>
 </template>
 <style scoped>
 </style>

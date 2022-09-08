@@ -10,7 +10,7 @@
       <v-col cols="12" md="4">
         <div class="general-info">
           <p class="dashboard-info-title">Red/Green Ratio</p>
-          <p class="dashboard-info-value" style="color: black"><span style="color: #990000">{{ generalInfo.totalReds
+          <p class="dashboard-info-value" :style="`color: ${$vuetify.theme.dark?'white':'black'}`"><span style="color: #990000">{{ generalInfo.totalReds
           }}</span>:<span style="color: green">{{ generalInfo.totalGreens }}</span></p>
         </div>
       </v-col>
@@ -32,7 +32,7 @@
               <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalDeposited) }}</p>
             </div>
             <v-spacer />
-            <v-icon color="primary" @click="editDepositedValueDialog = true">mdi-pencil</v-icon>
+            <v-icon color="secondary" @click="editDepositedValueDialog = true">mdi-pencil</v-icon>
           </v-row>
         </div>
       </v-col>
