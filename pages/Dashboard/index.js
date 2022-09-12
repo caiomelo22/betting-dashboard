@@ -53,6 +53,19 @@ export default {
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    zoom: {
+                        pan: {
+                            enabled: true,
+                            mode: 'x',
+                            modifierKey: 'ctrl',
+                        },
+                        zoom: {
+                            drag: {
+                                enabled: true
+                            },
+                            mode: 'x',
+                        },
                     }
                 },
                 scales: {
@@ -90,6 +103,19 @@ export default {
                         labels: {
                             color: this.$vuetify.theme.dark ? 'white' : 'black'
                         }
+                    },
+                    zoom: {
+                        pan: {
+                            enabled: true,
+                            mode: 'x',
+                            modifierKey: 'ctrl',
+                        },
+                        zoom: {
+                            drag: {
+                                enabled: true
+                            },
+                            mode: 'x',
+                        },
                     }
                 },
                 scales: {
@@ -131,6 +157,9 @@ export default {
         },
     },
     methods: {
+        reset_zoom(chart) {
+            chart.resetZoom();
+        },
         destroy_charts() {
             if (this.betLineChart) {
                 this.betLineChart.destroy()
