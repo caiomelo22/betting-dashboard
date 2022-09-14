@@ -2,6 +2,7 @@
     <div id="nav">
         <nuxt-link :class="{ active: $route.path == '/dashboard' }" to="/dashboard">Dashboard</nuxt-link>
         <nuxt-link :class="{ active: $route.path == '/bets' }" to="/bets">Bets</nuxt-link>
+        <nuxt-link :class="{ active: $route.path == '/parlays' }" to="/parlays" style="margin-right: 8px">Parlays</nuxt-link>
         <nuxt-link :class="{ active: $route.path == '/matches' }" to="/matches" style="margin-right: 8px">Matches</nuxt-link>
 
         <font-awesome-icon v-if="$vuetify.theme.dark" @click="$vuetify.theme.dark = false"
