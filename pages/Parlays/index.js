@@ -1,9 +1,10 @@
 import ApiService from "@/services/ApiService";
 import GeneralServices from "@/services/GeneralServices";
 import AddParlayDialog from "~/components/dialogs/AddParlay/index.vue";
+import ParlayDetailsDialog from "~/components/dialogs/ParlayDetails/index.vue";
 export default {
     name: 'Parlays',
-    components: { AddParlayDialog },
+    components: { AddParlayDialog, ParlayDetailsDialog },
     data: () => ({
         generalServices: new GeneralServices(),
         api: new ApiService(),
@@ -11,13 +12,15 @@ export default {
         totalPages: 1,
         loading: false,
         dialog: false,
+        detailsDialog: false,
+        selectedParlay: null,
         leagues: [],
         parlays: []
     }),
     computed: {
         parlays_headers() {
             return [
-                'Date', 'League', 'Value', 'Odds', 'Won', 'Profit'
+                'Date', 'League', 'Value', 'Odds', 'Details', 'Won', 'Profit'
             ]
         }
     },
@@ -29,6 +32,14 @@ export default {
         await this.get_leagues();
     },
     methods: {
+        open_details_dialog(parlay) {
+            this.selectedParlay = parlay
+            this.detailsDialog = true
+        },
+        reset_details_dialog() {
+            this.detailsDialog = false
+            this.selectedParlay = null
+        },
         get_league(parlay) {
             const set = [...new Set(parlay.bets.map(x => x.match.league.name))]
             return set.join('/')

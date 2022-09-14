@@ -30,6 +30,11 @@
                                 {{ parlay.odds }}
                             </td>
                             <td>
+                                <v-btn x-small fab color="#41b883" dark @click="open_details_dialog(parlay)">
+                                    <v-icon>mdi-eye</v-icon>
+                                </v-btn>
+                            </td>
+                            <td>
                                 <font-awesome-icon v-if="!parlay.finished" :icon="['fa', 'arrows-rotate']"
                                     style="color: #9FC9F3" />
                                 <font-awesome-icon v-else-if="parlay.won" :icon="['fa', 'check']"
@@ -49,6 +54,9 @@
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
             <AddParlayDialog :leagues="leagues" @close="dialog = false" @added="parlay_added" />
+        </v-dialog>
+        <v-dialog v-if="detailsDialog" v-model="detailsDialog" max-width="100%" width="1200px">
+            <ParlayDetailsDialog :parlay="selectedParlay" @close="reset_details_dialog" />
         </v-dialog>
     </v-container>
 </template>
