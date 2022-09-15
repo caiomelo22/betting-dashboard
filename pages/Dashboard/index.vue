@@ -3,12 +3,6 @@
         <v-row style="margin-bottom: 16px">
             <v-col cols="12" md="4">
                 <div class="general-info">
-                    <p class="dashboard-info-title">Total Bets</p>
-                    <p class="dashboard-info-value">{{ generalInfo.totalReds + generalInfo.totalGreens }}</p>
-                </div>
-            </v-col>
-            <v-col cols="12" md="4">
-                <div class="general-info">
                     <p class="dashboard-info-title">Red/Green Ratio</p>
                     <p class="dashboard-info-value" :style="`color: ${$vuetify.theme.dark?'white':'black'}`"><span
                             style="color: #990000">{{ generalInfo.totalReds
@@ -21,6 +15,12 @@
                     <p class="dashboard-info-value">{{ (generalInfo.totalGreens * 100 / (generalInfo.totalReds +
                     generalInfo.totalGreens)).toFixed(2)
                     }}%</p>
+                </div>
+            </v-col>
+            <v-col cols="12" md="4">
+                <div class="general-info">
+                    <p class="dashboard-info-title">Average Odds</p>
+                    <p class="dashboard-info-value">{{ (generalInfo.avgOdds || 0).toFixed(2) }}</p>
                 </div>
             </v-col>
         </v-row>
