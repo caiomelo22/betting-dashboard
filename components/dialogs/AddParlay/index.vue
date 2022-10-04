@@ -86,7 +86,7 @@
                         </v-col>
                         <v-col cols="12" md="6" v-else-if="bet.type == 'Total'">
                             <div>
-                                <NumberField field-title="Line" :field-value="bet.line"
+                                <NumberField field-title="Line" :field-value="bet.line" :type="numberFieldEnum.Line"
                                     @update="(value) => (bet.line = value)" />
                             </div>
                             <div>
