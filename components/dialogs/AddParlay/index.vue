@@ -71,7 +71,7 @@
                         </v-col>
                         <v-col cols="12" md="6">
                             <span class="text-field-label">Bet Type</span>
-                            <v-select v-model="bet.type" :items="bet_type_options" outlined disabled dense
+                            <v-select v-model="bet.type" :items="bet_type_options" outlined dense
                                 :rules="[validationService.required(bet.type)]" class="text-field" />
                         </v-col>
                         <v-col v-if="bet.type == 'Moneyline'" cols="12" md="6">

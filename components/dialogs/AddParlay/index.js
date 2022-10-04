@@ -104,13 +104,13 @@ export default {
             }
         },
         get_winner_options() {
-            if (!this.bet.leagueId) {
+            if (!this.bet.leagueId || !this.bet.homeTeamId || !this.bet.awayTeamId) {
                 return []
             }
             const leagueSelected = this.leagues.find(x => x.id === this.bet.leagueId)
             return [
-                leagueSelected.teams.find(x => x.id === this.bet.homeTeamId),
-                leagueSelected.teams.find(x => x.id === this.bet.awayTeamId),
+                leagueSelected.teams.find(x => x.teamId === this.bet.homeTeamId).team,
+                leagueSelected.teams.find(x => x.teamId === this.bet.awayTeamId).team,
                 { name: 'Draw', id: 0 }
             ]
         },
@@ -118,7 +118,7 @@ export default {
             const league = this.leagues.find(x => x.id === leagueId)
             this.bet.homeTeamId = null;
             this.bet.awayTeamId = null;
-            this.teamOptions = league.teams;
+            this.teamOptions = league.teams.map(x => x.team);
         },
         async submit() {
             const result = this.$refs.form.validate();

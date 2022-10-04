@@ -81,7 +81,6 @@
             v-model="bet.type"
             :items="bet_type_options"
             outlined
-            disabled
             dense
             :rules="[validationService.required(bet.type)]"
             class="text-field"
