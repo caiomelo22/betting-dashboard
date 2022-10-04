@@ -1,16 +1,12 @@
 import NumberField from "~/components/textFields/NumberField/index.vue";
 import ValidationService from "~/services/ValidationService";
 import { NumberFieldEnum } from "~/shared/enums/NumberFieldEnum";
+import { betTypeOptions } from "~/shared/enums/BetTypeOptions";
+import { bothScorePredictionOptions } from "~/shared/enums/BothScorePredictionOptions";
 export default {
     name: 'AddParlayDialog',
     components: { NumberField },
     computed: {
-        bet_type_options() {
-            return [
-                'Moneyline',
-                'Total'
-            ]
-        },
         total_prediction_options() {
             return [
                 'Over',
@@ -26,6 +22,8 @@ export default {
             odds: null,
             bets: []
         },
+        bothScorePredictionOptions,
+        betTypeOptions,
         loading: false,
         winnerPrediction: null,
         editIndex: null,
@@ -45,6 +43,16 @@ export default {
         }
     },
     methods: {
+        get_bet_prediction (bet) {
+            switch (bet.type) {
+                case 'Moneyline':
+                    return bet.prediction;
+                case 'Total':
+                    return bet.prediction;
+                case 'BothScore':
+                    return bet.prediction ? 'Yes' : 'No';
+            }
+        },
         add_bet() {
             const result = this.$refs.betForm.validate()
             if (!result) {

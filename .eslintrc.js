@@ -30,6 +30,7 @@ module.exports = {
     'no-new': 'off',
     'vue/html-indent': 'off',
     'eqeqeq': 'off',
+    'camelcase': 'off',
     indent: 'off'
   }
 }

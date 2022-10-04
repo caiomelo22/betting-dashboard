@@ -1,4 +1,5 @@
 import GeneralServices from "~/services/GeneralServices"
+import { get_bet_prediction } from "~/shared/functions/GetBetPrediction";
 export default {
     name: 'ParlayDetailsDialog',
     props: {
@@ -7,7 +8,7 @@ export default {
     computed: {
         bets_headers() {
             return [
-                'Date', 'League', 'Matchup', 'Prediction', 'Odds', 'Won'
+                'Date', 'League', 'Matchup', 'Bet Type', 'Prediction', 'Odds', 'Won'
             ]
         }
     },
@@ -15,13 +16,6 @@ export default {
         generalServices: new GeneralServices()
     }),
     methods: {
-    get_bet_prediction(bet) {
-        switch (bet.type) {
-          case 'Moneyline':
-            return bet.moneyline.prediction;
-          case 'Total':
-            return bet.total.prediction;
-        }
-      },
+        get_bet_prediction
     }
 }

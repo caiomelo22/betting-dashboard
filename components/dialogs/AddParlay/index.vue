@@ -32,7 +32,7 @@
                                     {{ `${b.homeTeam.name} x ${b.awayTeam.name}` }}
                                 </td>
                                 <td>
-                                    {{ b.prediction }}
+                                    {{ get_bet_prediction(b) }}
                                 </td>
                                 <td>
                                     <v-icon @click="edit_bet_click(b, i)" color="#41b883">mdi-pencil</v-icon>
@@ -71,14 +71,18 @@
                         </v-col>
                         <v-col cols="12" md="6">
                             <span class="text-field-label">Bet Type</span>
-                            <v-select v-model="bet.type" :items="bet_type_options" outlined dense
+                            <v-select v-model="bet.type" :items="betTypeOptions" outlined dense
                                 :rules="[validationService.required(bet.type)]" class="text-field" />
                         </v-col>
-                        <v-col v-if="bet.type == 'Moneyline'" cols="12" md="6">
+                        <v-col v-if="bet.type != 'Total'" cols="12" md="6">
                             <span class="text-field-label">Prediction</span>
-                            <v-select v-model="winnerPrediction" :items="get_winner_options()" item-text="name"
-                                item-value="id" outlined dense :rules="[validationService.required(winnerPrediction)]"
-                                class="text-field" @change="winner_prediction_changed" />
+                            <v-select v-if="bet.type == 'Moneyline'" v-model="winnerPrediction"
+                                :items="get_winner_options()" item-text="name" item-value="id" outlined dense
+                                :rules="[validationService.required(winnerPrediction)]" class="text-field"
+                                @change="winner_prediction_changed" />
+                            <v-select v-else-if="bet.type == 'BothScore'" v-model="bet.prediction"
+                                :items="bothScorePredictionOptions" outlined dense
+                                :rules="[validationService.required(bet.prediction)]" class="text-field" />
                         </v-col>
                         <v-col cols="12" md="6" v-else-if="bet.type == 'Total'">
                             <div>

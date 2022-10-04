@@ -17,7 +17,12 @@
                             }}
                         </td>
                         <td>
-                                {{ `${bet.match.homeTeam.name} ${bet.match.scoreHomeTeam != null ? bet.match.scoreHomeTeam : ''} x ${bet.match.scoreAwayTeam != null ? bet.match.scoreAwayTeam : ''} ${bet.match.awayTeam.name}` }}
+                            {{ `${bet.match.homeTeam.name} ${bet.match.scoreHomeTeam != null ? bet.match.scoreHomeTeam :
+                            ''} x ${bet.match.scoreAwayTeam != null ? bet.match.scoreAwayTeam : ''}
+                            ${bet.match.awayTeam.name}` }}
+                        </td>
+                        <td>
+                            {{ bet.type }}
                         </td>
                         <td>
                             {{ get_bet_prediction(bet) }}

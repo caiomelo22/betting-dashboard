@@ -1,16 +1,12 @@
 import NumberField from "~/components/textFields/NumberField/index.vue";
 import ValidationService from "~/services/ValidationService";
 import { NumberFieldEnum } from "~/shared/enums/NumberFieldEnum";
+import { betTypeOptions } from "~/shared/enums/BetTypeOptions";
+import { bothScorePredictionOptions } from "~/shared/enums/BothScorePredictionOptions";
 export default {
   name: 'AddBetDialog',
   components: { NumberField },
   computed: {
-    bet_type_options() {
-      return [
-        'Moneyline',
-        'Total'
-      ]
-    },
     total_prediction_options() {
       return [
         'Over',
@@ -31,6 +27,8 @@ export default {
       prediction: null,
       line: null
     },
+    bothScorePredictionOptions,
+    betTypeOptions,
     loading: false,
     winnerPrediction: null,
     teamOptions: [],
