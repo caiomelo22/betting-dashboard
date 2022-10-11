@@ -1,6 +1,12 @@
 <template>
-    <v-card class="pa-4">
-        <p class="mb-0">Parlay Details</p>
+    <v-card class="pa-4 text-center">
+        <v-row no-gutters align="center" justify="center">
+            <div>
+                <p class="mb-0" style="font-weight: 700">Parlay Odds</p>
+                <p class="mb-0">{{parlay.odds}}</p>
+            </div>
+        </v-row>
+        <p class="mb-0 mt-4" style="font-weight: 700">Parlay Details</p>
         <div class="table-wrapper">
             <table class="data-table mt-0">
                 <thead>
