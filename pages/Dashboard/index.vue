@@ -9,7 +9,13 @@
                             }}</span>:<span style="color: green">{{ generalInfo.totalGreens }}</span></p>
                 </div>
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="2">
+                <div class="general-info">
+                    <p class="dashboard-info-title">Average Odds</p>
+                    <p class="dashboard-info-value">{{ (generalInfo.avgOdds || 0).toFixed(2) }}</p>
+                </div>
+            </v-col>
+            <v-col cols="12" md="2">
                 <div class="general-info">
                     <p class="dashboard-info-title">Green %</p>
                     <p class="dashboard-info-value">{{ (generalInfo.totalGreens * 100 / (generalInfo.totalReds +
@@ -17,15 +23,24 @@
                     }}%</p>
                 </div>
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="2">
                 <div class="general-info">
-                    <p class="dashboard-info-title">Average Odds</p>
-                    <p class="dashboard-info-value">{{ (generalInfo.avgOdds || 0).toFixed(2) }}</p>
+                    <p class="dashboard-info-title">ROI</p>
+                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalDeposited +
+                    generalInfo.totalProfit)).toFixed(2) }}%
+                    </p>
+                </div>
+            </v-col>
+            <v-col cols="12" md="2">
+                <div class="general-info">
+                    <p class="dashboard-info-title">Yield</p>
+                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalBet)).toFixed(2) }}%
+                    </p>
                 </div>
             </v-col>
         </v-row>
         <v-row style="margin-bottom: 16px">
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="4">
                 <div class="general-info">
                     <v-row align="center" no-gutters>
                         <div>
@@ -38,24 +53,16 @@
                     </v-row>
                 </div>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="4">
                 <div class="general-info">
                     <p class="dashboard-info-title">Total Bet</p>
                     <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalBet) }}</p>
                 </div>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="4">
                 <div class="general-info">
                     <p class="dashboard-info-title">Profit</p>
                     <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalProfit) }}</p>
-                </div>
-            </v-col>
-            <v-col cols="12" md="3">
-                <div class="general-info">
-                    <p class="dashboard-info-title">ROI</p>
-                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalDeposited +
-                    generalInfo.totalProfit)).toFixed(2) }}%
-                    </p>
                 </div>
             </v-col>
         </v-row>
