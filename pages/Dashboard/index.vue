@@ -61,7 +61,7 @@
             </v-col>
             <v-col cols="12" md="4">
                 <div class="general-info">
-                    <p class="dashboard-info-title">Profit</p>
+                    <p class="dashboard-info-title">Net Gains</p>
                     <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalProfit) }}</p>
                 </div>
             </v-col>
