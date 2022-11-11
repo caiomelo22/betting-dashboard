@@ -1,5 +1,6 @@
 export const betTypeOptions = [
     'Moneyline',
     'Total',
-    'BothScore'
+    'BothScore',
+    'Spread'
   ]

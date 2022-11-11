@@ -25,6 +25,7 @@ export default {
       odds: null,
       type: 'Moneyline',
       prediction: null,
+      spread: null,
       line: null
     },
     bothScorePredictionOptions,

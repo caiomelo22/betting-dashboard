@@ -51,6 +51,8 @@ export default {
                     return `${bet.prediction} ${bet.line}`;
                 case 'BothScore':
                     return bet.prediction ? 'Yes' : 'No';
+                case 'Spread':
+                    return `${bet.prediction} +${bet.spread}`;
             }
         },
         add_bet() {
@@ -87,6 +89,7 @@ export default {
                     awayTeam: null,
                     type: 'Moneyline',
                     prediction: null,
+                    spread: null,
                     line: null
                 }
             }
