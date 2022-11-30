@@ -7,6 +7,6 @@ export const get_bet_prediction = (bet) => {
         case 'BothScore':
             return bet.bothScore.prediction ? 'Yes' : 'No';
         case 'Spread':
-            return `${bet.moneyline.prediction} +${bet.moneyline.spread}`;
+            return `${bet.moneyline.prediction} ${bet.moneyline.spread >= 0 ? '+' : ''}${bet.moneyline.spread}`;
     }
 }
