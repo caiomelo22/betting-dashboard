@@ -13,7 +13,7 @@ export default class GeneralServices {
   }
 
   format_date(dateText) {
-    return moment(dateText).format('DD-MM-YYYY');
+    return moment(dateText).add(1, 'd').format('DD-MM-YYYY');
   }
 
   serialize(obj) {
