@@ -167,3 +167,8 @@
       background: #41b883 !important;
     }
 }
+
+.select-field .v-input__slot, .select-field {
+    width: 300px !important;
+    max-width: 300px !important;
+}

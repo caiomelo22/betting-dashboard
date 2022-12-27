@@ -1,6 +1,7 @@
 import ApiService from "@/services/ApiService";
 import GeneralServices from "@/services/GeneralServices";
 import AddBetDialog from "~/components/dialogs/AddBet/index.vue";
+import { betTypeOptions } from "~/shared/enums/BetTypeOptions";
 import { get_bet_prediction } from "~/shared/functions/GetBetPrediction";
 export default {
     name: 'Bets',
@@ -12,10 +13,35 @@ export default {
         totalPages: 1,
         loading: false,
         dialog: false,
+        league_filter: null,
+        bet_type_filter: null,
+        betTypeOptions,
         leagues: [],
         bets: []
     }),
     computed: {
+        bet_type_filter_options() {
+            const options = [
+                { text: 'All', value: null }
+            ]
+
+            for (let i = 0; i < this.betTypeOptions.length; i++) {
+                options.push({ text: this.betTypeOptions[i], value: this.betTypeOptions[i] })
+            }
+
+            return options
+        },
+        league_filter_options() {
+            const options = [
+                { text: 'All', value: null }
+            ]
+
+            for (let i = 0; i < this.leagues.length; i++) {
+                options.push({ text: this.leagues[i].name, value: this.leagues[i].id })
+            }
+
+            return options
+        },
         bets_headers() {
             return [
                 'Date', 'League', 'Matchup', 'Bet Type', 'Prediction', 'Value', 'Odds', 'Won', 'Profit'
@@ -65,7 +91,7 @@ export default {
         },
         async get_bets() {
             this.loading = true
-            const params = this.generalServices.serialize({ page: this.page });
+            const params = this.generalServices.serialize({ page: this.page, league_id: this.league_filter, bet_type: this.bet_type_filter });
             await this.$axios.get(`bet/list?${params}`)
                 .then((resp) => {
                     this.bets = resp.data.bets

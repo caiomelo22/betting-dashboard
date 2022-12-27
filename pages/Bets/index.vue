@@ -5,6 +5,10 @@
         </div>
         <div v-else>
             <div class="row">
+                <v-select label="League" hide-details v-model="league_filter" :items="league_filter_options" outlined
+                    dense class="text-field select-field mr-4" @change="get_bets()" />
+                <v-select label="Bet Type" hide-details v-model="bet_type_filter" :items="bet_type_filter_options" outlined dense
+                    class="text-field select-field mr-4" @change="get_bets()" />
                 <v-btn color="#41b883" dark @click="dialog = true">
                     <font-awesome-icon :icon="['fa', 'plus']" style="color: white; margin-right: 8px" />
                     Add Bet
@@ -22,11 +26,14 @@
                             </td>
                             <td>
                                 {{
-                                bet.match.league.name
-                                }}
+        bet.match.league.name
+}}
                             </td>
                             <td>
-                                {{ `${bet.match.homeTeam.name} ${bet.match.scoreHomeTeam != null ? bet.match.scoreHomeTeam : ''} x ${bet.match.scoreAwayTeam != null ? bet.match.scoreAwayTeam : ''} ${bet.match.awayTeam.name}` }}
+                                {{ `${bet.match.homeTeam.name} ${bet.match.scoreHomeTeam != null ?
+        bet.match.scoreHomeTeam : ''} x ${bet.match.scoreAwayTeam != null ?
+            bet.match.scoreAwayTeam : ''} ${bet.match.awayTeam.name}`
+}}
                             </td>
                             <td>
                                 {{ bet.type }}
