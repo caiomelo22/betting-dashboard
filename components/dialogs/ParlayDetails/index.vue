@@ -3,7 +3,7 @@
         <v-row no-gutters align="center" justify="center">
             <div>
                 <p class="mb-0" style="font-weight: 700">Parlay Odds</p>
-                <p class="mb-0">{{parlay.odds}}</p>
+                <p class="mb-0">{{ parlay.odds }}</p>
             </div>
         </v-row>
         <p class="mb-0 mt-4" style="font-weight: 700">Parlay Details</p>
@@ -19,13 +19,14 @@
                         </td>
                         <td>
                             {{
-                            bet.match.league.name
-                            }}
+        bet.match.league.name
+}}
                         </td>
                         <td>
                             {{ `${bet.match.homeTeam.name} ${bet.match.scoreHomeTeam != null ? bet.match.scoreHomeTeam :
-                            ''} x ${bet.match.scoreAwayTeam != null ? bet.match.scoreAwayTeam : ''}
-                            ${bet.match.awayTeam.name}` }}
+        ''} x ${bet.match.scoreAwayTeam != null ? bet.match.scoreAwayTeam : ''}
+                            ${bet.match.awayTeam.name}`
+}}
                         </td>
                         <td>
                             {{ bet.type }}
@@ -39,6 +40,7 @@
                         <td>
                             <font-awesome-icon v-if="bet.match.scoreHomeTeam == null" :icon="['fa', 'arrows-rotate']"
                                 style="color: #9FC9F3" />
+                            <font-awesome-icon v-else-if="bet.push" :icon="['fa', 'minus']" style="color: #FF6E31" />
                             <font-awesome-icon v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
                                 style="color: green" />
                             <font-awesome-icon v-else :icon="['fa', 'xmark']" style="color: red" />

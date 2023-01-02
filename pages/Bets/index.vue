@@ -7,8 +7,8 @@
             <div class="row">
                 <v-select label="League" hide-details v-model="league_filter" :items="league_filter_options" outlined
                     dense class="text-field select-field mr-4" @change="get_bets()" />
-                <v-select label="Bet Type" hide-details v-model="bet_type_filter" :items="bet_type_filter_options" outlined dense
-                    class="text-field select-field mr-4" @change="get_bets()" />
+                <v-select label="Bet Type" hide-details v-model="bet_type_filter" :items="bet_type_filter_options"
+                    outlined dense class="text-field select-field mr-4" @change="get_bets()" />
                 <v-btn color="#41b883" dark @click="dialog = true">
                     <font-awesome-icon :icon="['fa', 'plus']" style="color: white; margin-right: 8px" />
                     Add Bet
@@ -50,6 +50,7 @@
                             <td>
                                 <font-awesome-icon v-if="bet.match.scoreHomeTeam == null"
                                     :icon="['fa', 'arrows-rotate']" style="color: #9FC9F3" />
+                                <font-awesome-icon v-else-if="bet.push" :icon="['fa', 'minus']" style="color: #FF6E31" />
                                 <font-awesome-icon v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
                                     style="color: green" />
                                 <font-awesome-icon v-else :icon="['fa', 'xmark']" style="color: red" />
