@@ -1,5 +1,5 @@
 # Betting-Dashboard
-Dashboard developed with NodeJs and Nuxt.js in order to keep track of your past bets.
+Dashboard developed with Node.js and Nuxt.js in order to keep track of your past bets.
 
 ## Setup
 To run the entire project, simply run the docker compose command:
