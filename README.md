@@ -2,8 +2,20 @@
 Dashboard developed with Node.js and Nuxt.js in order to keep track of your past bets.
 
 ## Setup
+### Backend
+In the backend folder, create a .env file with the following format. If you are planning to connect to a host MySQL server, keep the string below for the database host variable:
+```
+DATABASE=betting-dashboard
+DATABASE_USER=root
+DATABASE_PASS=pwd
+DATABASE_HOST=host.docker.internal
+DATABASE_PORT=3306
+```
+### Running
 To run the entire project, simply run the docker compose command:
-`docker-compose up`
+```
+docker-compose up
+```
 
 ## Overview
 To start the overview, I'm going to show you the dashboard page. This page gives you an overall of your bets. It shows the your success rate, ROI and a bunch of other statistics. In addition to that, there are a few charts, like the bet progression, profit by day and a few others.
