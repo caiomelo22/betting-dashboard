@@ -10,12 +10,22 @@ const { League } = require('../models/League');
 const { Parlay } = require('../models/Parlay');
 const { get_deposited_value } = require('../services/ConfigService');
 
+const get_starting_point_date = () => {
+    const startingPoint = process.env.STARTING_POINT;
+
+    const startingPointDate = new Date(startingPoint);
+
+    return startingPointDate;
+}
+
 const list = async (req, res) => {
     try {
         const { page, league_id, bet_type } = req.query;
 
         match_conditions = {}
         bet_conditions = { value: { [Op.ne]: null } }
+
+        bet_conditions["createdAt"] = {[Op.gte]: get_starting_point_date()}
 
         if (league_id) {
             match_conditions['leagueId'] = league_id
@@ -191,7 +201,11 @@ const get_parlay_leagues = (parlay) => {
 
 const dashboard = async (req, res) => {
     try {
+        where_conditions =  {createdAt: {[Op.gte]: get_starting_point_date()}}
+        console.log(where_conditions)
+
         const bets = await Bet.findAll({
+            where: where_conditions,
             include: [{
                 model: Match, as: 'match',
                 // where: {matchDate: {[Op.gte]: '2022-09-09'}}, 
