@@ -26,8 +26,7 @@
             <v-col cols="12" md="2">
                 <div class="general-info">
                     <p class="dashboard-info-title">ROI</p>
-                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalDeposited +
-                    generalInfo.totalProfit)).toFixed(2) }}%
+                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalDeposited)).toFixed(2) }}%
                     </p>
                 </div>
             </v-col>
