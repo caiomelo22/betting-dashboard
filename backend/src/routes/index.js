@@ -5,8 +5,22 @@ const betController = require('../controllers/BetController');
 const matchController = require('../controllers/MatchController');
 const configController = require('../controllers/ConfigController');
 const parlayController = require('../controllers/ParlayController');
+const authController = require('../controllers/AuthController');
+const {authenticate, cleanBlacklist} = require('../middleware/Auth')
 
 const router = Router();
+
+// Set up the cleanup interval (every 30 seconds)
+const cleanupInterval = 30 * 1000; // 30 seconds
+setInterval(cleanBlacklist, cleanupInterval);
+
+router.post("/refresh-token", authController.refreshToken)
+router.post("/login", authController.login)
+router.post("/register", authController.register)
+
+router.use(authenticate)
+
+router.delete("/logout", authController.logout)
 
 router.get("/healthy", (req, res) => res.send("Everything is okay"));
 
