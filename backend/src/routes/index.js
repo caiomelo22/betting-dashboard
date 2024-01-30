@@ -10,8 +10,8 @@ const {authenticate, cleanBlacklist} = require('../middleware/Auth')
 
 const router = Router();
 
-// Set up the cleanup interval (every 30 seconds)
-const cleanupInterval = 30 * 1000; // 30 seconds
+// Set up the cleanup interval (every 15min)
+const cleanupInterval = 15 * 60 * 1000; // 15min
 setInterval(cleanBlacklist, cleanupInterval);
 
 router.post("/refresh-token", authController.refreshToken)
