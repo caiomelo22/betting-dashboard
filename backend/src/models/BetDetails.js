@@ -1,6 +1,6 @@
 const database = require("../database/db");
 
-const BetBothScore = database.sequelize.define("bothScoreBets", {
+const BetDetails = database.sequelize.define("bet_details", {
     betId: {
         type: database.Sequelize.INTEGER,
         allowNull: false,
@@ -8,13 +8,21 @@ const BetBothScore = database.sequelize.define("bothScoreBets", {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-    prediction: {
+    type: {
+        type: database.Sequelize.STRING,
+        allowNull: false,
+    },
+    details: {
+        type: database.Sequelize.STRING,
+        allowNull: true,
+    },
+    earlyPayout: {
         type: database.Sequelize.BOOLEAN,
+        defaultValue: false,
         allowNull: false,
     },
 });
 
-
 module.exports = {
-    BetBothScore
+    BetDetails
 };

@@ -1,7 +1,5 @@
 const database = require("../database/db");
-const BetMoneyline = require('./BetMoneyline').BetMoneyline;
-const BetTotal = require('./BetTotal').BetTotal;
-const { BetBothScore } = require('./BetBothScore')
+const { BetDetails } = require('./BetDetails')
 
 const Bet = database.sequelize.define("bets", {
     matchId: {
@@ -24,19 +22,10 @@ const Bet = database.sequelize.define("bets", {
         defaultValue: false,
         allowNull: false,
     },
-    earlyPayout: {
-        type: database.Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false,
-    },
     push: {
       type: database.Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-    },
-    type: {
-        type: database.Sequelize.ENUM('Moneyline', 'Total', 'BothScore', 'Spread'),
-        allowNull: false,
     },
     parlayId: {
         type: database.Sequelize.INTEGER,
@@ -47,14 +36,8 @@ const Bet = database.sequelize.define("bets", {
     },
 });
 
-BetMoneyline.belongsTo(Bet, { as: 'bet' });
-Bet.hasOne(BetMoneyline, { foreignKey: 'betId', as: 'moneyline' });
-
-BetTotal.belongsTo(Bet, { as: 'bet' });
-Bet.hasOne(BetTotal, { foreignKey: 'betId', as: 'total' });
-
-BetBothScore.belongsTo(Bet, { as: 'bet' });
-Bet.hasOne(BetBothScore, { foreignKey: 'betId', as: 'bothScore' });
+BetDetails.belongsTo(Bet, { as: 'bet' });
+Bet.hasOne(BetDetails, { foreignKey: 'betId', as: 'details' });
 
 module.exports = {
     Bet

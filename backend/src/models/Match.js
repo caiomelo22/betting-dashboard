@@ -11,29 +11,29 @@ const Match = database.sequelize.define("matches", {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   },
-  homeTeamId: {
+  homeId: {
     type: database.Sequelize.INTEGER,
     allowNull: false,
     references: { model: 'teams', key: 'id' },
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   },
-  awayTeamId: {
+  awayId: {
     type: database.Sequelize.INTEGER,
     allowNull: false,
     references: { model: 'teams', key: 'id' },
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   },
-  scoreHomeTeam: {
+  homeScore: {
     type: database.Sequelize.INTEGER,
     allowNull: true,
   },
-  scoreAwayTeam: {
+  awayScore: {
     type: database.Sequelize.INTEGER,
     allowNull: true,
   },
-  matchDate: {
+  date: {
     type: database.Sequelize.DATE,
     allowNull: false,
   },

@@ -1,7 +1,7 @@
 const database = require("../database/db");
 const { Team } = require("./Team");
 
-const LeagueTeam = database.sequelize.define("leagueTeams", {
+const LeagueTeam = database.sequelize.define("league_teams", {
   leagueId: {
     type: database.Sequelize.INTEGER,
     allowNull: false,
