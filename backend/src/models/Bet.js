@@ -11,7 +11,7 @@ const Bet = database.sequelize.define("bets", {
     },
     userId: {
         type: database.Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: { model: 'users', key: 'id' },
         onUpdate: 'SET NULL',
         onDelete: 'SET NULL',
