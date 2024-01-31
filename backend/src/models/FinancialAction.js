@@ -7,7 +7,7 @@ const FinancialAction = database.sequelize.define("financial_actions", {
   },
   actionType: {
     type: database.Sequelize.ENUM('Withdraw', 'Deposit'),
-    allowNull: true,
+    allowNull: false,
   }
 });
 

@@ -13,15 +13,9 @@ module.exports = {
                 type: Sequelize.DATE,
                 allowNull: false,
             },
-            finished: {
-                type: Sequelize.BOOLEAN,
-                allowNull: false,
-                defaultValue: false,
-            },
             won: {
                 type: Sequelize.BOOLEAN,
-                allowNull: false,
-                defaultValue: false,
+                allowNull: true,
             },
             value: {
               type: Sequelize.FLOAT,

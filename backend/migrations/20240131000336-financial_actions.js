@@ -15,7 +15,7 @@ module.exports = {
             },
             actionType: {
                 type: Sequelize.ENUM('Withdraw', 'Deposit'),
-                allowNull: true,
+                allowNull: false,
             },
             createdAt: {
                 type: Sequelize.DATE,

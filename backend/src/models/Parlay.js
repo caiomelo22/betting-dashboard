@@ -6,15 +6,9 @@ const Parlay = database.sequelize.define("parlays", {
         type: database.Sequelize.DATE,
         allowNull: false,
     },
-    finished: {
-        type: database.Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-    },
     won: {
         type: database.Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
+        allowNull: true,
     },
     value: {
       type: database.Sequelize.FLOAT,

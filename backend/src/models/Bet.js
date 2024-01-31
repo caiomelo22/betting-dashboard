@@ -9,6 +9,13 @@ const Bet = database.sequelize.define("bets", {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
+    userId: {
+        type: database.Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'SET NULL',
+        onDelete: 'SET NULL',
+    },
     value: {
         type: database.Sequelize.FLOAT,
         allowNull: true,
@@ -19,8 +26,7 @@ const Bet = database.sequelize.define("bets", {
     },
     won: {
         type: database.Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false,
+        allowNull: true,
     },
     push: {
       type: database.Sequelize.BOOLEAN,
@@ -29,7 +35,8 @@ const Bet = database.sequelize.define("bets", {
     },
     parlayId: {
         type: database.Sequelize.INTEGER,
-        allowNull: null,
+        allowNull: false,
+        defaultValue: false,
         references: { model: 'parlays', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
