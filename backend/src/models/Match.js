@@ -33,6 +33,10 @@ const Match = database.sequelize.define("matches", {
     type: database.Sequelize.INTEGER,
     allowNull: true,
   },
+  season: {
+    type: database.Sequelize.INTEGER,
+    allowNull: false,
+  },
   date: {
     type: database.Sequelize.DATE,
     allowNull: false,

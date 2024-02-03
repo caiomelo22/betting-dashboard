@@ -1,43 +1,29 @@
 const { Router } = require("express");
 
-const leagueController = require('../controllers/LeagueController');
-const betController = require('../controllers/BetController');
-const matchController = require('../controllers/MatchController');
-const configController = require('../controllers/ConfigController');
-const parlayController = require('../controllers/ParlayController');
-const authController = require('../controllers/AuthController');
-const {authenticate, cleanBlacklist} = require('../middleware/Auth')
+const LeagueController = require('../controllers/LeagueController');
+const BetController = require('../controllers/BetController');
+const MatchController = require('../controllers/MatchController');
+const FinancialHistoryController = require('../controllers/FinancialHistoryController');
+const ParlayController = require('../controllers/ParlayController');
+const AuthController = require('../controllers/AuthController');
+const BetTypeController = require('../controllers/BetTypeController');
+const SportController = require('../controllers/SportController');
+const { authenticate } = require('../middleware/Auth')
 
 const router = Router();
 
-// Set up the cleanup interval (every 15min)
-const cleanupInterval = 15 * 60 * 1000; // 15min
-setInterval(cleanBlacklist, cleanupInterval);
+router.get("/healthy", (req, res) => res.send("Everything is okay"));
 
-router.post("/refresh-token", authController.refreshToken)
-router.post("/login", authController.login)
-router.post("/register", authController.register)
+router.use('/auth', AuthController)
 
 router.use(authenticate)
 
-router.delete("/logout", authController.logout)
-
-router.get("/healthy", (req, res) => res.send("Everything is okay"));
-
-router.get("/league/list", leagueController.list);
-
-router.get("/bet/list", betController.list);
-router.post("/bet/create", betController.create);
-router.put("/bet/update", betController.update);
-router.delete("/bet/remove", betController.remove);
-router.get("/bet/dashboard", betController.dashboard);
-
-router.get("/parlay/list", parlayController.list);
-router.post("/parlay/create", parlayController.create);
-
-router.get("/match/list", matchController.list);
-router.put("/match/update", matchController.update);
-
-router.put("/config/update-deposited-value", configController.update_deposited_value);
+router.use("/league", LeagueController);
+router.use("/bet", BetController);
+router.use("/parlay", ParlayController);
+router.use("/match", MatchController);
+router.use("/bet-type", BetTypeController);
+router.use("/financial-history", FinancialHistoryController);
+router.use("/sport", SportController);
 
 module.exports = router;

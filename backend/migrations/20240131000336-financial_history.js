@@ -2,11 +2,15 @@
 
 module.exports = {
     async up(queryInterface, Sequelize) {
-        return queryInterface.createTable('financial_actions', {
+        return queryInterface.createTable('financial_history', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
+                allowNull: false,
+            },
+            userEmail: {
+                type: Sequelize.STRING(50),
                 allowNull: false,
             },
             value: {
@@ -29,6 +33,6 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-        return queryInterface.dropTable('financial_actions');
+        return queryInterface.dropTable('financial_history');
     }
 };

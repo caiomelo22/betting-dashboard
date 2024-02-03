@@ -2,38 +2,39 @@ const BetService = require('../services/BetService');
 const Bet = require('../models/Bet').Bet;
 const Match = require('../models/Match').Match;
 const Team = require('../models/Team').Team;
-const BetMoneyline = require('../models/BetMoneyline').BetMoneyline;
-const BetTotal = require('../models/BetTotal').BetTotal;
 const moment = require('moment');
 const { Op } = require('sequelize');
-const { BetBothScore } = require('../models/BetBothScore');
 const { League } = require('../models/League');
+const { User } = require('../models/User');
 const { Parlay } = require('../models/Parlay');
-const ConfigService = require('../services/ConfigService');
+const { BetDetails } = require('../models/BetDetails');
+const express = require('express');
 
-const list = async (req, res) => {
+const router = express.Router();
+
+router.get('/list', async (req, res) => {
     try {
-        const { page, league_id, bet_type } = req.query;
+        const { page, leagueId, betType } = req.query;
 
-        match_conditions = {}
-        bet_conditions = { value: { [Op.ne]: null } }
+        matchConditions = {}
+        betConditions = { createdByEmail: req.user.email, value: { [Op.ne]: null } }
 
-        if (league_id) {
-            match_conditions['leagueId'] = league_id
+        if (leagueId) {
+            matchConditions['leagueId'] = leagueId
         }
 
-        if (bet_type) {
-            bet_conditions['type'] = bet_type
+        if (betType) {
+            betConditions['type'] = betType
         }
 
         const pageSize = 15
 
         const { count, rows } = await Bet.findAndCountAll({
-            where: bet_conditions,
-            include: [{ model: Match, as: 'match', where: match_conditions, include: [{ model: Team, as: 'homeTeam' }, { model: Team, as: 'awayTeam' }, { model: League, as: 'league' }] },
-            { model: BetTotal, as: 'total' }, { model: BetMoneyline, as: 'moneyline' }, { model: BetBothScore, as: 'bothScore' }],
+            where: betConditions,
+            include: [{ model: Match, as: 'match', where: matchConditions, include: [{ model: Team, as: 'homeTeam' }, { model: Team, as: 'awayTeam' }, { model: League, as: 'league' }] },
+            { model: BetDetails, as: 'details' }],
             offset: (page - 1) * pageSize, limit: pageSize, order: [
-                [{ model: Match, as: 'match' }, 'matchDate', 'DESC'],
+                [{ model: Match, as: 'match' }, 'date', 'DESC'],
                 ['updatedAt', 'DESC'],
             ],
         });
@@ -48,23 +49,23 @@ const list = async (req, res) => {
         return res.json(returnObject)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ data: 'An error has occured', error })
+        return res.status(500).json({ error })
     }
-};
+})
 
-const create = async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
-        const newBet = await BetService.createBet()
+        const newBet = await BetService.createBet(req.body, req.user.email)
         return res.json(newBet)
     }
     catch (error) {
         console.log(error)
-        return res.status(500).json({ data: 'An error has occured', error })
+        return res.status(500).json({ error })
     }
-};
+})
 
-const update = async (req, res) => {
-    const { id, matchId, value, odds, type, prediction, line } = req.body;
+router.put('/update', async (req, res) => {
+    const { id, matchId, value, odds, type, prediction, details } = req.body;
 
     try {
         const findBet = await Bet.findOne({ where: { id: id }, include: { all: true } })
@@ -73,31 +74,22 @@ const update = async (req, res) => {
             return res.status(404).send("Bet not found.")
         }
 
-        await findBet.update({ matchId, value, odds, type });
+        await findBet.update({ matchId, value, odds });
 
-        switch (type) {
-            case 'Moneyline':
-                await findBet.moneyline.update({ prediction });
-                break;
-            case 'Spread':
-                await findBet.moneyline.update({ prediction, spread });
-                break;
-            case 'Total':
-                await findBet.total.update({ prediction, line });
-                break;
-            case 'BothScore':
-                await findBet.bothScore.update({ prediction });
-                break;
-        }
+        const detailsObj = await BetDetails.findOne({ where: { id: findBet.id } })
+
+        const updatedDetails = { ...details, prediction }
+
+        await detailsObj.update({ details: updatedDetails, type })
 
         return res.sendStatus(204)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ data: 'An error has occured', error })
+        return res.status(500).json({ error })
     }
-};
+})
 
-const remove = async (req, res) => {
+router.delete('/remove', async (req, res) => {
     const { id } = req.body;
 
     try {
@@ -112,20 +104,22 @@ const remove = async (req, res) => {
         return res.sendStatus(204)
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ data: 'An error has occured', error })
+        return res.status(500).json({ error })
     }
-};
+})
 
-const dashboard = async (req, res) => {
+router.get('/dashboard', async (req, res) => {
     try {
+        const user = await User.findOne({ where: { email: req.user.email } })
+
         const bets = await Bet.findAll({
+            where: { createdByEmail: req.user.email },
             include: [{
                 model: Match, as: 'match',
-                // where: {matchDate: {[Op.gte]: '2022-09-09'}}, 
                 include: [{ model: Team, as: 'homeTeam' },
                 { model: Team, as: 'awayTeam' }, { model: League, as: 'league' }]
-            }, { model: BetTotal, as: 'total' }, { model: BetMoneyline, as: 'moneyline' }, { model: BetBothScore, as: 'bothScore' }], order: [
-                [{ model: Match, as: 'match' }, 'matchDate', 'ASC'],
+            }, { model: BetDetails, as: 'details' }], order: [
+                [{ model: Match, as: 'match' }, 'date', 'ASC'],
                 ['createdAt', 'DESC'],
             ],
         });
@@ -138,10 +132,11 @@ const dashboard = async (req, res) => {
                     { model: Team, as: 'homeTeam' },
                     { model: Team, as: 'awayTeam' },
                     { model: League, as: 'league' }]
-            }, { model: BetTotal, as: 'total' }, { model: BetMoneyline, as: 'moneyline' }, { model: BetBothScore, as: 'bothScore' }]
+            }, { model: BetDetails, as: 'details' }]
         }
 
         const parlays = await Parlay.findAll({
+            where: { createdByEmail: req.user.email },
             include: parlayInclude, order: [
                 ['date', 'ASC'],
                 ['createdAt', 'DESC'],
@@ -163,8 +158,8 @@ const dashboard = async (req, res) => {
                 leagueId: leagues[i].id,
                 hidden: leagues[i].inactive,
                 fill: false,
-                backgroundColor: project_colors[i],
-                borderColor: project_colors[i],
+                backgroundColor: BetService.projectColors[i],
+                borderColor: BetService.projectColors[i],
                 data: []
             })
         }
@@ -217,11 +212,11 @@ const dashboard = async (req, res) => {
             totalProfit: 0,
             totalGreens: 0,
             totalReds: 0,
-            totalDeposited: (await ConfigService.getDepositedValue()).data
+            totalDeposited: user.totalDeposited
         }
 
         for (let i = 0; i < bets.length; i++) {
-            let betDate = moment.utc(bets[i].match.matchDate).format('DD-MM-YYYY')
+            let betDate = moment.utc(bets[i].match.date).format('DD-MM-YYYY')
             if (labels[labels.length - 1] != betDate) {
 
                 BetService.updateBarChartColors(barChartInfo)
@@ -259,9 +254,11 @@ const dashboard = async (req, res) => {
 
             betOutcomeValue = BetService.checkBetOutcome(bets[i], generalInfo, barChartInfo, chartInfo)
 
-            if (bets[i].type == 'Moneyline') {
+            if (bets[i].details.type == 'Moneyline') {
+                const details = JSON.parse(bets[i].details.details)
+
                 let team
-                switch (bets[i].moneyline.prediction) {
+                switch (details.prediction) {
                     case 'Home':
                         team = bets[i].match.homeTeam.name;
                         break;
@@ -271,8 +268,8 @@ const dashboard = async (req, res) => {
                 }
 
                 if (!(team in profitByTeam)) profitByTeam[team] = 0
-                if (bets[i].moneyline.prediction != 'Draw') profitByTeam[team] += betOutcomeValue
-                proiftByOutcome[bets[i].moneyline.prediction] += betOutcomeValue
+                if (details.prediction != 'Draw') profitByTeam[team] += betOutcomeValue
+                proiftByOutcome[details] += betOutcomeValue
             }
 
             const index = leagueChartInfo.datasets.map(x => x.leagueId).indexOf(bets[i].match.leagueId)
@@ -308,8 +305,8 @@ const dashboard = async (req, res) => {
             datasets: [
                 {
                     label: 'Profit by Outcome',
-                    backgroundColor: project_colors,
-                    borderColor: project_colors,
+                    backgroundColor: BetService.projectColors,
+                    borderColor: BetService.projectColors,
                     data: []
                 },
             ]
@@ -338,14 +335,8 @@ const dashboard = async (req, res) => {
         return res.json(data)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ data: 'An error has occured', error })
+        return res.status(500).json({ error })
     }
-};
+})
 
-module.exports = {
-    list,
-    create,
-    update,
-    remove,
-    dashboard
-}
+module.exports = router

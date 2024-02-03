@@ -10,6 +10,10 @@ const Parlay = database.sequelize.define("parlays", {
         type: database.Sequelize.BOOLEAN,
         allowNull: true,
     },
+    createdByEmail: {
+        type: database.Sequelize.STRING,
+        allowNull: false,
+    },
     value: {
       type: database.Sequelize.FLOAT,
       allowNull: false,

@@ -9,6 +9,10 @@ module.exports = {
                 autoIncrement: true,
                 allowNull: false,
             },
+            createdByEmail: {
+                type: Sequelize.STRING(50),
+                allowNull: false,
+            },
             date: {
                 type: Sequelize.DATE,
                 allowNull: false,
@@ -18,12 +22,12 @@ module.exports = {
                 allowNull: true,
             },
             value: {
-              type: Sequelize.FLOAT,
-              allowNull: false,
+                type: Sequelize.FLOAT,
+                allowNull: false,
             },
             odds: {
-              type: Sequelize.FLOAT,
-              allowNull: false,
+                type: Sequelize.FLOAT,
+                allowNull: false,
             },
             createdAt: {
                 type: Sequelize.DATE,

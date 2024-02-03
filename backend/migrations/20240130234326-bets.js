@@ -16,12 +16,9 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE',
             },
-            userId: {
-                type: Sequelize.INTEGER,
-                allowNull: true,
-                references: { model: 'users', key: 'id' },
-                onUpdate: 'SET NULL',
-                onDelete: 'SET NULL',
+            createdByEmail: {
+                type: Sequelize.STRING(50),
+                allowNull: false,
             },
             value: {
                 type: Sequelize.FLOAT,
@@ -36,14 +33,13 @@ module.exports = {
                 allowNull: true,
             },
             push: {
-              type: Sequelize.BOOLEAN,
-              allowNull: false,
-              defaultValue: false,
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
             },
             parlayId: {
                 type: Sequelize.INTEGER,
-                allowNull: false,
-                defaultValue: false,
+                allowNull: true,
                 references: { model: 'parlays', key: 'id' },
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE',

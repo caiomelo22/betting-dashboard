@@ -1,4 +1,5 @@
 const database = require("../database/db");
+const {Bet} = require('./Bet');
 
 const User = database.sequelize.define("users", {
   name: {
@@ -16,6 +17,11 @@ const User = database.sequelize.define("users", {
   refreshToken: {
     type: database.Sequelize.STRING,
     allowNull: true,
+  },
+  totalDeposited: {
+    type: database.Sequelize.FLOAT,
+    allowNull: false,
+    defaultValue: 0
   },
 });
 

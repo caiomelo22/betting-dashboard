@@ -2,7 +2,7 @@
 
 module.exports = {
     async up(queryInterface, Sequelize) {
-        return queryInterface.createTable('teams', {
+        await queryInterface.createTable('teams', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -10,7 +10,7 @@ module.exports = {
                 allowNull: false,
             },
             name: {
-                type: Sequelize.STRING,
+                type: Sequelize.STRING(50),
                 allowNull: false,
             },
             createdAt: {
@@ -22,6 +22,9 @@ module.exports = {
                 allowNull: false,
             },
         });
+
+        // Adding an index for the 'name' column
+        await queryInterface.addIndex('teams', ['name']);
     },
 
     async down(queryInterface, Sequelize) {

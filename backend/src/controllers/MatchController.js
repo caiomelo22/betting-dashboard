@@ -1,24 +1,23 @@
-const { BetBothScore } = require('../models/BetBothScore');
-const { BetMoneyline } = require('../models/BetMoneyline');
-const { BetTotal } = require('../models/BetTotal');
-const { Parlay } = require('../models/Parlay');
+const { BetDetails } = require('../models/BetDetails');
 
 const Bet = require('../models/Bet').Bet;
 const Match = require('../models/Match').Match;
 const Team = require('../models/Team').Team;
 const League = require('../models/League').League;
+const express = require('express');
 
-const list = async (req, res) => {
+const router = express.Router();
+
+router.get('/list', async (req, res) => {
     try {
         const page = parseInt(req.query.page);
 
         const pageSize = 15
 
         const { count, rows } = await Match.findAndCountAll({
-            where: { scoreHomeTeam: null, scoreAwayTeam: null },
             include: [{ model: Team, as: 'homeTeam' }, { model: Team, as: 'awayTeam' }, { model: League, as: 'league' }],
             offset: (page - 1) * pageSize, limit: pageSize, order: [
-                ['matchDate', 'DESC'],
+                ['date', 'DESC'],
                 ['updatedAt', 'DESC'],
             ],
         });
@@ -33,18 +32,18 @@ const list = async (req, res) => {
         return res.json(returnObject)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ data: 'An error has occured', error })
+        return res.status(500).json({ error })
     }
-};
+})
 
-const update = async (req, res) => {
-    const { id, scoreHomeTeam, scoreAwayTeam } = req.body;
+router.put('/update', async (req, res) => {
+    const { id, homeScore, awayScore } = req.body;
 
     try {
         const findMatch = await Match.findOne({
-            where: { id: id }, include: {
+            where: { id }, include: {
                 model: Bet, as: 'bets',
-                include: [{ model: BetMoneyline, as: 'moneyline' }, { model: BetTotal, as: 'total' }, { model: BetBothScore, as: 'bothScore' }]
+                include: [{ model: BetDetails, as: 'details' }]
             }
         })
 
@@ -52,64 +51,26 @@ const update = async (req, res) => {
             return res.status(404).send("Match not found.")
         }
 
-        await findMatch.update({ scoreHomeTeam, scoreAwayTeam });
-
-
-        for (let i = 0; i < findMatch.bets.length; i++) {
-            if (findMatch.bets[i].type == 'Moneyline' && ((scoreHomeTeam > scoreAwayTeam && findMatch.bets[i].moneyline.prediction == 'Home') ||
-                (scoreHomeTeam < scoreAwayTeam && findMatch.bets[i].moneyline.prediction == 'Away') ||
-                ((findMatch.bets[i].moneyline.includeDraw || scoreHomeTeam == scoreAwayTeam) && findMatch.bets[i].moneyline.prediction == 'Draw'))) {
-                await findMatch.bets[i].update({ won: true })
-            }
-            else if (findMatch.bets[i].type == 'Total' && ((scoreHomeTeam + scoreAwayTeam > findMatch.bets[i].total.line && findMatch.bets[i].total.prediction == 'Over') ||
-                (scoreHomeTeam + scoreAwayTeam < findMatch.bets[i].total.line && findMatch.bets[i].total.prediction == 'Under'))) {
-                await findMatch.bets[i].update({ won: true })
-            }
-            else if (findMatch.bets[i].type == 'Total' && scoreHomeTeam + scoreAwayTeam == findMatch.bets[i].total.line) {
-                await findMatch.bets[i].update({ push: true })
-            }
-            else if (findMatch.bets[i].type == 'BothScore' && ((scoreHomeTeam && scoreAwayTeam && findMatch.bets[i].bothScore.prediction) ||
-                (!scoreHomeTeam && !scoreAwayTeam && !findMatch.bets[i].bothScore.prediction))) {
-                await findMatch.bets[i].update({ won: true })
-            }
-            else if (findMatch.bets[i].type == 'Spread' && ((scoreHomeTeam + findMatch.bets[i].moneyline.spread > scoreAwayTeam && findMatch.bets[i].moneyline.prediction == 'Home') ||
-                (scoreHomeTeam < scoreAwayTeam + findMatch.bets[i].moneyline.spread && findMatch.bets[i].moneyline.prediction == 'Away'))) {
-                await findMatch.bets[i].update({ won: true })
-            }
-
-            if (findMatch.bets[i].parlayId) {
-                let parlay = await Parlay.findOne({ where: { id: findMatch.bets[i].parlayId }, include: { model: Bet, as: 'bets', include: { model: Match, as: 'match' } } })
-
-                if (!findMatch.bets[i].won && !parlay.finished) {
-                    await parlay.update({ finished: true })
-                }
-                if (parlay.finished) {
-                    continue
-                }
-
-                let finished = parlay.finished
-                let won = parlay.won
-
-                if (!parlay.bets.some(x => x.match.scoreHomeTeam == null)) {
-                    finished = true
-
-                    if (!parlay.bets.some(x => !x.won)) {
-                        won = true
-                    }
-
-                    await parlay.update({ finished, won })
-                }
-            }
-        }
+        await findMatch.update({ homeScore, awayScore });
 
         return res.sendStatus(204)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ data: 'An error has occured', error })
+        return res.status(500).json({ error })
     }
-};
+})
 
-module.exports = {
-    list,
-    update
-}
+router.post('/create', async (req, res) => {
+    try {
+        const { matches } = req.body;
+
+        await Match.bulkCreate(matches)
+
+        return res.sendStatus(204)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ error })
+    }
+})
+
+module.exports = router

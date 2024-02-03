@@ -1,8 +1,12 @@
 const database = require("../database/db");
 
-const FinancialAction = database.sequelize.define("financial_actions", {
+const FinancialHistory = database.sequelize.define("financial_history", {
   value: {
     type: database.Sequelize.FLOAT,
+    allowNull: false,
+  },
+  userEmail: {
+    type: database.Sequelize.STRING,
     allowNull: false,
   },
   actionType: {
@@ -12,5 +16,5 @@ const FinancialAction = database.sequelize.define("financial_actions", {
 });
 
 module.exports = {
-    FinancialAction
+    FinancialHistory
 };

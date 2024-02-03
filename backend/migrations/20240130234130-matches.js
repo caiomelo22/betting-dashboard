@@ -42,6 +42,10 @@ module.exports = {
                 type: Sequelize.DATE,
                 allowNull: false,
             },
+            season: {
+              type: Sequelize.INTEGER,
+              allowNull: false,
+            },
             createdAt: {
                 type: Sequelize.DATE,
                 allowNull: false,
