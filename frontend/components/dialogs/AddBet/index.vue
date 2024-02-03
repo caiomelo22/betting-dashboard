@@ -23,9 +23,9 @@
                 </div>
                 <div>
                     <span class="text-field-label">Match Date</span>
-                    <v-text-field v-model="bet.matchDate" outlined dense hint="YYYY-MM-DD" :rules="[
-                      validationService.required(bet.matchDate),
-                      validationService.validDate(bet.matchDate),
+                    <v-text-field v-model="bet.date" outlined dense hint="YYYY-MM-DD" :rules="[
+                      validationService.required(bet.date),
+                      validationService.validDate(bet.date),
                     ]" class="text-field" />
                 </div>
                 <div>

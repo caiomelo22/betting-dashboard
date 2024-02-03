@@ -14,7 +14,7 @@
             <div>
               <p class="text-field-label">Match Date</p>
               <p class="text-field-value">{{
-                generalServices.format_date(match.matchDate)
+                generalServices.format_date(match.date)
               }}</p>
             </div>
           </v-col>
@@ -36,15 +36,15 @@
         <div style="margin-top: 24px">
           <NumberField
             field-title="Home Team Score"
-            :field-value="match.scoreHomeTeam"
-            @update="(value) => (match.scoreHomeTeam = value)"
+            :field-value="match.homeScore"
+            @update="(value) => (match.homeScore = value)"
           />
         </div>
         <div>
           <NumberField
             field-title="Away Team Score"
-            :field-value="match.scoreAwayTeam"
-            @update="(value) => (match.scoreAwayTeam = value)"
+            :field-value="match.awayScore"
+            @update="(value) => (match.awayScore = value)"
           />
         </div>
       </v-card-text>

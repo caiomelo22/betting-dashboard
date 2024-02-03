@@ -22,7 +22,7 @@
                     <tbody>
                         <tr v-for="(bet, i) in bets" :key="i">
                             <td>
-                                {{ generalServices.format_date(bet.match.matchDate) }}
+                                {{ generalServices.format_date(bet.match.date) }}
                             </td>
                             <td>
                                 {{
@@ -30,9 +30,9 @@
 }}
                             </td>
                             <td>
-                                {{ `${bet.match.homeTeam.name} ${bet.match.scoreHomeTeam != null ?
-        bet.match.scoreHomeTeam : ''} x ${bet.match.scoreAwayTeam != null ?
-            bet.match.scoreAwayTeam : ''} ${bet.match.awayTeam.name}`
+                                {{ `${bet.match.homeTeam.name} ${bet.match.homeScore != null ?
+        bet.match.homeScore : ''} x ${bet.match.awayScore != null ?
+            bet.match.awayScore : ''} ${bet.match.awayTeam.name}`
 }}
                             </td>
                             <td>
@@ -48,7 +48,7 @@
                                 {{ bet.odds }}
                             </td>
                             <td>
-                                <font-awesome-icon v-if="bet.match.scoreHomeTeam == null"
+                                <font-awesome-icon v-if="bet.match.homeScore == null"
                                     :icon="['fa', 'arrows-rotate']" style="color: #9FC9F3" />
                                 <font-awesome-icon v-else-if="bet.push" :icon="['fa', 'minus']" style="color: #FF6E31" />
                                 <font-awesome-icon v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"

@@ -15,7 +15,7 @@
                                 {{ `${match.homeTeam.name} x ${match.awayTeam.name}` }}
                             </td>
                             <td>
-                                {{ generalServices.format_date(match.matchDate) }}
+                                {{ generalServices.format_date(match.date) }}
                             </td>
                             <td>
                                 <v-btn fab color="#41b883" small @click="match_click(match)">

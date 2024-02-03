@@ -58,7 +58,7 @@ export default {
     methods: {
         get_bet_prediction,
         get_bet_profit(bet) {
-            if (bet.match.scoreHomeTeam === null || bet.match.awayHomeTeam) {
+            if (bet.match.homeScore === null || bet.match.awayHomeTeam) {
                 return '-'
             }
 

@@ -20,7 +20,7 @@ export default {
       leagueId: null,
       homeTeamId: null,
       awayTeamId: null,
-      matchDate: null,
+      date: null,
       value: null,
       odds: null,
       type: 'Moneyline',
@@ -39,7 +39,7 @@ export default {
     leagues: Array
   },
   created() {
-    this.bet.matchDate = this.$moment().format('YYYY-MM-DD')
+    this.bet.date = this.$moment().format('YYYY-MM-DD')
 
     if (this.leagues.length === 1) {
       this.bet.leagueId = this.leagues[0].id

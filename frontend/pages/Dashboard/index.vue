@@ -118,7 +118,7 @@
         </div>
         <v-dialog v-model="editDepositedValueDialog" v-if="editDepositedValueDialog" width="700px" max-width="100%">
             <EditDepositedValueDialog :deposited-value-prop="generalInfo.totalDeposited"
-                @update="update_deposited_value" @close="editDepositedValueDialog = false" />
+                @update="updateDepositedValue" @close="editDepositedValueDialog = false" />
         </v-dialog>
     </div>
 </template>

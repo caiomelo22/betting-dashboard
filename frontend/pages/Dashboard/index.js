@@ -210,7 +210,7 @@ export default {
                 options: this.pie_options
             });
         },
-        update_deposited_value(value) {
+        updateDepositedValue(value) {
             this.generalInfo.totalDeposited = value
             this.editDepositedValueDialog = false
         },
