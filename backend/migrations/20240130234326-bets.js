@@ -9,16 +9,29 @@ module.exports = {
                 autoIncrement: true,
                 allowNull: false,
             },
-            matchId: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                references: { model: 'matches', key: 'id' },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
-            },
             createdByEmail: {
                 type: Sequelize.STRING(50),
                 allowNull: false,
+            },
+            sport: {
+                type: Sequelize.STRING,
+                allowNull: true
+            },
+            league: {
+                type: Sequelize.STRING,
+                allowNull: true
+            },
+            teamA: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            teamB: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            eventDate: {
+                type: Sequelize.DATE,
+                allowNull: false
             },
             value: {
                 type: Sequelize.FLOAT,

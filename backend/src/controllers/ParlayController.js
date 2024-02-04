@@ -1,14 +1,14 @@
 const Bet = require('../models/Bet').Bet;
-const Match = require('../models/Match').Match;
-const Team = require('../models/Team').Team;
 const { Parlay } = require('../models/Parlay')
 const moment = require('moment');
-const { League } = require('../models/League');
 const BetService = require('../services/BetService');
 const { BetDetails } = require('../models/BetDetails');
 const express = require('express');
+const { authenticate } = require('../middleware/Auth')
 
 const router = express.Router();
+
+router.use(authenticate)
 
 router.get('/list', async (req, res) => {
     try {
@@ -19,12 +19,7 @@ router.get('/list', async (req, res) => {
         const include = {
             model: Bet,
             as: 'bets',
-            include: [{
-                model: Match, as: 'match', include: [
-                    { model: Team, as: 'homeTeam' },
-                    { model: Team, as: 'awayTeam' },
-                    { model: League, as: 'league' }]
-            }, { model: BetDetails, as: 'details' }]
+            include: [{ model: BetDetails, as: 'details' }]
         }
 
         const { count, rows } = await Parlay.findAndCountAll({
@@ -45,7 +40,7 @@ router.get('/list', async (req, res) => {
         return res.json(returnObject)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 
@@ -53,7 +48,6 @@ router.post('/create', async (req, res) => {
     let { value, odds, date, bets } = req.body;
 
     try {
-
         date = moment(date).format();
 
         const parlay = await Parlay.create({ value, odds, date, createdByEmail: req.user.email })
@@ -64,8 +58,13 @@ router.post('/create', async (req, res) => {
 
         return res.json(parlay)
     } catch (error) {
+        if (error.message == "Bet type does not exist.")
+        {
+            return res.status(400).send(error.message)
+        }
+
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 

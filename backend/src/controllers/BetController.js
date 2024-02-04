@@ -1,26 +1,31 @@
 const BetService = require('../services/BetService');
 const Bet = require('../models/Bet').Bet;
-const Match = require('../models/Match').Match;
-const Team = require('../models/Team').Team;
+const { getDistinctLeagues, getDistinctSports } = require('../database/functions')
 const moment = require('moment');
 const { Op } = require('sequelize');
-const { League } = require('../models/League');
 const { User } = require('../models/User');
 const { Parlay } = require('../models/Parlay');
 const { BetDetails } = require('../models/BetDetails');
 const express = require('express');
+const { authenticate } = require('../middleware/Auth')
 
 const router = express.Router();
 
+router.use(authenticate)
+
 router.get('/list', async (req, res) => {
     try {
-        const { page, leagueId, betType } = req.query;
+        const { page = 1, league, sport, betType } = req.query;
 
         matchConditions = {}
         betConditions = { createdByEmail: req.user.email, value: { [Op.ne]: null } }
 
-        if (leagueId) {
-            matchConditions['leagueId'] = leagueId
+        if (league) {
+            betConditions['league'] = league
+        }
+
+        if (sport) {
+            betConditions['sport'] = sport
         }
 
         if (betType) {
@@ -31,13 +36,16 @@ router.get('/list', async (req, res) => {
 
         const { count, rows } = await Bet.findAndCountAll({
             where: betConditions,
-            include: [{ model: Match, as: 'match', where: matchConditions, include: [{ model: Team, as: 'homeTeam' }, { model: Team, as: 'awayTeam' }, { model: League, as: 'league' }] },
-            { model: BetDetails, as: 'details' }],
+            include: [{ model: BetDetails, as: 'details' }],
             offset: (page - 1) * pageSize, limit: pageSize, order: [
-                [{ model: Match, as: 'match' }, 'date', 'DESC'],
+                ['eventDate', 'DESC'],
                 ['updatedAt', 'DESC'],
             ],
         });
+
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].details.details = JSON.parse(rows[i].details.details)
+        }
 
         const totalPages = Math.ceil(count / pageSize);
 
@@ -49,7 +57,7 @@ router.get('/list', async (req, res) => {
         return res.json(returnObject)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 
@@ -59,41 +67,46 @@ router.post('/create', async (req, res) => {
         return res.json(newBet)
     }
     catch (error) {
+        if (error.message == "Bet type does not exist.") {
+            return res.status(400).send(error.message)
+        }
+
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 
-router.put('/update', async (req, res) => {
-    const { id, matchId, value, odds, type, prediction, details } = req.body;
+router.put('/update/:betId', async (req, res) => {
+    const { betId } = req.params
+    const { matchId, value, odds, sport, league, teamA, teamB, eventDate, type, prediction, details } = req.body;
 
     try {
-        const findBet = await Bet.findOne({ where: { id: id }, include: { all: true } })
+        const findBet = await Bet.findOne({ where: { id: betId }, include: { all: true } })
 
         if (findBet == null) {
             return res.status(404).send("Bet not found.")
         }
 
-        await findBet.update({ matchId, value, odds });
+        await findBet.update({ matchId, value, odds, sport, league, teamA, teamB, eventDate });
 
         const detailsObj = await BetDetails.findOne({ where: { id: findBet.id } })
 
         const updatedDetails = { ...details, prediction }
 
-        await detailsObj.update({ details: updatedDetails, type })
+        await detailsObj.update({ details: JSON.stringify(updatedDetails), type })
 
         return res.sendStatus(204)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 
-router.delete('/remove', async (req, res) => {
-    const { id } = req.body;
+router.delete('/remove/:betId', async (req, res) => {
+    const { betId } = req.params;
 
     try {
-        const findBet = await Bet.findOne({ where: { id: id } })
+        const findBet = await Bet.findOne({ where: { id: betId } })
 
         if (findBet == null) {
             return res.status(404).send("Bet not found.")
@@ -104,7 +117,7 @@ router.delete('/remove', async (req, res) => {
         return res.sendStatus(204)
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 
@@ -114,12 +127,8 @@ router.get('/dashboard', async (req, res) => {
 
         const bets = await Bet.findAll({
             where: { createdByEmail: req.user.email },
-            include: [{
-                model: Match, as: 'match',
-                include: [{ model: Team, as: 'homeTeam' },
-                { model: Team, as: 'awayTeam' }, { model: League, as: 'league' }]
-            }, { model: BetDetails, as: 'details' }], order: [
-                [{ model: Match, as: 'match' }, 'date', 'ASC'],
+            include: [{ model: BetDetails, as: 'details' }], order: [
+                ['eventDate', 'ASC'],
                 ['createdAt', 'DESC'],
             ],
         });
@@ -127,12 +136,7 @@ router.get('/dashboard', async (req, res) => {
         const parlayInclude = {
             model: Bet,
             as: 'bets',
-            include: [{
-                model: Match, as: 'match', include: [
-                    { model: Team, as: 'homeTeam' },
-                    { model: Team, as: 'awayTeam' },
-                    { model: League, as: 'league' }]
-            }, { model: BetDetails, as: 'details' }]
+            include: [{ model: BetDetails, as: 'details' }]
         }
 
         const parlays = await Parlay.findAll({
@@ -143,7 +147,8 @@ router.get('/dashboard', async (req, res) => {
             ],
         });
 
-        const leagues = await League.findAll();
+        const leagues = await getDistinctLeagues();
+        const sports = await getDistinctSports();
 
         let labels = []
 
@@ -152,11 +157,27 @@ router.get('/dashboard', async (req, res) => {
             datasets: []
         }
 
-        for (let i = 0; i < leagues.length; i++) {
+        let sportChartInfo = {
+            labels: [],
+            datasets: []
+        }
+
+        let i
+        for (i = 0; i < sports.length; i++) {
+            sportChartInfo.datasets.push({
+                label: sports[i],
+                hidden: false,
+                fill: false,
+                backgroundColor: BetService.projectColors[i],
+                borderColor: BetService.projectColors[i],
+                data: []
+            })
+        }
+
+        for (i = 0; i < leagues.length; i++) {
             leagueChartInfo.datasets.push({
-                label: leagues[i].name,
-                leagueId: leagues[i].id,
-                hidden: leagues[i].inactive,
+                label: leagues[i],
+                hidden: false,
                 fill: false,
                 backgroundColor: BetService.projectColors[i],
                 borderColor: BetService.projectColors[i],
@@ -200,9 +221,9 @@ router.get('/dashboard', async (req, res) => {
 
         let profitByTeam = {}
         let proiftByOutcome = {
-            'Home': 0,
+            'Team A': 0,
             'Draw': 0,
-            'Away': 0,
+            'Team B': 0,
         }
 
         const validBets = bets.filter(x => x.value)
@@ -216,7 +237,7 @@ router.get('/dashboard', async (req, res) => {
         }
 
         for (let i = 0; i < bets.length; i++) {
-            let betDate = moment.utc(bets[i].match.date).format('DD-MM-YYYY')
+            let betDate = moment.utc(bets[i].eventDate).format('DD-MM-YYYY')
             if (labels[labels.length - 1] != betDate) {
 
                 BetService.updateBarChartColors(barChartInfo)
@@ -235,13 +256,26 @@ router.get('/dashboard', async (req, res) => {
                     leagueChartInfo.datasets[j].data.push(leagueChartInfo.datasets[j].data[leagueChartInfo.datasets[j].data.length - 1] || 0)
                 }
 
+                for (let j = 0; j < sports.length; j++) {
+                    sportChartInfo.datasets[j].data.push(sportChartInfo.datasets[j].data[sportChartInfo.datasets[j].data.length - 1] || 0)
+                }
+
                 let dateParlays = parlays.filter(x => moment(x.date).format('DD-MM-YYYY') == betDate)
                 for (let j = 0; j < dateParlays.length; j++) {
                     const parlayValue = BetService.checkBetOutcome(dateParlays[j], generalInfo, barChartInfo, chartInfo)
-                    const parlayLeagues = BetService.getParlayLeagues(dateParlays[j])
-                    if (parlayLeagues.length == 1) {
-                        const index = leagueChartInfo.datasets.map(x => x.leagueId).indexOf(parlayLeagues[0])
-                        leagueChartInfo.datasets[index].data[leagueChartInfo.datasets[index].data.length - 1] += parlayValue
+
+                    const parlaySports = BetService.getParlaySports(dateParlays[j])
+
+                    if (parlaySports.length == 1) {
+                        const index = sportChartInfo.datasets.map(x => x.leagueId).indexOf(parlaySports[0])
+                        sportChartInfo.datasets[index].data[sportChartInfo.datasets[index].data.length - 1] += parlayValue
+
+                        const parlayLeagues = BetService.getParlayLeagues(dateParlays[j])
+
+                        if (parlayLeagues.length == 1) {
+                            const index = leagueChartInfo.datasets.map(x => x.leagueId).indexOf(parlayLeagues[0])
+                            leagueChartInfo.datasets[index].data[leagueChartInfo.datasets[index].data.length - 1] += parlayValue
+                        }
                     }
                 }
             }
@@ -259,22 +293,24 @@ router.get('/dashboard', async (req, res) => {
 
                 let team
                 switch (details.prediction) {
-                    case 'Home':
-                        team = bets[i].match.homeTeam.name;
+                    case 'Team A':
+                        team = bets[i].teamA;
                         break;
-                    case 'Away':
-                        team = bets[i].match.awayTeam.name;
+                    case 'Team B':
+                        team = bets[i].teamB;
                         break;
                 }
 
                 if (!(team in profitByTeam)) profitByTeam[team] = 0
                 if (details.prediction != 'Draw') profitByTeam[team] += betOutcomeValue
-                proiftByOutcome[details] += betOutcomeValue
+                proiftByOutcome[details.prediction] += betOutcomeValue
             }
 
-            const index = leagueChartInfo.datasets.map(x => x.leagueId).indexOf(bets[i].match.leagueId)
-            leagueChartInfo.datasets[index].data[leagueChartInfo.datasets[index].data.length - 1] += betOutcomeValue
+            const leagueIndex = leagueChartInfo.datasets.map(x => x.label).indexOf(bets[i].league)
+            leagueChartInfo.datasets[leagueIndex].data[leagueChartInfo.datasets[leagueIndex].data.length - 1] += betOutcomeValue
 
+            const sportIndex = sportChartInfo.datasets.map(x => x.label).indexOf(bets[i].sport)
+            sportChartInfo.datasets[sportIndex].data[sportChartInfo.datasets[sportIndex].data.length - 1] += betOutcomeValue
         }
 
         let teamChartInfo = {
@@ -321,6 +357,7 @@ router.get('/dashboard', async (req, res) => {
 
         BetService.updateBarChartColors(barChartInfo)
 
+        sportChartInfo.labels = labels
         leagueChartInfo.labels = labels
         barChartInfo.labels = labels
         chartInfo.labels = labels
@@ -330,12 +367,17 @@ router.get('/dashboard', async (req, res) => {
             return x
         })
 
-        const data = { chartInfo, generalInfo, barChartInfo, leagueChartInfo, teamChartInfo, outcomeChartInfo }
+        sportChartInfo.datasets = sportChartInfo.datasets.map(x => {
+            x.hidden = x.data[x.data.length - 1] == 0 || x.hidden
+            return x
+        })
+
+        const data = { chartInfo, generalInfo, barChartInfo, leagueChartInfo, sportChartInfo, teamChartInfo, outcomeChartInfo }
 
         return res.json(data)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 

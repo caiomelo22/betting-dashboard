@@ -2,16 +2,29 @@ const database = require("../database/db");
 const { BetDetails } = require('./BetDetails')
 
 const Bet = database.sequelize.define("bets", {
-    matchId: {
-        type: database.Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: 'matches', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-    },
     createdByEmail: {
         type: database.Sequelize.STRING,
         allowNull: false,
+    },
+    sport: {
+        type: database.Sequelize.STRING,
+        allowNull: true
+    },
+    league: {
+        type: database.Sequelize.STRING,
+        allowNull: true
+    },
+    teamA: {
+        type: database.Sequelize.STRING,
+        allowNull: false
+    },
+    teamB: {
+        type: database.Sequelize.STRING,
+        allowNull: false
+    },
+    eventDate: {
+        type: database.Sequelize.DATE,
+        allowNull: false
     },
     value: {
         type: database.Sequelize.FLOAT,

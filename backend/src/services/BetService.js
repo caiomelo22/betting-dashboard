@@ -1,19 +1,20 @@
-const Bet = require('../models/Bet').Bet;
-const Match = require('../models/Match').Match;
+const {Bet} = require('../models/Bet');
+const {BetType} = require('../models/BetType');
 const moment = require('moment');
 const { BetDetails } = require('../models/BetDetails');
-const {User} = require('../models/User')
 
 const createBet = async (bet, userEmail) => {
-    let { leagueId, homeTeamId, awayTeamId, date, value, odds, type, prediction, details, parlayId } = bet;
+    let { date, value, odds, sport, league, teamA, teamB, eventDate, type, prediction, details, parlayId } = bet;
+
+    const bet_type = await BetType.findOne({where: {name: type}})
+    if (!bet_type)
+    {
+        throw Error("Bet type does not exist.")
+    }
 
     date = moment(date).format();
 
-    const match = await Match.findOne({ where: { leagueId, homeTeamId, awayTeamId, date } });
-
-    const matchId = match.id;
-
-    const newBet = await Bet.create({ matchId, parlayId, value, odds, type, createdByEmail: userEmail });
+    const newBet = await Bet.create({ sport, league, teamA, teamB, eventDate, parlayId, value, odds, type, createdByEmail: userEmail });
 
     const betId = newBet.id;
 
@@ -41,7 +42,7 @@ const projectColors = [
 
 const checkBetOutcome = (bet, generalInfo, barChartInfo, chartInfo) => {
     let betOutcomeValue
-    if (bet.won || bet.earlyPayout) {
+    if (bet.won || bet.details.earlyPayout) {
         generalInfo.totalGreens += 1
         betOutcomeValue = bet.value * bet.odds - bet.value
     }
@@ -60,80 +61,18 @@ const checkBetOutcome = (bet, generalInfo, barChartInfo, chartInfo) => {
 }
 
 const getParlayLeagues = (parlay) => {
-    return [...new Set(parlay.bets.map(x => x.match.league.id))]
+    return [...new Set(parlay.bets.map(x => x.league))]
 }
 
-const updateUserBets = async (userEmail) => {
-    const userBets = await Bet.findAll({
-        where: {
-            createdByEmail: userEmail,
-            won: null,
-        },
-        include: [
-            {
-                model: BetDetails,
-                required: true, // INNER JOIN
-            },
-            {
-                model: Match,
-                where: {
-                    homeScore: { [Sequelize.Op.ne]: null },
-                },
-                required: true, // INNER JOIN
-            },
-        ],
-    });
-
-    for (let i = 0; i < userBets.length; i++) {
-        details = JSON.parse(userBets[i].details.details)
-
-        if (userBets[i].details.type == 'Moneyline' && ((homeScore > awayScore && details.prediction == 'Home') ||
-            (homeScore < awayScore && details.prediction == 'Away') ||
-            ((details.includeDraw || homeScore == awayScore) && details.prediction == 'Draw'))) {
-            await userBets[i].update({ won: true })
-        }
-        else if (userBets[i].details.type == 'Total' && ((homeScore + awayScore > details.line && details.prediction == 'Over') ||
-            (homeScore + awayScore < details.line && details.prediction == 'Under'))) {
-            await userBets[i].update({ won: true })
-        }
-        else if (userBets[i].details.type == 'Total' && homeScore + awayScore == details.line) {
-            await userBets[i].update({ push: true })
-        }
-        else if (userBets[i].details.type == 'BothScore' && ((homeScore && awayScore && details.prediction) ||
-            (!homeScore && !awayScore && !details.prediction))) {
-            await userBets[i].update({ won: true })
-        }
-        else if (userBets[i].details.type == 'Spread' && ((homeScore + details.spread > awayScore && details.prediction == 'Home') ||
-            (homeScore < awayScore + details.spread && details.prediction == 'Away'))) {
-            await userBets[i].update({ won: true })
-        }
-        else {
-            await userBets[i].update({ won: false })
-        }
-
-        if (userBets[i].parlayId) {
-            let parlay = await Parlay.findOne({ where: { id: userBets[i].parlayId }, include: { model: Bet, as: 'bets', include: { model: Match, as: 'match' } } })
-
-            let won = parlay.won
-
-            if (!parlay.bets.some(x => x.match.homeScore == null)) {
-                won = false
-
-                if (!parlay.bets.some(x => !x.won)) {
-                    won = true
-                }
-
-                await parlay.update({ won })
-            }
-        }
-    }
+const getParlaySports = (parlay) => {
+    return [...new Set(parlay.bets.map(x => x.sport))]
 }
 
 module.exports = {
     updateBarChartColors,
     checkBetOutcome,
     getParlayLeagues,
-    updateUserBets,
+    getParlaySports,
     projectColors,
     createBet
 }

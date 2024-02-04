@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
         return res.json({ accessToken, refreshToken })
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 
@@ -52,7 +52,7 @@ router.post('/refresh-token', async (req, res) => {
         })
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 
@@ -76,7 +76,7 @@ router.post('/register', async (req, res) => {
         return res.json({ accessToken, refreshToken })
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 
@@ -93,7 +93,7 @@ router.post('/logout', async (req, res) => {
         return res.sendStatus(204)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ error })
+        return res.status(500).send(error.message)
     }
 })
 

@@ -13,7 +13,9 @@ const FinancialHistory = database.sequelize.define("financial_history", {
     type: database.Sequelize.ENUM('Withdraw', 'Deposit'),
     allowNull: false,
   }
-});
+}, {
+    tableName: 'financial_history'
+  });
 
 module.exports = {
     FinancialHistory
