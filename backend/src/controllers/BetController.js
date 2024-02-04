@@ -381,4 +381,33 @@ router.get('/dashboard', async (req, res) => {
     }
 })
 
+router.put('/update-outcome/:betId', async (req, res) => {
+    try {
+        const { betId } = req.params
+        const { won, push, earlyPayout } = req.body
+
+        const bet = await Bet.findOne({ where: { id: betId } })
+        const details = await BetDetails.findOne({ where: { betId } })
+
+        if (!bet) {
+            return res.status(404).send("Bet not found.")
+        }
+
+        let updateBody = {
+            won,
+            push
+        }
+
+        await bet.update(updateBody)
+
+        await details.update({ earlyPayout })
+
+        return res.sendStatus(204)
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).send(error.message)
+    }
+})
+
 module.exports = router
