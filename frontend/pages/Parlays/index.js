@@ -1,4 +1,3 @@
-import ApiService from "@/services/ApiService";
 import GeneralServices from "@/services/GeneralServices";
 import AddParlayDialog from "~/components/dialogs/AddParlay/index.vue";
 import ParlayDetailsDialog from "~/components/dialogs/ParlayDetails/index.vue";
@@ -7,7 +6,6 @@ export default {
     components: { AddParlayDialog, ParlayDetailsDialog },
     data: () => ({
         generalServices: new GeneralServices(),
-        api: new ApiService(),
         page: 1,
         totalPages: 1,
         loading: false,

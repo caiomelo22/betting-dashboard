@@ -5,63 +5,87 @@
             <v-card-text>
                 <div>
                     <span class="text-field-label">League</span>
-                    <v-select v-model="bet.leagueId" :items="leagues" item-text="name" item-value="id" outlined dense
+                    <v-select
+v-model="bet.leagueId" :items="leagues" item-text="name" item-value="id" outlined dense
                         :rules="[validationService.required(bet.leagueId)]" class="text-field"
-                        @change="league_changed" />
+                        @change="league_changed"
+/>
                 </div>
                 <div>
                     <span class="text-field-label">Home Team</span>
-                    <v-select v-model="bet.homeTeamId" :disabled="!bet.leagueId"
+                    <v-select
+v-model="bet.homeTeamId" :disabled="!bet.leagueId"
                         :items="teamOptions.filter((x) => x.id != bet.awayTeamId)" item-text="name" item-value="id"
-                        outlined dense :rules="[validationService.required(bet.homeTeamId)]" class="text-field" />
+                        outlined dense :rules="[validationService.required(bet.homeTeamId)]" class="text-field"
+/>
                 </div>
                 <div>
                     <span class="text-field-label">Away Team</span>
-                    <v-select v-model="bet.awayTeamId" :disabled="!bet.leagueId"
+                    <v-select
+v-model="bet.awayTeamId" :disabled="!bet.leagueId"
                         :items="teamOptions.filter((x) => x.id != bet.homeTeamId)" item-text="name" item-value="id"
-                        outlined dense :rules="[validationService.required(bet.awayTeamId)]" class="text-field" />
+                        outlined dense :rules="[validationService.required(bet.awayTeamId)]" class="text-field"
+/>
                 </div>
                 <div>
                     <span class="text-field-label">Match Date</span>
-                    <v-text-field v-model="bet.date" outlined dense hint="YYYY-MM-DD" :rules="[
+                    <v-text-field
+v-model="bet.date" outlined dense hint="YYYY-MM-DD" :rules="[
                       validationService.required(bet.date),
                       validationService.validDate(bet.date),
-                    ]" class="text-field" />
+                    ]" class="text-field"
+/>
                 </div>
                 <div>
-                    <NumberField field-title="Value" :field-value="bet.value" :type="numberFieldEnum.Currency"
-                        @update="(value) => (bet.value = value)" />
+                    <NumberField
+field-title="Value" :field-value="bet.value" :type="numberFieldEnum.Currency"
+                        @update="(value) => (bet.value = value)"
+/>
                 </div>
                 <div>
-                    <NumberField field-title="Odds" :field-value="bet.odds" :type="numberFieldEnum.Odds"
-                        @update="(value) => (bet.odds = value)" />
+                    <NumberField
+field-title="Odds" :field-value="bet.odds" :type="numberFieldEnum.Odds"
+                        @update="(value) => (bet.odds = value)"
+/>
                 </div>
                 <div>
                     <span class="text-field-label">Bet Type</span>
-                    <v-select v-model="bet.type" :items="betTypeOptions" outlined dense
-                        :rules="[validationService.required(bet.type)]" class="text-field" />
+                    <v-select
+v-model="bet.type" :items="betTypeOptions" outlined dense
+                        :rules="[validationService.required(bet.type)]" class="text-field"
+/>
                 </div>
                 <div v-if="bet.type != 'Total'">
                     <span class="text-field-label">Prediction</span>
-                    <v-select v-if="bet.type == 'Moneyline' || bet.type == 'Spread'" v-model="winnerPrediction" :items="get_winner_options()"
+                    <v-select
+v-if="bet.type == 'Moneyline' || bet.type == 'Spread'" v-model="winnerPrediction" :items="get_winner_options()"
                         item-text="name" item-value="id" outlined dense
                         :rules="[validationService.required(winnerPrediction)]" class="text-field"
-                        @change="winner_prediction_changed" />
-                    <v-select v-else-if="bet.type == 'BothScore'" v-model="bet.prediction"
+                        @change="winner_prediction_changed"
+/>
+                    <v-select
+v-else-if="bet.type == 'BothScore'" v-model="bet.prediction"
                         :items="bothScorePredictionOptions" outlined dense
-                        :rules="[validationService.required(bet.prediction)]" class="text-field" />
-                    <NumberField v-if="bet.type == 'Spread'" field-title="Spread" :type="numberFieldEnum.Line" :field-value="bet.spread"
-                        @update="(value) => (bet.spread = value)" />
+                        :rules="[validationService.required(bet.prediction)]" class="text-field"
+/>
+                    <NumberField
+v-if="bet.type == 'Spread'" field-title="Spread" :type="numberFieldEnum.Line" :field-value="bet.spread"
+                        @update="(value) => (bet.spread = value)"
+/>
                 </div>
                 <div v-else-if="bet.type == 'Total'">
                     <div>
-                        <NumberField field-title="Line" :type="numberFieldEnum.Line" :field-value="bet.line"
-                            @update="(value) => (bet.line = value)" />
+                        <NumberField
+field-title="Line" :type="numberFieldEnum.Line" :field-value="bet.line"
+                            @update="(value) => (bet.line = value)"
+/>
                     </div>
                     <div>
                         <span class="text-field-label">Prediction</span>
-                        <v-select v-model="bet.prediction" :items="total_prediction_options" outlined dense
-                            :rules="[validationService.required(bet.prediction)]" class="text-field" />
+                        <v-select
+v-model="bet.prediction" :items="total_prediction_options" outlined dense
+                            :rules="[validationService.required(bet.prediction)]" class="text-field"
+/>
                     </div>
                 </div>
             </v-card-text>

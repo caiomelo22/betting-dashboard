@@ -74,6 +74,7 @@ export default {
         '@nuxtjs/axios',
         '@nuxtjs/vuetify',
         "vue-toastification/nuxt",
+        'cookie-universal-nuxt',
     ],
 
     toast: {

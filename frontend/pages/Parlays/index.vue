@@ -35,10 +35,14 @@
                                 </v-btn>
                             </td>
                             <td>
-                                <font-awesome-icon v-if="!parlay.finished" :icon="['fa', 'arrows-rotate']"
-                                    style="color: #9FC9F3" />
-                                <font-awesome-icon v-else-if="parlay.won" :icon="['fa', 'check']"
-                                    style="color: green" />
+                                <font-awesome-icon
+v-if="!parlay.finished" :icon="['fa', 'arrows-rotate']"
+                                    style="color: #9FC9F3"
+/>
+                                <font-awesome-icon
+v-else-if="parlay.won" :icon="['fa', 'check']"
+                                    style="color: green"
+/>
                                 <font-awesome-icon v-else :icon="['fa', 'xmark']" style="color: red" />
                             </td>
                             <td>
@@ -48,8 +52,10 @@
                     </tbody>
                 </table>
             </div>
-            <v-pagination v-model="page" color="#41b883" :length="totalPages" style="margin-top: 16px"
-                @input="change_page">
+            <v-pagination
+v-model="page" color="#41b883" :length="totalPages" style="margin-top: 16px"
+                @input="change_page"
+>
             </v-pagination>
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">

@@ -1,4 +1,3 @@
-import ApiService from "@/services/ApiService";
 import GeneralServices from "@/services/GeneralServices";
 import AddBetDialog from "~/components/dialogs/AddBet/index.vue";
 import { betTypeOptions } from "~/shared/enums/BetTypeOptions";
@@ -8,7 +7,6 @@ export default {
     components: { AddBetDialog },
     data: () => ({
         generalServices: new GeneralServices(),
-        api: new ApiService(),
         page: 1,
         totalPages: 1,
         loading: false,

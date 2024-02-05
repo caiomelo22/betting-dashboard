@@ -26,8 +26,10 @@
                     </tbody>
                 </table>
             </div>
-            <v-pagination v-model="page" color="#41b883" :length="totalPages" style="margin-top: 16px"
-                @input="change_page">
+            <v-pagination
+v-model="page" color="#41b883" :length="totalPages" style="margin-top: 16px"
+                @input="change_page"
+>
             </v-pagination>
         </div>
         <v-row v-else>

@@ -38,11 +38,15 @@
                             {{ bet.odds }}
                         </td>
                         <td>
-                            <font-awesome-icon v-if="bet.match.homeScore == null" :icon="['fa', 'arrows-rotate']"
-                                style="color: #9FC9F3" />
+                            <font-awesome-icon
+v-if="bet.match.homeScore == null" :icon="['fa', 'arrows-rotate']"
+                                style="color: #9FC9F3"
+/>
                             <font-awesome-icon v-else-if="bet.push" :icon="['fa', 'minus']" style="color: #FF6E31" />
-                            <font-awesome-icon v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
-                                style="color: green" />
+                            <font-awesome-icon
+v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
+                                style="color: green"
+/>
                             <font-awesome-icon v-else :icon="['fa', 'xmark']" style="color: red" />
                         </td>
                     </tr>

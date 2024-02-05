@@ -5,7 +5,8 @@
                 <div class="general-info">
                     <p class="dashboard-info-title">Red/Green Ratio</p>
                     <p class="dashboard-info-value" :style="`color: ${$vuetify.theme.dark?'white':'black'}`"><span
-                            style="color: #990000">{{ generalInfo.totalReds
+                            style="color: #990000"
+>{{ generalInfo.totalReds
                             }}</span>:<span style="color: green">{{ generalInfo.totalGreens }}</span></p>
                 </div>
             </v-col>
@@ -116,9 +117,11 @@
                 <canvas id="teamChart" width="400" height="400"></canvas>
             </div>
         </div>
-        <v-dialog v-model="editDepositedValueDialog" v-if="editDepositedValueDialog" width="700px" max-width="100%">
-            <EditDepositedValueDialog :deposited-value-prop="generalInfo.totalDeposited"
-                @update="updateDepositedValue" @close="editDepositedValueDialog = false" />
+        <v-dialog v-if="editDepositedValueDialog" v-model="editDepositedValueDialog" width="700px" max-width="100%">
+            <EditDepositedValueDialog
+:deposited-value-prop="generalInfo.totalDeposited"
+                @update="updateDepositedValue" @close="editDepositedValueDialog = false"
+/>
         </v-dialog>
     </div>
 </template>

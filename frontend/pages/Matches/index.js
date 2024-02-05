@@ -1,4 +1,3 @@
-import ApiService from "@/services/ApiService";
 import GeneralServices from "@/services/GeneralServices";
 import UpdateMatchDialog from "~/components/dialogs/UpdateMatch/index.vue";
 export default {
@@ -6,7 +5,6 @@ export default {
   components: { UpdateMatchDialog },
   data: () => ({
     generalServices: new GeneralServices(),
-    api: new ApiService(),
     page: 1,
     totalPages: 1,
     loading: false,

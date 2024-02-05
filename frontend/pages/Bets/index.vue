@@ -5,10 +5,14 @@
         </div>
         <div v-else>
             <div class="row">
-                <v-select label="League" hide-details v-model="league_filter" :items="league_filter_options" outlined
-                    dense class="text-field select-field mr-4" @change="get_bets()" />
-                <v-select label="Bet Type" hide-details v-model="bet_type_filter" :items="bet_type_filter_options"
-                    outlined dense class="text-field select-field mr-4" @change="get_bets()" />
+                <v-select
+v-model="league_filter" label="League" hide-details :items="league_filter_options" outlined
+                    dense class="text-field select-field mr-4" @change="get_bets()"
+/>
+                <v-select
+v-model="bet_type_filter" label="Bet Type" hide-details :items="bet_type_filter_options"
+                    outlined dense class="text-field select-field mr-4" @change="get_bets()"
+/>
                 <v-btn color="#41b883" dark @click="dialog = true">
                     <font-awesome-icon :icon="['fa', 'plus']" style="color: white; margin-right: 8px" />
                     Add Bet
@@ -48,11 +52,15 @@
                                 {{ bet.odds }}
                             </td>
                             <td>
-                                <font-awesome-icon v-if="bet.match.homeScore == null"
-                                    :icon="['fa', 'arrows-rotate']" style="color: #9FC9F3" />
+                                <font-awesome-icon
+v-if="bet.match.homeScore == null"
+                                    :icon="['fa', 'arrows-rotate']" style="color: #9FC9F3"
+/>
                                 <font-awesome-icon v-else-if="bet.push" :icon="['fa', 'minus']" style="color: #FF6E31" />
-                                <font-awesome-icon v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
-                                    style="color: green" />
+                                <font-awesome-icon
+v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
+                                    style="color: green"
+/>
                                 <font-awesome-icon v-else :icon="['fa', 'xmark']" style="color: red" />
                             </td>
                             <td>
@@ -62,8 +70,10 @@
                     </tbody>
                 </table>
             </div>
-            <v-pagination v-model="page" color="#41b883" :length="totalPages" style="margin-top: 16px"
-                @input="change_page">
+            <v-pagination
+v-model="page" color="#41b883" :length="totalPages" style="margin-top: 16px"
+                @input="change_page"
+>
             </v-pagination>
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
