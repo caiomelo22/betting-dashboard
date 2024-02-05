@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { Op } = require('sequelize');
 const bcrypt = require("bcryptjs")
 const { User } = require("../models/User")
 const { generateAccessToken, generateLoginTokens } = require('../services/AuthService')
@@ -9,9 +10,16 @@ const router = express.Router();
 
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body
+        const { username, password } = req.body
 
-        const user = await User.findOne({ where: { email } })
+        const user = await User.findOne({
+            where: {
+                [Op.or]: [
+                    { username: username },
+                    { email: username }
+                ]
+            }
+        })
         if (!user) {
             return res.status(404).send("User not found.")
         }
@@ -58,16 +66,24 @@ router.post('/refresh-token', async (req, res) => {
 
 router.post('/register', async (req, res) => {
     try {
-        const { email, name, password } = req.body
+        const { email, username, password } = req.body
 
-        const existingUser = await User.findOne({ where: { email } })
-        if (existingUser) {
+        const existingUser = await User.findOne({ where: {
+            [Op.or]: [
+                { username },
+                { email }
+            ]
+        } })
+        if (existingUser?.username == username) {
+            return res.status(400).send("There is already an user with this username.")
+        }
+        else if (existingUser?.email == email) {
             return res.status(400).send("There is already an user with this email.")
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        const user = await User.create({ email, name, password: hashedPassword })
+        const user = await User.create({ email, username, password: hashedPassword })
 
         const { accessToken, refreshToken } = generateLoginTokens({ email: user.email })
 

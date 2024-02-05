@@ -2,7 +2,7 @@ const database = require("../database/db");
 const {Bet} = require('./Bet');
 
 const User = database.sequelize.define("users", {
-  name: {
+  username: {
     type: database.Sequelize.STRING,
     allowNull: false,
   },
