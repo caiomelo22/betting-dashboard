@@ -86,9 +86,6 @@ export default {
       await this.$axios.post(`bet/create`, this.bet)
         .then((resp) => {
           this.$emit('added')
-        })
-        .catch((err) => {
-          this.$toast.error(err.message)
         });
       this.loading = false
     }

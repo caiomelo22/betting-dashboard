@@ -84,9 +84,6 @@ export default {
             await this.$axios.get(`league/list`)
                 .then((resp) => {
                     this.leagues = resp.data
-                })
-                .catch((err) => {
-                    this.$toast.error(err.message)
                 });
         },
         async get_bets() {
@@ -96,9 +93,6 @@ export default {
                 .then((resp) => {
                     this.bets = resp.data.bets
                     this.totalPages = resp.data.totalPages
-                })
-                .catch((err) => {
-                    this.$toast.error(err.message)
                 });
             this.loading = false
         }

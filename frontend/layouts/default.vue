@@ -12,6 +12,14 @@ export default {
   components: {
     Footer,
     NavBar
+  },
+  created() {
+    const accessToken = this.$cookies.get('accessToken')
+    const refreshToken = this.$cookies.get('refreshToken')
+
+    this.$store.commit('setTokens', { accessToken, refreshToken });
+
+    return { accessToken, refreshToken }
   }
 };
 </script>

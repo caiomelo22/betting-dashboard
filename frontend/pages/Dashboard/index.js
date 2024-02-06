@@ -223,9 +223,6 @@ export default {
                     this.leagueChartInfo = resp.data.leagueChartInfo
                     this.teamChartInfo = resp.data.teamChartInfo
                     this.outcomeChartInfo = resp.data.outcomeChartInfo
-                })
-                .catch((err) => {
-                    this.$toast.error(err.message)
                 });
         }
     }

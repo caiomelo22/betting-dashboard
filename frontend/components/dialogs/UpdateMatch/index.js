@@ -25,9 +25,6 @@ export default {
       await this.$axios.put(`match/update`, this.match)
         .then((resp) => {
           this.$emit('updated')
-        })
-        .catch((err) => {
-          this.$toast.error(err.message)
         });
       this.loading = false
     }

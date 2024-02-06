@@ -23,7 +23,8 @@ export default {
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
     plugins: [
-        { src: '~/plugins/chartJsZoom.js', mode: 'client' }
+        { src: '~/plugins/chartJsZoom.js', mode: 'client' },
+        { src: '~/plugins/axios.js' }
     ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components

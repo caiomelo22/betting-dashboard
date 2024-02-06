@@ -140,9 +140,6 @@ export default {
             await this.$axios.post(`parlay/create`, this.parlay)
                 .then((resp) => {
                     this.$emit('added')
-                })
-                .catch((err) => {
-                    this.$toast.error(err.message)
                 });
             this.loading = false
         }

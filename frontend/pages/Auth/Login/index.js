@@ -3,22 +3,20 @@ export default {
     data: () => ({
         loading: false,
         username: '',
-        email: '',
         password: '',
     }),
     computed: {
     },
     created() {
-        this.$store.commit('clearTokens')
+        // this.$store.commit('clearTokens')
     },
     methods: {
         async registerUser() {
             try {
                 this.loading = true;
 
-                const response = await this.$axios.post('/auth/register', {
+                const response = await this.$axios.post('/auth/login', {
                     username: this.username,
-                    email: this.email,
                     password: this.password,
                 });
 
@@ -31,7 +29,6 @@ export default {
                 this.loading = false;
             } catch (error) {
                 this.username = ''
-                this.email = ''
                 this.password = ''
             }
         },

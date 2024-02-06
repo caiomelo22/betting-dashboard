@@ -47,9 +47,6 @@ export default {
         .then((resp) => {
           this.matches = resp.data.matches
           this.totalPages = resp.data.totalPages
-        })
-        .catch((err) => {
-          this.$toast.error(err.message)
         });
       this.loading = false
     }
