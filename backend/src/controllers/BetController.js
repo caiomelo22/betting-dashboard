@@ -1,6 +1,6 @@
 const BetService = require('../services/BetService');
 const Bet = require('../models/Bet').Bet;
-const { getDistinctLeagues, getDistinctSports } = require('../database/functions')
+const { getUserDistinctLeagues, getUserDistinctSports, getUserSportsChain } = require('../database/functions')
 const moment = require('moment');
 const { Op } = require('sequelize');
 const { User } = require('../models/User');
@@ -17,8 +17,8 @@ router.get('/list', async (req, res) => {
     try {
         const { page = 1, league, sport, betType } = req.query;
 
-        matchConditions = {}
         betConditions = { createdByEmail: req.user.email, value: { [Op.ne]: null } }
+        detailsConditions = {}
 
         if (league) {
             betConditions['league'] = league
@@ -29,14 +29,14 @@ router.get('/list', async (req, res) => {
         }
 
         if (betType) {
-            betConditions['type'] = betType
+            detailsConditions['type'] = betType
         }
 
-        const pageSize = 15
+        const pageSize = 20
 
         const { count, rows } = await Bet.findAndCountAll({
             where: betConditions,
-            include: [{ model: BetDetails, as: 'details' }],
+            include: [{ model: BetDetails, as: 'details', where: detailsConditions }],
             offset: (page - 1) * pageSize, limit: pageSize, order: [
                 ['eventDate', 'DESC'],
                 ['updatedAt', 'DESC'],
@@ -147,8 +147,8 @@ router.get('/dashboard', async (req, res) => {
             ],
         });
 
-        const leagues = await getDistinctLeagues();
-        const sports = await getDistinctSports();
+        const leagues = await getUserDistinctLeagues(req.user.email);
+        const sports = await getUserDistinctSports(req.user.email);
 
         let labels = []
 
@@ -221,9 +221,9 @@ router.get('/dashboard', async (req, res) => {
 
         let profitByTeam = {}
         let proiftByOutcome = {
-            'Team A': 0,
+            'A': 0,
             'Draw': 0,
-            'Team B': 0,
+            'B': 0,
         }
 
         const validBets = bets.filter(x => x.value)
@@ -264,13 +264,13 @@ router.get('/dashboard', async (req, res) => {
                 for (let j = 0; j < dateParlays.length; j++) {
                     const parlayValue = BetService.checkBetOutcome(dateParlays[j], generalInfo, barChartInfo, chartInfo)
 
-                    const parlaySports = BetService.getParlaySports(dateParlays[j])
+                    const parlaySports = BetService.getBetsSports(dateParlays[j].bets)
 
                     if (parlaySports.length == 1) {
                         const index = sportChartInfo.datasets.map(x => x.leagueId).indexOf(parlaySports[0])
                         sportChartInfo.datasets[index].data[sportChartInfo.datasets[index].data.length - 1] += parlayValue
 
-                        const parlayLeagues = BetService.getParlayLeagues(dateParlays[j])
+                        const parlayLeagues = BetService.getBetsLeagues(dateParlays[j].bets)
 
                         if (parlayLeagues.length == 1) {
                             const index = leagueChartInfo.datasets.map(x => x.leagueId).indexOf(parlayLeagues[0])
@@ -293,10 +293,10 @@ router.get('/dashboard', async (req, res) => {
 
                 let team
                 switch (details.prediction) {
-                    case 'Team A':
+                    case 'A':
                         team = bets[i].teamA;
                         break;
-                    case 'Team B':
+                    case 'B':
                         team = bets[i].teamB;
                         break;
                 }
@@ -403,6 +403,30 @@ router.put('/update-outcome/:betId', async (req, res) => {
         await details.update({ earlyPayout })
 
         return res.sendStatus(204)
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).send(error.message)
+    }
+})
+
+router.get('/leagues/list', async (req, res) => {
+    try {
+        const data = await getUserDistinctLeagues(req.user.email)
+
+        return res.json(data)
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).send(error.message)
+    }
+})
+
+router.get('/sports-chain', async (req, res) => {
+    try {
+        const data = await getUserSportsChain(req.user.email)
+
+        return res.json(data)
     }
     catch (error) {
         console.log(error)

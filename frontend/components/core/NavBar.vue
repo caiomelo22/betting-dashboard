@@ -2,16 +2,37 @@
     <div id="nav">
         <nuxt-link :class="{ active: $route.path == '/dashboard' }" to="/dashboard">Dashboard</nuxt-link>
         <nuxt-link :class="{ active: $route.path == '/bets' }" to="/bets">Bets</nuxt-link>
-        <nuxt-link :class="{ active: $route.path == '/parlays' }" to="/parlays" style="margin-right: 8px">Parlays</nuxt-link>
-        <nuxt-link :class="{ active: $route.path == '/matches' }" to="/matches" style="margin-right: 8px">Matches</nuxt-link>
+        <nuxt-link
+:class="{ active: $route.path == '/parlays' }" to="/parlays"
+            style="margin-right: 8px"
+>Parlays</nuxt-link>
 
         <font-awesome-icon
-v-if="$vuetify.theme.dark" :icon="['fa', 'sun']"
-            style="color: #41b883" @click="$vuetify.theme.dark = false"
+v-if="$vuetify.theme.dark" :icon="['fa', 'sun']" style="color: #41b883; cursor: pointer"
+            @click="toggleTheme(false)"
 />
-        <font-awesome-icon v-else :icon="['fa', 'moon']" style="color: #41b883" @click="$vuetify.theme.dark = true" />
+        <font-awesome-icon
+v-else :icon="['fa', 'moon']" style="color: #41b883; cursor: pointer"
+            @click="toggleTheme(true)"
+/>
     </div>
 </template>
+
+<script>
+export default {
+    mounted() {
+        const isDark = localStorage.getItem('theme.dark') == "true"
+        this.$vuetify.theme.dark = isDark
+    },
+    methods: {
+        toggleTheme(isDark) {
+            this.$vuetify.theme.dark = isDark;
+            // Save the theme preference in localStorage
+            localStorage.setItem('theme.dark', isDark);
+        }
+    }
+}
+</script>
 
 <style scoped>
 #nav {

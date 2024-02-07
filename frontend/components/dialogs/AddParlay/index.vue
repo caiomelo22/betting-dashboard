@@ -38,7 +38,7 @@ field-title="Odds" :field-value="parlay.odds" :type="numberFieldEnum.Odds"
                                     {{ `${b.homeTeam.name} x ${b.awayTeam.name}` }}
                                 </td>
                                 <td>
-                                    {{ get_bet_prediction(b) }}
+                                    {{ getBetPrediction(b) }}
                                 </td>
                                 <td>
                                     <v-icon color="#41b883" @click="edit_bet_click(b, i)">mdi-pencil</v-icon>

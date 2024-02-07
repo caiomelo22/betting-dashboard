@@ -1,7 +1,6 @@
 import NumberField from "~/components/textFields/NumberField/index.vue";
 import ValidationService from "~/services/ValidationService";
 import { NumberFieldEnum } from "~/shared/enums/NumberFieldEnum";
-import { betTypeOptions } from "~/shared/enums/BetTypeOptions";
 import { bothScorePredictionOptions } from "~/shared/enums/BothScorePredictionOptions";
 export default {
     name: 'AddParlayDialog',
@@ -23,7 +22,6 @@ export default {
             bets: []
         },
         bothScorePredictionOptions,
-        betTypeOptions,
         loading: false,
         winnerPrediction: null,
         editIndex: null,
@@ -32,7 +30,8 @@ export default {
         numberFieldEnum: NumberFieldEnum
     }),
     props: {
-        leagues: Array
+        leagues: Array,
+        betTypeOptions: Array
     },
     created() {
         this.parlay.date = this.$moment().format('YYYY-MM-DD')
@@ -43,7 +42,7 @@ export default {
         }
     },
     methods: {
-        get_bet_prediction (bet) {
+        getBetPrediction (bet) {
             switch (bet.type) {
                 case 'Moneyline':
                     return bet.prediction;

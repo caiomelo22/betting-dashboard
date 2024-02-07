@@ -1,20 +1,16 @@
-const {Bet} = require('../models/Bet');
-const {BetType} = require('../models/BetType');
-const moment = require('moment');
+const { Bet } = require('../models/Bet');
+const { BetType } = require('../models/BetType');
 const { BetDetails } = require('../models/BetDetails');
 
 const createBet = async (bet, userEmail) => {
-    let { date, value, odds, sport, league, teamA, teamB, eventDate, type, prediction, details, parlayId } = bet;
+    let { value, odds, sport, league, teamA, teamB, eventDate, type, prediction, details, parlayId, won } = bet;
 
-    const bet_type = await BetType.findOne({where: {name: type}})
-    if (!bet_type)
-    {
+    const bet_type = await BetType.findOne({ where: { name: type } })
+    if (!bet_type) {
         throw Error("Bet type does not exist.")
     }
 
-    date = moment(date).format();
-
-    const newBet = await Bet.create({ sport, league, teamA, teamB, eventDate, parlayId, value, odds, type, createdByEmail: userEmail });
+    const newBet = await Bet.create({ sport, league, teamA, teamB, eventDate, parlayId, value, odds, type, won, createdByEmail: userEmail });
 
     const betId = newBet.id;
 
@@ -42,6 +38,7 @@ const projectColors = [
 
 const checkBetOutcome = (bet, generalInfo, barChartInfo, chartInfo) => {
     let betOutcomeValue
+
     if (bet.won || bet.details.earlyPayout) {
         generalInfo.totalGreens += 1
         betOutcomeValue = bet.value * bet.odds - bet.value
@@ -60,19 +57,9 @@ const checkBetOutcome = (bet, generalInfo, barChartInfo, chartInfo) => {
     return betOutcomeValue
 }
 
-const getParlayLeagues = (parlay) => {
-    return [...new Set(parlay.bets.map(x => x.league))]
-}
-
-const getParlaySports = (parlay) => {
-    return [...new Set(parlay.bets.map(x => x.sport))]
-}
-
 module.exports = {
     updateBarChartColors,
     checkBetOutcome,
-    getParlayLeagues,
-    getParlaySports,
     projectColors,
     createBet
 }

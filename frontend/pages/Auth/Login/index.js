@@ -8,7 +8,7 @@ export default {
     computed: {
     },
     created() {
-        // this.$store.commit('clearTokens')
+        this.$store.commit('clearTokens')
     },
     methods: {
         async registerUser() {

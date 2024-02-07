@@ -15,7 +15,7 @@
                 <tbody>
                     <tr v-for="(bet, i) in parlay.bets" :key="i">
                         <td>
-                            {{ generalServices.format_date(bet.match.date) }}
+                            {{ generalServices.formatDate(bet.match.date) }}
                         </td>
                         <td>
                             {{
@@ -32,7 +32,7 @@
                             {{ bet.type }}
                         </td>
                         <td>
-                            {{ get_bet_prediction(bet) }}
+                            {{ getBetPrediction(bet) }}
                         </td>
                         <td>
                             {{ bet.odds }}

@@ -18,13 +18,13 @@
                     <tbody>
                         <tr v-for="(parlay, i) in parlays" :key="i">
                             <td>
-                                {{ generalServices.format_date(parlay.date) }}
+                                {{ generalServices.formatDate(parlay.date) }}
                             </td>
                             <td>
                                 {{ get_league(parlay) }}
                             </td>
                             <td>
-                                {{ generalServices.format_value(parlay.value) }}
+                                {{ generalServices.formatValue(parlay.value) }}
                             </td>
                             <td>
                                 {{ parlay.odds }}

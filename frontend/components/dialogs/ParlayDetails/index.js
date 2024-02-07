@@ -1,5 +1,5 @@
 import GeneralServices from "~/services/GeneralServices"
-import { get_bet_prediction } from "~/shared/functions/GetBetPrediction";
+import { getBetPrediction } from "~/shared/functions/GetBetPrediction";
 export default {
     name: 'ParlayDetailsDialog',
     props: {
@@ -16,6 +16,6 @@ export default {
         generalServices: new GeneralServices()
     }),
     methods: {
-        get_bet_prediction
+        getBetPrediction
     }
 }

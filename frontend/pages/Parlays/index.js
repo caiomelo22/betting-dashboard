@@ -53,7 +53,7 @@ export default {
             } else {
                 profit -= parlay.value
             }
-            return this.generalServices.format_value(profit)
+            return this.generalServices.formatValue(profit)
         },
         async parlay_added() {
             this.dialog = false

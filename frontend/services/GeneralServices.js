@@ -1,7 +1,7 @@
 import moment from "moment";
 
 export default class GeneralServices {
-    format_value(value) {
+    formatValue(value) {
         if (value == null) {
             return '-'
         }
@@ -12,7 +12,7 @@ export default class GeneralServices {
         return formatter.format(value);
     }
 
-    format_date(dateText) {
+    formatDate(dateText) {
         // Removing the 'Z' to ignore timezones
         return moment(dateText.replace('Z', '')).format('DD-MM-YYYY');
     }

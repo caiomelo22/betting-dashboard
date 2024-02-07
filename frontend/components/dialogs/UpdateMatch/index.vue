@@ -14,7 +14,7 @@
             <div>
               <p class="text-field-label">Match Date</p>
               <p class="text-field-value">{{
-                generalServices.format_date(match.date)
+                generalServices.formatDate(match.date)
               }}</p>
             </div>
           </v-col>

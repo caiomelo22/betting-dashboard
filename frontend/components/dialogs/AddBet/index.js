@@ -1,7 +1,6 @@
 import NumberField from "~/components/textFields/NumberField/index.vue";
 import ValidationService from "~/services/ValidationService";
 import { NumberFieldEnum } from "~/shared/enums/NumberFieldEnum";
-import { betTypeOptions } from "~/shared/enums/BetTypeOptions";
 import { bothScorePredictionOptions } from "~/shared/enums/BothScorePredictionOptions";
 export default {
   name: 'AddBetDialog',
@@ -29,14 +28,14 @@ export default {
       line: null
     },
     bothScorePredictionOptions,
-    betTypeOptions,
     loading: false,
     winnerPrediction: null,
     teamOptions: [],
     numberFieldEnum: NumberFieldEnum
   }),
   props: {
-    leagues: Array
+    leagues: Array,
+    betTypeOptions: Array
   },
   created() {
     this.bet.date = this.$moment().format('YYYY-MM-DD')

@@ -46,7 +46,7 @@
                     <v-row align="center" no-gutters>
                         <div>
                             <p class="dashboard-info-title">Deposited Value</p>
-                            <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalDeposited)
+                            <p class="dashboard-info-value">{{ generalServices.formatValue(generalInfo.totalDeposited)
                             }}</p>
                         </div>
                         <v-spacer />
@@ -57,13 +57,13 @@
             <v-col cols="12" md="4">
                 <div class="general-info">
                     <p class="dashboard-info-title">Total Bet</p>
-                    <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalBet) }}</p>
+                    <p class="dashboard-info-value">{{ generalServices.formatValue(generalInfo.totalBet) }}</p>
                 </div>
             </v-col>
             <v-col cols="12" md="4">
                 <div class="general-info">
                     <p class="dashboard-info-title">Net Gains</p>
-                    <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalProfit) }}</p>
+                    <p class="dashboard-info-value">{{ generalServices.formatValue(generalInfo.totalProfit) }}</p>
                 </div>
             </v-col>
         </v-row>
