@@ -5,7 +5,7 @@ const { BetDetails } = require('../models/BetDetails');
 const createBet = async (bet, userEmail) => {
     let { value, odds, sport, league, teamA, teamB, eventDate, type, prediction, details, parlayId, won } = bet;
 
-    details = JSON.parse(details)
+    details = details ? JSON.parse(details) : {}
 
     const bet_type = await BetType.findOne({ where: { name: type } })
     if (!bet_type) {
