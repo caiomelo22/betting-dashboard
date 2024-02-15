@@ -27,8 +27,8 @@ export default {
             prediction: null,
             details: {}
         },
-        sport: null,
-        league: null,
+        selectedSport: null,
+        selectedLeague: null,
         bothScorePredictionOptions,
         loading: false,
         winnerPrediction: null,
@@ -44,7 +44,8 @@ export default {
         this.bet.eventDate = this.$moment().format('YYYY-MM-DD')
 
         if (this.sportsChain.length === 1) {
-            this.sport = this.sportsChain[0]
+            this.selectedSport = this.sportsChain[0]
+            this.bet.sport = this.selectedSport.name
             this.sport_changed()
         }
     },
@@ -79,7 +80,7 @@ export default {
             }
         },
         get_winner_options() {
-            if (!this.league || !this.bet.teamA || !this.bet.teamB) {
+            if (!this.bet.league || !this.bet.teamA || !this.bet.teamB) {
                 return []
             }
             return [
@@ -88,12 +89,21 @@ export default {
                 'Draw',
             ]
         },
-        sport_changed(sport) {
-            this.leagueOptions = sport.leagues;
-            if (this.leagueOptions.length == 1) {
-                this.league = this.leagueOptions[0]
+        sport_changed() {
+            this.league = null
+            this.leagueOptions = []
+
+            const sportIndex = this.sportsChain.map(x => x.name).indexOf(this.bet.sport)
+
+            if (sportIndex != -1) {
+                this.selectedSport = this.sportsChain[sportIndex]
+
+                this.leagueOptions = this.selectedSport.leagues;
+                if (this.leagueOptions.length == 1) {
+                    this.bet.league = this.leagueOptions[0].name
+                }
             } else {
-                this.league = null
+                this.selectedSport = null
             }
 
             this.league_changed()
@@ -101,10 +111,16 @@ export default {
         league_changed() {
             this.bet.teamA = null
             this.bet.teamB = null
-
             this.teamOptions = []
-            if (this.league) {
-                this.teamOptions = this.league.teams;
+
+            if (this.leagueOptions) {
+                const leagueIndex = this.leagueOptions.map(x => x.name).indexOf(this.bet.league)
+
+                if (leagueIndex != -1) {
+                    this.selectedLeague = this.leagueOptions[leagueIndex]
+
+                    this.teamOptions = this.selectedLeague.teams;
+                }
             }
         },
         async submit() {
@@ -113,9 +129,6 @@ export default {
                 return;
             }
             this.loading = true
-
-            this.bet.sport = this.sport.name
-            this.bet.league = this.league.name
 
             await this.$axios.post(`bet/create`,
                 { ...this.bet, details: JSON.stringify(this.bet.details) })

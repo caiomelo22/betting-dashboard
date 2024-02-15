@@ -72,10 +72,13 @@ export default {
         }
         await this.getBetTypeOptions()
         await this.getBets();
-        await this.getSportsChain();
-        await this.getLeagues();
+        await this.reloadAssets()
     },
     methods: {
+        async reloadAssets() {
+            await this.getSportsChain();
+            await this.getLeagues();
+        },
         async getBetTypeOptions() {
             await this.$axios.get(`bet-type/list`)
                 .then((resp) => {
@@ -101,6 +104,7 @@ export default {
         async betAdded() {
             this.dialog = false
             await this.getBets()
+            await this.reloadAssets()
         },
         changePage() {
             this.$router.replace({

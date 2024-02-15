@@ -5,22 +5,23 @@
             <v-card-text>
                 <div>
                     <span class="text-field-label">Sport</span>
-                    <v-select v-model="sport" :items="sportsChain" item-text="name" return-object outlined dense
-                        :rules="[validationService.required(sport)]" class="text-field" @change="sport_changed" />
+                    <v-combobox v-model="bet.sport" :items="sportsChain" :return-object="false" item-text="name" item-value="name" outlined dense
+                        :rules="[validationService.required(bet.sport)]" class="text-field" @change="sport_changed" />
                 </div>
                 <div>
                     <span class="text-field-label">League</span>
-                    <v-select v-model="league" :items="leagueOptions" item-text="name" return-object outlined dense
-                        :rules="[validationService.required(league)]" class="text-field" @change="league_changed" />
+                    <v-combobox v-model="bet.league" :items="leagueOptions" :return-object="false" item-text="name" item-value="name" outlined
+                        dense :rules="[validationService.required(bet.league)]" class="text-field"
+                        @change="league_changed" />
                 </div>
                 <div>
                     <span class="text-field-label">Team A</span>
-                    <v-select v-model="bet.teamA" :items="teamOptions.filter((x) => x != bet.teamB)" outlined dense
+                    <v-combobox v-model="bet.teamA" :items="teamOptions.filter((x) => x != bet.teamB)" outlined dense
                         :rules="[validationService.required(bet.teamA)]" class="text-field" />
                 </div>
                 <div>
                     <span class="text-field-label">Team B</span>
-                    <v-select v-model="bet.teamB" :items="teamOptions.filter((x) => x != bet.teamA)" outlined dense
+                    <v-combobox v-model="bet.teamB" :items="teamOptions.filter((x) => x != bet.teamA)" outlined dense
                         :rules="[validationService.required(bet.teamB)]" class="text-field" />
                 </div>
                 <div>

@@ -222,8 +222,8 @@ router.get('/dashboard', async (req, res) => {
         let profitByTeam = {}
         let proiftByOutcome = {
             'A': 0,
-            'Draw': 0,
             'B': 0,
+            'C': 0,
         }
 
         const validBets = bets.filter(x => x.value)
@@ -302,7 +302,7 @@ router.get('/dashboard', async (req, res) => {
                 }
 
                 if (!(team in profitByTeam)) profitByTeam[team] = 0
-                if (details.prediction != 'Draw') profitByTeam[team] += betOutcomeValue
+                if (details.prediction != 'C') profitByTeam[team] += betOutcomeValue
                 proiftByOutcome[details.prediction] += betOutcomeValue
             }
 
