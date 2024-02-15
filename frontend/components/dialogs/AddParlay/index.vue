@@ -99,7 +99,7 @@ v-if="bet.type == 'Moneyline' || bet.type == 'Spread'" v-model="winnerPrediction
                                 @change="winner_prediction_changed"
 />
                             <v-select
-v-else-if="bet.type == 'BothScore'" v-model="bet.prediction"
+v-else-if="bet.type == 'Both Score'" v-model="bet.prediction"
                                 :items="bothScorePredictionOptions" outlined dense
                                 :rules="[validationService.required(bet.prediction)]" class="text-field"
 />

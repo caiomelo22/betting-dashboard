@@ -48,7 +48,7 @@ export default {
                     return bet.prediction;
                 case 'Total':
                     return `${bet.prediction} ${bet.line}`;
-                case 'BothScore':
+                case 'Both Score':
                     return bet.prediction ? 'Yes' : 'No';
                 case 'Spread':
                     return `${bet.prediction} +${bet.spread}`;

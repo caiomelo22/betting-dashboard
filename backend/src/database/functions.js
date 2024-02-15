@@ -59,16 +59,22 @@ async function getUserSportsChain(userEmail) {
         type: sequelize.QueryTypes.SELECT
     });
 
-    let sportsGrouped = {}
+    let sportsGrouped = []
 
     for (let i = 0; i < result.length; i++) {
-        if (!sportsGrouped.hasOwnProperty(result[i].sport)) {
-            sportsGrouped[result[i].sport] = {
-                'leagues': {}
-            }
+        let sportIndex = sportsGrouped.map((x) => x.name).indexOf(result[i].sport)
+        if (sportIndex == -1) {
+            sportsGrouped.push({
+                'name': result[i].sport,
+                'leagues': []
+            })
+            sportIndex = sportsGrouped.length - 1
         }
 
-        sportsGrouped[result[i].sport]['leagues'][result[i].league] = result[i].teams.split(',')
+        sportsGrouped[sportIndex]['leagues'].push({
+            'name': result[i].league,
+            'teams': result[i].teams.split(',')
+        })
     }
 
     return sportsGrouped

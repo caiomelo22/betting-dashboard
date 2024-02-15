@@ -15,7 +15,7 @@ export default {
         betTypeFilter: null,
         betTypes: [],
         leagues: [],
-        sportsChain: {},
+        sportsChain: [],
         bets: []
     }),
     computed: {
@@ -35,8 +35,8 @@ export default {
                 { text: 'All', value: null }
             ]
 
-            for (const sport in this.sportsChain) {
-                options.push({ text: sport, value: sport })
+            for (let i = 0; i < this.sportsChain.length; i++) {
+                options.push({ text: this.sportsChain[i].name, value: this.sportsChain[i].name })
             }
 
             return options
@@ -47,7 +47,9 @@ export default {
             ]
 
             if (this.sportFilter) {
-                for (const league in this.sportsChain[this.sportFilter].leagues) {
+                const sportIndex = this.sportsChain.map(x => x.name).indexOf(this.sportFilter)
+                for (let i = 0; i < this.sportsChain[sportIndex].leagues.length; i++) {
+                    const league = this.sportsChain[sportIndex].leagues[i].name
                     options.push({ text: league, value: league })
                 }
             } else {
@@ -77,7 +79,7 @@ export default {
         async getBetTypeOptions() {
             await this.$axios.get(`bet-type/list`)
                 .then((resp) => {
-                    this.betTypes = resp.data
+                    this.betTypes = resp.data.map(x => x.name)
                 });
         },
         getBetPrediction,

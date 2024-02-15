@@ -3,90 +3,126 @@ import ValidationService from "~/services/ValidationService";
 import { NumberFieldEnum } from "~/shared/enums/NumberFieldEnum";
 import { bothScorePredictionOptions } from "~/shared/enums/BothScorePredictionOptions";
 export default {
-  name: 'AddBetDialog',
-  components: { NumberField },
-  computed: {
-    total_prediction_options() {
-      return [
-        'Over',
-        'Under'
-      ]
-    }
-  },
-  data: () => ({
-    validationService: new ValidationService(),
-    bet: {
-      leagueId: null,
-      homeTeamId: null,
-      awayTeamId: null,
-      date: null,
-      value: null,
-      odds: null,
-      type: 'Moneyline',
-      prediction: null,
-      spread: null,
-      line: null
+    name: 'AddBetDialog',
+    components: { NumberField },
+    computed: {
+        total_prediction_options() {
+            return [
+                'Over',
+                'Under'
+            ]
+        }
     },
-    bothScorePredictionOptions,
-    loading: false,
-    winnerPrediction: null,
-    teamOptions: [],
-    numberFieldEnum: NumberFieldEnum
-  }),
-  props: {
-    leagues: Array,
-    betTypeOptions: Array
-  },
-  created() {
-    this.bet.date = this.$moment().format('YYYY-MM-DD')
+    data: () => ({
+        validationService: new ValidationService(),
+        bet: {
+            sport: null,
+            league: null,
+            teamA: null,
+            teamB: null,
+            eventDate: null,
+            value: null,
+            odds: null,
+            type: 'Moneyline',
+            prediction: null,
+            details: {}
+        },
+        sport: null,
+        league: null,
+        bothScorePredictionOptions,
+        loading: false,
+        winnerPrediction: null,
+        leagueOptions: [],
+        teamOptions: [],
+        numberFieldEnum: NumberFieldEnum
+    }),
+    props: {
+        sportsChain: Array,
+        betTypeOptions: Array
+    },
+    created() {
+        this.bet.eventDate = this.$moment().format('YYYY-MM-DD')
 
-    if (this.leagues.length === 1) {
-      this.bet.leagueId = this.leagues[0].id
-      this.league_changed(this.leagues[0])
+        if (this.sportsChain.length === 1) {
+            this.sport = this.sportsChain[0]
+            this.sport_changed()
+        }
+    },
+    methods: {
+        bet_type_changed() {
+            switch (this.bet.type) {
+                case 'Total':
+                    this.bet.details = {
+                        line: null
+                    }
+                    break;
+                case 'Spread':
+                    this.bet.details = {
+                        spread: null
+                    }
+                    break;
+                default:
+                    this.bet.details = {}
+            }
+        },
+        winner_prediction_changed() {
+            switch (this.winnerPrediction) {
+                case this.bet.teamA:
+                    this.bet.prediction = 'A'
+                    break;
+                case this.bet.teamB:
+                    this.bet.prediction = 'B'
+                    break;
+                case 'Draw':
+                    this.bet.prediction = 'C'
+                    break;
+            }
+        },
+        get_winner_options() {
+            if (!this.league || !this.bet.teamA || !this.bet.teamB) {
+                return []
+            }
+            return [
+                this.bet.teamA,
+                this.bet.teamB,
+                'Draw',
+            ]
+        },
+        sport_changed(sport) {
+            this.leagueOptions = sport.leagues;
+            if (this.leagueOptions.length == 1) {
+                this.league = this.leagueOptions[0]
+            } else {
+                this.league = null
+            }
+
+            this.league_changed()
+        },
+        league_changed() {
+            this.bet.teamA = null
+            this.bet.teamB = null
+
+            this.teamOptions = []
+            if (this.league) {
+                this.teamOptions = this.league.teams;
+            }
+        },
+        async submit() {
+            const result = this.$refs.form.validate();
+            if (!result) {
+                return;
+            }
+            this.loading = true
+
+            this.bet.sport = this.sport.name
+            this.bet.league = this.league.name
+
+            await this.$axios.post(`bet/create`,
+                { ...this.bet, details: JSON.stringify(this.bet.details) })
+                .then((resp) => {
+                    this.$emit('added')
+                });
+            this.loading = false
+        }
     }
-  },
-  methods: {
-    winner_prediction_changed() {
-      switch (this.winnerPrediction) {
-        case this.bet.homeTeamId:
-          this.bet.prediction = 'Home'
-          break;
-        case this.bet.awayTeamId:
-          this.bet.prediction = 'Away'
-          break;
-        case 0:
-          this.bet.prediction = 'Draw'
-          break;
-      }
-    },
-    get_winner_options() {
-      if (!this.bet.leagueId || !this.bet.homeTeamId || !this.bet.awayTeamId) {
-        return []
-      }
-      const leagueSelected = this.leagues.find(x => x.id === this.bet.leagueId)
-      return [
-        leagueSelected.teams.find(x => x.teamId === this.bet.homeTeamId).team,
-        leagueSelected.teams.find(x => x.teamId === this.bet.awayTeamId).team,
-        { name: 'Draw', id: 0 }
-      ]
-    },
-    league_changed(leagueId) {
-      const league = this.leagues.find(x => x.id === leagueId)
-      this.bet.homeTeamId = null;
-      this.bet.awayTeamId = null;
-      this.teamOptions = league.teams.map(x => x.team);
-    },
-    async submit() {
-      const result = this.$refs.form.validate();
-      if (!result) {
-        return;
-      }
-      this.loading = true
-      await this.$axios.post(`bet/create`, this.bet)
-        .then((resp) => {
-          this.$emit('added')
-        });
-      this.loading = false
-    }
-  }
 }
