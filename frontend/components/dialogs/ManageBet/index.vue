@@ -47,9 +47,10 @@
                 </div>
                 <div v-if="bet.type != 'Total'">
                     <span class="text-field-label">Prediction</span>
-                    <v-select v-if="bet.type == 'Moneyline' || bet.type == 'Spread'" v-model="winnerPrediction"
-                        :items="get_winner_options()" outlined dense :rules="[validationService.required(winnerPrediction)]"
-                        class="text-field" @change="winner_prediction_changed" />
+                    <v-select v-if="bet.type == 'Moneyline' || bet.type == 'Spread'" v-model="bet.prediction"
+                        :items="get_winner_options()" item-text="text" item-value="value" outlined dense
+                        :rules="[validationService.required(bet.prediction)]" class="text-field"
+                        @change="winner_prediction_changed" />
                     <v-select v-else-if="bet.type == 'Both Score'" v-model="bet.prediction"
                         :items="bothScorePredictionOptions" outlined dense
                         :rules="[validationService.required(bet.prediction)]" class="text-field" />

@@ -16,6 +16,7 @@ export default {
         betTypes: [],
         leagues: [],
         sportsChain: [],
+        betToUpdate: null,
         bets: []
     }),
     computed: {
@@ -62,7 +63,7 @@ export default {
         },
         betHeaders() {
             return [
-                'Date', 'League', 'Matchup', 'Bet Type', 'Prediction', 'Value', 'Odds', 'Won', 'Profit'
+                'Actions', 'Date', 'League', 'Matchup', 'Bet Type', 'Prediction', 'Value', 'Odds', 'Won', 'Profit'
             ]
         }
     },
@@ -75,6 +76,10 @@ export default {
         await this.reloadAssets()
     },
     methods: {
+        editClick(bet) {
+            this.betToUpdate = bet
+            this.dialog = true
+        },
         async reloadAssets() {
             await this.getSportsChain();
             await this.getLeagues();
@@ -103,6 +108,8 @@ export default {
         },
         async betAdded() {
             this.dialog = false
+            this.betToUpdate = null
+
             await this.getBets()
             await this.reloadAssets()
         },

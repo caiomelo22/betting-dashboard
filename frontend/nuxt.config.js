@@ -60,8 +60,8 @@ export default {
                     secondary: '#41b883',
                 },
                 dark: {
-                    background: '#2c3e50',
-                    primary: '#2c3e50',
+                    background: 'red',
+                    primary: '#41b883',
                     secondary: '#41b883',
                 }
             }

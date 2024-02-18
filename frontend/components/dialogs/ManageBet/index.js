@@ -22,7 +22,6 @@ export default {
     },
     data: () => ({
         validationService: new ValidationService(),
-        editing: false,
         bet: {
             sport: null,
             league: null,
@@ -56,16 +55,15 @@ export default {
         if (this.betProp) {
             this.bet = {
                 ...this.betProp,
+                type: this.betProp.details.type,
                 prediction: this.betProp.details.details.prediction,
                 earlyPayout: this.betProp.details.earlyPayout,
                 details: this.betProp.details.details
             }
 
-            const sportIndex = this.sportsChain.map(x => x.name).indexOf(this.bet.sport)
-            this.selectedSport = this.sportsChain[sportIndex]
-            this.sport_changed()
+            this.bet.eventDate = this.bet.eventDate.split('T')[0]
 
-            this.editing = true
+            this.initializeOptionsFromBetProp()
         } else {
             this.bet.eventDate = this.$moment().format('YYYY-MM-DD')
 
@@ -77,6 +75,17 @@ export default {
         }
     },
     methods: {
+        initializeOptionsFromBetProp() {
+            const sportIndex = this.sportsChain.map(x => x.name).indexOf(this.bet.sport)
+            this.selectedSport = this.sportsChain[sportIndex]
+
+            this.leagueOptions = this.selectedSport.leagues
+
+            const leagueIndex = this.leagueOptions.map(x => x.name).indexOf(this.bet.league)
+
+            this.selectedLeague = this.leagueOptions[leagueIndex]
+            this.teamOptions = this.selectedLeague.teams
+        },
         bet_type_changed() {
             switch (this.bet.type) {
                 case 'Total':
@@ -93,27 +102,14 @@ export default {
                     this.bet.details = {}
             }
         },
-        winner_prediction_changed() {
-            switch (this.winnerPrediction) {
-                case this.bet.teamA:
-                    this.bet.prediction = 'A'
-                    break;
-                case this.bet.teamB:
-                    this.bet.prediction = 'B'
-                    break;
-                case 'Draw':
-                    this.bet.prediction = 'C'
-                    break;
-            }
-        },
         get_winner_options() {
             if (!this.bet.league || !this.bet.teamA || !this.bet.teamB) {
                 return []
             }
             return [
-                this.bet.teamA,
-                this.bet.teamB,
-                'Draw',
+                { text: this.bet.teamA, value: "A" },
+                { text: this.bet.teamB, value: "B" },
+                { text: 'Draw', value: "C" },
             ]
         },
         sport_changed() {
@@ -155,13 +151,23 @@ export default {
             if (!result) {
                 return;
             }
+
             this.loading = true
 
-            await this.$axios.post(`bet/create`,
-                { ...this.bet, details: JSON.stringify(this.bet.details) })
-                .then((resp) => {
-                    this.$emit('added')
-                });
+            const betBody = { ...this.bet, details: JSON.stringify(this.bet.details) }
+
+            if (this.betProp) {
+                await this.$axios.put(`bet/update/${this.betProp.id}`, betBody)
+                    .then((resp) => {
+                        this.$emit('added')
+                    });
+            } else {
+                await this.$axios.post(`bet/create`, betBody)
+                    .then((resp) => {
+                        this.$emit('added')
+                    });
+            }
+
             this.loading = false
         }
     }

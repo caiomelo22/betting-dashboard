@@ -24,6 +24,11 @@
                     <tbody>
                         <tr v-for="(bet, i) in bets" :key="i">
                             <td>
+                                <v-btn icon @click="editClick(bet)" color="primary">
+                                    <v-icon primary small>mdi-pencil</v-icon>
+                                </v-btn>
+                            </td>
+                            <td>
                                 {{ generalServices.formatDate(bet.eventDate) }}
                             </td>
                             <td>
@@ -65,7 +70,8 @@
             </v-pagination>
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
-            <ManageBetDialog :sportsChain="sportsChain" :betTypeOptions="betTypes" @close="dialog = false" @added="betAdded" />
+            <ManageBetDialog :sportsChain="sportsChain" :betTypeOptions="betTypes" :betProp="betToUpdate"
+                @close="dialog = false" @added="betAdded" />
         </v-dialog>
     </v-container>
 </template>
