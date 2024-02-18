@@ -1,9 +1,9 @@
 import GeneralServices from "@/services/GeneralServices";
-import AddBetDialog from "~/components/dialogs/AddBet/index.vue";
+import ManageBetDialog from "~/components/dialogs/ManageBet/index.vue";
 import { getBetPrediction } from "~/shared/functions/GetBetPrediction";
 export default {
     name: 'Bets',
-    components: { AddBetDialog },
+    components: { ManageBetDialog },
     data: () => ({
         generalServices: new GeneralServices(),
         page: 1,

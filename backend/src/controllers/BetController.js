@@ -78,7 +78,7 @@ router.post('/create', async (req, res) => {
 
 router.put('/update/:betId', async (req, res) => {
     const { betId } = req.params
-    const { matchId, value, odds, sport, league, teamA, teamB, eventDate, type, prediction, details } = req.body;
+    const { value, odds, sport, league, teamA, teamB, eventDate, type, prediction, details, won, push, earlyPayout  } = req.body;
 
     try {
         const findBet = await Bet.findOne({ where: { id: betId }, include: { all: true } })
@@ -87,13 +87,13 @@ router.put('/update/:betId', async (req, res) => {
             return res.status(404).send("Bet not found.")
         }
 
-        await findBet.update({ matchId, value, odds, sport, league, teamA, teamB, eventDate });
+        await findBet.update({ value, odds, sport, league, teamA, teamB, eventDate, won, push });
 
         const detailsObj = await BetDetails.findOne({ where: { id: findBet.id } })
 
         const updatedDetails = { ...details, prediction }
 
-        await detailsObj.update({ details: JSON.stringify(updatedDetails), type })
+        await detailsObj.update({ details: JSON.stringify(updatedDetails), type, earlyPayout })
 
         return res.sendStatus(204)
     } catch (error) {
@@ -384,23 +384,15 @@ router.get('/dashboard', async (req, res) => {
 router.put('/update-outcome/:betId', async (req, res) => {
     try {
         const { betId } = req.params
-        const { won, push, earlyPayout } = req.body
+        const { won } = req.body
 
         const bet = await Bet.findOne({ where: { id: betId } })
-        const details = await BetDetails.findOne({ where: { betId } })
 
         if (!bet) {
             return res.status(404).send("Bet not found.")
         }
 
-        let updateBody = {
-            won,
-            push
-        }
-
-        await bet.update(updateBody)
-
-        await details.update({ earlyPayout })
+        await bet.update({won})
 
         return res.sendStatus(204)
     }

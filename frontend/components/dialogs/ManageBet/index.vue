@@ -5,14 +5,15 @@
             <v-card-text>
                 <div>
                     <span class="text-field-label">Sport</span>
-                    <v-combobox v-model="bet.sport" :items="sportsChain" :return-object="false" item-text="name" item-value="name" outlined dense
-                        :rules="[validationService.required(bet.sport)]" class="text-field" @change="sport_changed" />
+                    <v-combobox v-model="bet.sport" :items="sportsChain" :return-object="false" item-text="name"
+                        item-value="name" outlined dense :rules="[validationService.required(bet.sport)]" class="text-field"
+                        @change="sport_changed" />
                 </div>
                 <div>
                     <span class="text-field-label">League</span>
-                    <v-combobox v-model="bet.league" :items="leagueOptions" :return-object="false" item-text="name" item-value="name" outlined
-                        dense :rules="[validationService.required(bet.league)]" class="text-field"
-                        @change="league_changed" />
+                    <v-combobox v-model="bet.league" :items="leagueOptions" :return-object="false" item-text="name"
+                        item-value="name" outlined dense :rules="[validationService.required(bet.league)]"
+                        class="text-field" @change="league_changed" />
                 </div>
                 <div>
                     <span class="text-field-label">Team A</span>
@@ -65,6 +66,19 @@
                         <v-select v-model="bet.prediction" :items="total_prediction_options" outlined dense
                             :rules="[validationService.required(bet.prediction)]" class="text-field" />
                     </div>
+                </div>
+                <div>
+                    <span class="text-field-label">Bet Won</span>
+                    <v-select v-model="bet.won" :items="won_options" item-text="text" item-value="value" outlined dense
+                        class="text-field" />
+                </div>
+                <div v-if="bet.won === false">
+                    <span class="text-field-label">Bet Push</span>
+                    <v-checkbox v-model="bet.push" />
+                </div>
+                <div v-else-if="bet.won">
+                    <span class="text-field-label">Early Payout</span>
+                    <v-checkbox v-model="bet.earlyPayout" />
                 </div>
             </v-card-text>
             <v-card-actions>

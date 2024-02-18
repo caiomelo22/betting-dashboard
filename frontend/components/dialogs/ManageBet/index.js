@@ -3,7 +3,7 @@ import ValidationService from "~/services/ValidationService";
 import { NumberFieldEnum } from "~/shared/enums/NumberFieldEnum";
 import { bothScorePredictionOptions } from "~/shared/enums/BothScorePredictionOptions";
 export default {
-    name: 'AddBetDialog',
+    name: 'ManageBetDialog',
     components: { NumberField },
     computed: {
         total_prediction_options() {
@@ -11,10 +11,18 @@ export default {
                 'Over',
                 'Under'
             ]
+        },
+        won_options() {
+            return [
+                { text: "Pending", value: null },
+                { text: "Yes", value: true },
+                { text: "No", value: false },
+            ]
         }
     },
     data: () => ({
         validationService: new ValidationService(),
+        editing: false,
         bet: {
             sport: null,
             league: null,
@@ -24,7 +32,10 @@ export default {
             value: null,
             odds: null,
             type: 'Moneyline',
+            push: false,
             prediction: null,
+            won: null,
+            earlyPayout: false,
             details: {}
         },
         selectedSport: null,
@@ -37,16 +48,32 @@ export default {
         numberFieldEnum: NumberFieldEnum
     }),
     props: {
+        betProp: Object,
         sportsChain: Array,
         betTypeOptions: Array
     },
     created() {
-        this.bet.eventDate = this.$moment().format('YYYY-MM-DD')
+        if (this.betProp) {
+            this.bet = {
+                ...this.betProp,
+                prediction: this.betProp.details.details.prediction,
+                earlyPayout: this.betProp.details.earlyPayout,
+                details: this.betProp.details.details
+            }
 
-        if (this.sportsChain.length === 1) {
-            this.selectedSport = this.sportsChain[0]
-            this.bet.sport = this.selectedSport.name
+            const sportIndex = this.sportsChain.map(x => x.name).indexOf(this.bet.sport)
+            this.selectedSport = this.sportsChain[sportIndex]
             this.sport_changed()
+
+            this.editing = true
+        } else {
+            this.bet.eventDate = this.$moment().format('YYYY-MM-DD')
+
+            if (this.sportsChain.length === 1) {
+                this.selectedSport = this.sportsChain[0]
+                this.bet.sport = this.selectedSport.name
+                this.sport_changed()
+            }
         }
     },
     methods: {
