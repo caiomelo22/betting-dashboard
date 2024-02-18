@@ -15,6 +15,7 @@ export default {
         betTypeFilter: null,
         betTypes: [],
         leagues: [],
+        sportsbooks: [],
         sportsChain: [],
         betToUpdate: null,
         bets: []
@@ -63,7 +64,7 @@ export default {
         },
         betHeaders() {
             return [
-                'Actions', 'Date', 'League', 'Matchup', 'Bet Type', 'Prediction', 'Value', 'Odds', 'Won', 'Profit'
+                'Actions', 'Date', 'League', 'Matchup', 'Sportsbook', 'Bet Type', 'Prediction', 'Value', 'Odds', 'Won', 'Profit'
             ]
         }
     },
@@ -83,6 +84,7 @@ export default {
         async reloadAssets() {
             await this.getSportsChain();
             await this.getLeagues();
+            await this.getSportsbooks()
         },
         async getBetTypeOptions() {
             await this.$axios.get(`bet-type/list`)
@@ -129,6 +131,12 @@ export default {
             await this.$axios.get(`bet/leagues/list`)
                 .then((resp) => {
                     this.leagues = resp.data
+                });
+        },
+        async getSportsbooks() {
+            await this.$axios.get(`bet/sportsbooks/list`)
+                .then((resp) => {
+                    this.sportsbooks = resp.data
                 });
         },
         async getBets() {

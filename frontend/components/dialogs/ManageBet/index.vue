@@ -26,6 +26,11 @@
                         :rules="[validationService.required(bet.teamB)]" class="text-field" />
                 </div>
                 <div>
+                    <span class="text-field-label">Sportsbook</span>
+                    <v-combobox v-model="bet.sportsbook" :items="sportsbookOptions" outlined dense
+                        :rules="[validationService.required(bet.sportsbook)]" class="text-field" />
+                </div>
+                <div>
                     <span class="text-field-label">Event Date</span>
                     <v-text-field v-model="bet.eventDate" outlined dense hint="YYYY-MM-DD" :rules="[
                         validationService.required(bet.eventDate),

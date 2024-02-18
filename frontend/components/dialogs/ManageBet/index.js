@@ -27,6 +27,7 @@ export default {
             league: null,
             teamA: null,
             teamB: null,
+            sportsbook: null,
             eventDate: null,
             value: null,
             odds: null,
@@ -49,6 +50,7 @@ export default {
     props: {
         betProp: Object,
         sportsChain: Array,
+        sportsbookOptions: Array,
         betTypeOptions: Array
     },
     created() {

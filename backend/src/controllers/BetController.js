@@ -1,6 +1,6 @@
 const BetService = require('../services/BetService');
 const Bet = require('../models/Bet').Bet;
-const { getUserDistinctLeagues, getUserDistinctSports, getUserSportsChain } = require('../database/functions')
+const { getUserDistinctLeagues, getUserDistinctSports, getUserSportsChain, getUserDistinctSportsbooks } = require('../database/functions')
 const moment = require('moment');
 const { Op } = require('sequelize');
 const { User } = require('../models/User');
@@ -78,7 +78,7 @@ router.post('/create', async (req, res) => {
 
 router.put('/update/:betId', async (req, res) => {
     const { betId } = req.params
-    let { value, odds, sport, league, teamA, teamB, eventDate, type, prediction, details, won, push, earlyPayout  } = req.body;
+    let { value, odds, sport, league, teamA, teamB, sportsbook, eventDate, type, prediction, details, won, push, earlyPayout  } = req.body;
 
     try {
         details = details ? JSON.parse(details) : {}
@@ -89,7 +89,7 @@ router.put('/update/:betId', async (req, res) => {
             return res.status(404).send("Bet not found.")
         }
 
-        await findBet.update({ value, odds, sport, league, teamA, teamB, eventDate, won, push });
+        await findBet.update({ value, odds, sport, league, teamA, teamB, sportsbook, eventDate, won, push });
 
         const detailsObj = await BetDetails.findOne({ where: { betId: findBet.id } })
 
@@ -407,6 +407,18 @@ router.put('/update-outcome/:betId', async (req, res) => {
 router.get('/leagues/list', async (req, res) => {
     try {
         const data = await getUserDistinctLeagues(req.user.email)
+
+        return res.json(data)
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).send(error.message)
+    }
+})
+
+router.get('/sportsbooks/list', async (req, res) => {
+    try {
+        const data = await getUserDistinctSportsbooks(req.user.email)
 
         return res.json(data)
     }

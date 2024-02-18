@@ -3,7 +3,7 @@ const { BetType } = require('../models/BetType');
 const { BetDetails } = require('../models/BetDetails');
 
 const createBet = async (bet, userEmail) => {
-    let { value, odds, sport, league, teamA, teamB, eventDate, type, prediction, details, parlayId, won, push, earlyPayout } = bet;
+    let { value, odds, sport, league, teamA, teamB, sportsbook, eventDate, type, prediction, details, parlayId, won, push, earlyPayout } = bet;
 
     details = details ? JSON.parse(details) : {}
 
@@ -12,7 +12,7 @@ const createBet = async (bet, userEmail) => {
         throw Error("Bet type does not exist.")
     }
 
-    const newBet = await Bet.create({ sport, league, teamA, teamB, eventDate, parlayId, value, odds, type, won, push, createdByEmail: userEmail });
+    const newBet = await Bet.create({ sport, league, teamA, teamB, sportsbook, eventDate, parlayId, value, odds, type, won, push, createdByEmail: userEmail });
 
     const betId = newBet.id;
 

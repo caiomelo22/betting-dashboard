@@ -40,6 +40,11 @@
                                 {{ `${bet.teamA} x ${bet.teamB}` }}
                             </td>
                             <td>
+                                {{
+                                    bet.sportsbook || '-'
+                                }}
+                            </td>
+                            <td>
                                 {{ bet.details.type }}
                             </td>
                             <td>
@@ -70,8 +75,8 @@
             </v-pagination>
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
-            <ManageBetDialog :sportsChain="sportsChain" :betTypeOptions="betTypes" :betProp="betToUpdate"
-                @close="dialog = false" @added="betAdded" />
+            <ManageBetDialog :sportsChain="sportsChain" :sportsbookOptions="sportsbooks" :betTypeOptions="betTypes"
+                :betProp="betToUpdate" @close="dialog = false" @added="betAdded" />
         </v-dialog>
     </v-container>
 </template>

@@ -16,6 +16,22 @@ async function getUserDistinctLeagues(userEmail) {
     return distinctLeagues
 }
 
+async function getUserDistinctSportsbooks(userEmail) {
+    const queryResult = await sequelize.query(`
+        SELECT
+            DISTINCT sportsbook
+        FROM bets
+        WHERE
+            createdByEmail = '${userEmail}'
+        `, {
+        type: sequelize.QueryTypes.SELECT
+    });
+
+    const distinctSportsbooks = queryResult.map(result => result.sportsbook);
+
+    return distinctSportsbooks
+}
+
 async function getUserDistinctSports(userEmail) {
     const queryResult = await sequelize.query(`
     SELECT
@@ -83,6 +99,7 @@ async function getUserSportsChain(userEmail) {
 
 module.exports = {
     getUserDistinctLeagues,
+    getUserDistinctSportsbooks,
     getUserDistinctSports,
     getUserSportsChain
 }

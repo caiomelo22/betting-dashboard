@@ -22,6 +22,10 @@ const Bet = database.sequelize.define("bets", {
         type: database.Sequelize.STRING,
         allowNull: false
     },
+    sportsbook: {
+        type: database.Sequelize.STRING,
+        allowNull: false
+    },
     eventDate: {
         type: database.Sequelize.DATE,
         allowNull: false
