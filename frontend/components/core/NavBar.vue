@@ -20,6 +20,7 @@ v-else :icon="['fa', 'moon']" style="color: #41b883; cursor: pointer"
 
 <script>
 export default {
+    name: 'NavBar',
     mounted() {
         const isDark = localStorage.getItem('theme.dark') == "true"
         this.$vuetify.theme.dark = isDark

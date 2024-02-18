@@ -1,5 +1,15 @@
 <template>
-  <div class="footer">by Caio Graça Melo @{{$moment().year()}}</div>
+    <div class="footer">by Caio Graça Melo @{{ currentYear }}</div>
 </template>
-<style scoped>
-</style>
+<script>
+export default {
+    name: 'Footer',
+    data: () => ({
+        currentYear: null,
+    }),
+    mounted() {
+        this.currentYear = this.$moment().year()
+    },
+}
+</script>
+<style scoped></style>
