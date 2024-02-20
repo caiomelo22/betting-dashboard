@@ -76,7 +76,7 @@
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
             <ManageBetDialog :sportsChain="sportsChain" :sportsbookOptions="sportsbooks" :betTypeOptions="betTypes"
-                :betProp="betToUpdate" @close="dialog = false" @added="betAdded" />
+                :betProp="betToUpdate" @close="closeDialog" @added="betAdded" />
         </v-dialog>
     </v-container>
 </template>

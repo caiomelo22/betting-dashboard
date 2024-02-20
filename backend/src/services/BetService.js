@@ -3,7 +3,7 @@ const { BetType } = require('../models/BetType');
 const { BetDetails } = require('../models/BetDetails');
 
 const createBet = async (bet, userEmail) => {
-    let { value, odds, sport, league, teamA, teamB, sportsbook, eventDate, type, prediction, details, parlayId, won, push, earlyPayout } = bet;
+    let { payout, value, odds, sport, league, teamA, teamB, sportsbook, eventDate, type, prediction, details, parlayId, won, push, earlyPayout } = bet;
 
     details = details ? JSON.parse(details) : {}
 
@@ -12,7 +12,11 @@ const createBet = async (bet, userEmail) => {
         throw Error("Bet type does not exist.")
     }
 
-    const newBet = await Bet.create({ sport, league, teamA, teamB, sportsbook, eventDate, parlayId, value, odds, type, won, push, createdByEmail: userEmail });
+    if (won && !payout) {
+        payout = odds * value
+    }
+
+    const newBet = await Bet.create({ sport, league, teamA, teamB, sportsbook, eventDate, parlayId, value, odds, payout, type, won, push, createdByEmail: userEmail });
 
     const betId = newBet.id;
 
@@ -41,12 +45,12 @@ const projectColors = [
 const checkBetOutcome = (bet, generalInfo, barChartInfo, chartInfo) => {
     let betOutcomeValue
 
-    if (bet.won || bet.details.earlyPayout) {
+    if (bet.won) {
         generalInfo.totalGreens += 1
-        betOutcomeValue = bet.value * bet.odds - bet.value
+        betOutcomeValue = bet.payout - bet.value
     }
     else if (bet.push) {
-        betOutcomeValue = 0
+        betOutcomeValue = bet.payout
     } else {
         generalInfo.totalReds += 1
         betOutcomeValue = -bet.value

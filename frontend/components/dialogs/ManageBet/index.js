@@ -35,6 +35,7 @@ export default {
             push: false,
             prediction: null,
             won: null,
+            payout: null,
             earlyPayout: false,
             details: {}
         },
@@ -77,6 +78,23 @@ export default {
         }
     },
     methods: {
+        updateBetPayout() {
+            if (this.bet.won) {
+                this.bet.payout = parseFloat((this.bet.odds * this.bet.value).toFixed(2))
+            } else {
+                this.bet.payout = 0
+            }
+        },
+        betOddsChanged(value) {
+            this.bet.odds = value
+
+            this.updateBetPayout()
+        },
+        betValueChanged(value) {
+            this.bet.value = value
+
+            this.updateBetPayout()
+        },
         initializeOptionsFromBetProp() {
             const sportIndex = this.sportsChain.map(x => x.name).indexOf(this.bet.sport)
             this.selectedSport = this.sportsChain[sportIndex]

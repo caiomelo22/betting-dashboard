@@ -42,6 +42,11 @@ const Bet = database.sequelize.define("bets", {
         type: database.Sequelize.BOOLEAN,
         allowNull: true,
     },
+    payout: {
+        type: database.Sequelize.FLOAT,
+        allowNull: false,
+        defaultValue: 0,
+    },
     push: {
         type: database.Sequelize.BOOLEAN,
         allowNull: false,

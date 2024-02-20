@@ -39,11 +39,11 @@
                 </div>
                 <div>
                     <NumberField field-title="Value" :field-value="bet.value" :type="numberFieldEnum.Currency"
-                        @update="(value) => (bet.value = value)" />
+                        @update="betValueChanged" />
                 </div>
                 <div>
                     <NumberField field-title="Odds" :field-value="bet.odds" :type="numberFieldEnum.Odds"
-                        @update="(value) => (bet.odds = value)" />
+                        @update="betOddsChanged" />
                 </div>
                 <div>
                     <span class="text-field-label">Bet Type</span>
@@ -54,8 +54,7 @@
                     <span class="text-field-label">Prediction</span>
                     <v-select v-if="bet.type == 'Moneyline' || bet.type == 'Spread'" v-model="bet.prediction"
                         :items="get_winner_options()" item-text="text" item-value="value" outlined dense
-                        :rules="[validationService.required(bet.prediction)]" class="text-field"
-                        @change="winner_prediction_changed" />
+                        :rules="[validationService.required(bet.prediction)]" class="text-field"  />
                     <v-select v-else-if="bet.type == 'Both Score'" v-model="bet.prediction"
                         :items="bothScorePredictionOptions" outlined dense
                         :rules="[validationService.required(bet.prediction)]" class="text-field" />
@@ -76,15 +75,21 @@
                 <div>
                     <span class="text-field-label">Bet Won</span>
                     <v-select v-model="bet.won" :items="won_options" item-text="text" item-value="value" outlined dense
-                        class="text-field" />
+                        class="text-field" @change="updateBetPayout" />
                 </div>
                 <div v-if="bet.won === false">
                     <span class="text-field-label">Bet Push</span>
                     <v-checkbox v-model="bet.push" />
                 </div>
                 <div v-else-if="bet.won">
-                    <span class="text-field-label">Early Payout</span>
-                    <v-checkbox v-model="bet.earlyPayout" />
+                    <div>
+                        <span class="text-field-label">Early Payout</span>
+                        <v-checkbox v-model="bet.earlyPayout" />
+                    </div>
+                    <div>
+                        <NumberField field-title="Payout Value" :field-value="bet.payout" :type="numberFieldEnum.Currency"
+                            @update="(value) => bet.payout = value" />
+                    </div>
                 </div>
             </v-card-text>
             <v-card-actions>

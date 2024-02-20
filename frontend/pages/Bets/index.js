@@ -76,7 +76,17 @@ export default {
         await this.getBets();
         await this.reloadAssets()
     },
+    watch: {
+        dialog(value) {
+            if (!value) {
+                this.betToUpdate = null
+            }
+        }
+    },
     methods: {
+        closeDialog() {
+            this.dialog = false
+        },
         editClick(bet) {
             this.betToUpdate = bet
             this.dialog = true
@@ -98,14 +108,15 @@ export default {
                 return '-'
             }
 
-            let profit = 0
-            if (bet.won || bet.details.earlyPayout) {
-                profit = bet.value * bet.odds - bet.value
+            let profit
+            if (bet.won) {
+                profit = bet.payout - bet.value
             } else if (bet.push) {
-                profit = 0
+                profit = bet.payout
             } else {
-                profit -= bet.value
+                profit = -bet.value
             }
+
             return this.generalServices.formatValue(profit)
         },
         async betAdded() {
