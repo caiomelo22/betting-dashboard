@@ -2,16 +2,12 @@ const database = require("../database/db");
 const { Bet } = require("./Bet");
 
 const Parlay = database.sequelize.define("parlays", {
-    date: {
-        type: database.Sequelize.DATE,
-        allowNull: false,
-    },
-    won: {
-        type: database.Sequelize.BOOLEAN,
-        allowNull: true,
-    },
     createdByEmail: {
         type: database.Sequelize.STRING,
+        allowNull: false,
+    },
+    date: {
+        type: database.Sequelize.DATE,
         allowNull: false,
     },
     value: {
@@ -21,6 +17,20 @@ const Parlay = database.sequelize.define("parlays", {
     odds: {
       type: database.Sequelize.FLOAT,
       allowNull: false,
+    },
+    won: {
+        type: database.Sequelize.BOOLEAN,
+        allowNull: true,
+    },
+    payout: {
+        type: database.Sequelize.FLOAT,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    push: {
+        type: database.Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
     },
 });
 

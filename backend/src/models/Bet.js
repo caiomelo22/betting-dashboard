@@ -26,7 +26,7 @@ const Bet = database.sequelize.define("bets", {
         type: database.Sequelize.STRING,
         allowNull: false
     },
-    eventDate: {
+    date: {
         type: database.Sequelize.DATE,
         allowNull: false
     },

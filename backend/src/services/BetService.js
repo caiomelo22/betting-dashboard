@@ -3,7 +3,7 @@ const { BetType } = require('../models/BetType');
 const { BetDetails } = require('../models/BetDetails');
 
 const createBet = async (bet, userEmail) => {
-    let { payout, value, odds, sport, league, teamA, teamB, sportsbook, eventDate, type, prediction, details, parlayId, won, push, earlyPayout } = bet;
+    let { payout, value, odds, sport, league, teamA, teamB, sportsbook, date, type, prediction, details, parlayId, won, push, earlyPayout } = bet;
 
     details = details ? JSON.parse(details) : {}
 
@@ -16,7 +16,7 @@ const createBet = async (bet, userEmail) => {
         payout = odds * value
     }
 
-    const newBet = await Bet.create({ sport, league, teamA, teamB, sportsbook, eventDate, parlayId, value, odds, payout, type, won, push, createdByEmail: userEmail });
+    const newBet = await Bet.create({ sport, league, teamA, teamB, sportsbook, date, parlayId, value, odds, payout, type, won, push, createdByEmail: userEmail });
 
     const betId = newBet.id;
 

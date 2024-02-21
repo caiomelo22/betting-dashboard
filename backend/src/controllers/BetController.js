@@ -38,7 +38,7 @@ router.get('/list', async (req, res) => {
             where: betConditions,
             include: [{ model: BetDetails, as: 'details', where: detailsConditions }],
             offset: (page - 1) * pageSize, limit: pageSize, order: [
-                ['eventDate', 'DESC'],
+                ['date', 'DESC'],
                 ['updatedAt', 'DESC'],
             ],
         });
@@ -78,7 +78,7 @@ router.post('/create', async (req, res) => {
 
 router.put('/update/:betId', async (req, res) => {
     const { betId } = req.params
-    let { payout, value, odds, sport, league, teamA, teamB, sportsbook, eventDate, type, prediction, details, won, push, earlyPayout } = req.body;
+    let { payout, value, odds, sport, league, teamA, teamB, sportsbook, date, type, prediction, details, won, push, earlyPayout } = req.body;
 
     try {
         details = details ? JSON.parse(details) : {}
@@ -93,7 +93,7 @@ router.put('/update/:betId', async (req, res) => {
             payout = odds * value
         }
 
-        await findBet.update({ payout, value, odds, sport, league, teamA, teamB, sportsbook, eventDate, won, push });
+        await findBet.update({ payout, value, odds, sport, league, teamA, teamB, sportsbook, date, won, push });
 
         const detailsObj = await BetDetails.findOne({ where: { betId: findBet.id } })
 
@@ -134,7 +134,7 @@ router.get('/dashboard', async (req, res) => {
         const bets = await Bet.findAll({
             where: { createdByEmail: req.user.email },
             include: [{ model: BetDetails, as: 'details' }], order: [
-                ['eventDate', 'ASC'],
+                ['date', 'ASC'],
                 ['createdAt', 'DESC'],
             ],
         });
@@ -243,7 +243,7 @@ router.get('/dashboard', async (req, res) => {
         }
 
         for (let i = 0; i < bets.length; i++) {
-            let betDate = moment.utc(bets[i].eventDate).format('DD-MM-YYYY')
+            let betDate = moment.utc(bets[i].date).format('DD-MM-YYYY')
             if (labels[labels.length - 1] != betDate) {
 
                 BetService.updateBarChartColors(barChartInfo)

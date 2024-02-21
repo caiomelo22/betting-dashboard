@@ -43,9 +43,9 @@ v-model="bet.sportsbook" :items="sportsbookOptions" outlined dense
                 <div>
                     <span class="text-field-label">Event Date</span>
                     <v-text-field
-v-model="bet.eventDate" outlined dense hint="YYYY-MM-DD" :rules="[
-                        validationService.required(bet.eventDate),
-                        validationService.validDate(bet.eventDate),
+v-model="bet.date" outlined dense hint="YYYY-MM-DD" :rules="[
+                        validationService.required(bet.date),
+                        validationService.validDate(bet.date),
                     ]" class="text-field"
 />
                 </div>

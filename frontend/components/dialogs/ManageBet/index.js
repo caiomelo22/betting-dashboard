@@ -28,7 +28,7 @@ export default {
             teamA: null,
             teamB: null,
             sportsbook: null,
-            eventDate: null,
+            date: null,
             value: null,
             odds: null,
             type: 'Moneyline',
@@ -64,11 +64,11 @@ export default {
                 details: this.betProp.details.details
             }
 
-            this.bet.eventDate = this.bet.eventDate.split('T')[0]
+            this.bet.date = this.bet.date.split('T')[0]
 
             this.initializeOptionsFromBetProp()
         } else {
-            this.bet.eventDate = this.$moment().format('YYYY-MM-DD')
+            this.bet.date = this.$moment().format('YYYY-MM-DD')
 
             if (this.sportsChain.length === 1) {
                 this.selectedSport = this.sportsChain[0]

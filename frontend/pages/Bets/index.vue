@@ -35,7 +35,7 @@ v-model="betTypeFilter" label="Bet Type" hide-details :items="betTypeOptions" ou
                                 </v-btn>
                             </td>
                             <td>
-                                {{ generalServices.formatDate(bet.eventDate) }}
+                                {{ generalServices.formatDate(bet.date) }}
                             </td>
                             <td>
                                 {{
