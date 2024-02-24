@@ -4,9 +4,8 @@
             <v-col cols="12" md="4">
                 <div class="general-info">
                     <p class="dashboard-info-title">Red/Green Ratio</p>
-                    <p class="dashboard-info-value" :style="`color: ${$vuetify.theme.dark?'white':'black'}`"><span
-                            style="color: #990000"
->{{ generalInfo.totalReds
+                    <p class="dashboard-info-value" :style="`color: ${$vuetify.theme.dark ? 'white' : 'black'}`"><span
+                            style="color: #990000">{{ generalInfo.totalReds
                             }}</span>:<span style="color: green">{{ generalInfo.totalGreens }}</span></p>
                 </div>
             </v-col>
@@ -20,22 +19,22 @@
                 <div class="general-info">
                     <p class="dashboard-info-title">Green %</p>
                     <p class="dashboard-info-value">{{ (generalInfo.totalGreens * 100 / (generalInfo.totalReds +
-                    generalInfo.totalGreens)).toFixed(2)
+                        generalInfo.totalGreens)).toFixed(2)
                     }}%</p>
                 </div>
             </v-col>
             <v-col cols="12" md="2">
                 <div class="general-info">
                     <p class="dashboard-info-title">ROI</p>
-                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalDeposited +
-                    generalInfo.totalProfit)).toFixed(2) }}%
+                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalDeposited)).toFixed(2) }}%
                     </p>
                 </div>
             </v-col>
             <v-col cols="12" md="2">
                 <div class="general-info">
                     <p class="dashboard-info-title">Yield</p>
-                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalBet)).toFixed(2) }}%
+                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalBet)).toFixed(2)
+                    }}%
                     </p>
                 </div>
             </v-col>
@@ -118,10 +117,8 @@
             </div>
         </div>
         <v-dialog v-if="editDepositedValueDialog" v-model="editDepositedValueDialog" width="700px" max-width="100%">
-            <EditDepositedValueDialog
-:deposited-value-prop="generalInfo.totalDeposited"
-                @update="updateDepositedValue" @close="editDepositedValueDialog = false"
-/>
+            <AddFinancialActionDialog :deposited-value-prop="generalInfo.totalDeposited" @update="updateDepositedValue"
+                @close="editDepositedValueDialog = false" />
         </v-dialog>
     </div>
 </template>

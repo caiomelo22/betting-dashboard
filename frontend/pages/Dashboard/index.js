@@ -1,10 +1,10 @@
 import Chart from "chart.js/auto";
 import GeneralServices from "@/services/GeneralServices";
-import EditDepositedValueDialog from "@/components/dialogs/EditDepositedValue/index.vue";
+import AddFinancialActionDialog from "@/components/dialogs/AddFinancialAction/index.vue";
 export default {
     name: 'Dashboard',
     components: {
-        EditDepositedValueDialog
+        AddFinancialActionDialog
     },
     data: () => ({
         generalServices: new GeneralServices(),
@@ -211,7 +211,7 @@ export default {
             });
         },
         updateDepositedValue(value) {
-            this.generalInfo.totalDeposited = value
+            this.generalInfo.totalDeposited += value
             this.editDepositedValueDialog = false
         },
         async get_dashboard_info() {
