@@ -32,6 +32,10 @@ const Parlay = database.sequelize.define("parlays", {
         allowNull: false,
         defaultValue: false,
     },
+    sportsbook: {
+        type: database.Sequelize.STRING,
+        allowNull: false,
+    },
 });
 
 Parlay.hasMany(Bet, { foreignKey: 'parlayId', as: 'bets' });

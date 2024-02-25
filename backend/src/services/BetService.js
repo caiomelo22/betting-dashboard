@@ -28,6 +28,30 @@ const createBet = async (bet, userEmail) => {
     return newBet
 }
 
+const updateBet = async (betId, bet, userEmail) => {
+    let { payout, value, odds, sport, league, teamA, teamB, sportsbook, date, type, prediction, details, won, push, earlyPayout } = bet;
+
+    details = details ? JSON.parse(details) : {}
+
+    const findBet = await Bet.findOne({ where: { id: betId, createdByEmail: userEmail } })
+
+    if (findBet == null) {
+        throw Error("Bet not found.")
+    }
+
+    if (won && !payout) {
+        payout = odds * value
+    }
+
+    await findBet.update({ payout, value, odds, sport, league, teamA, teamB, sportsbook, date, won, push });
+
+    const detailsObj = await BetDetails.findOne({ where: { betId: findBet.id } })
+
+    const updatedDetails = { ...details, prediction }
+
+    await detailsObj.update({ details: JSON.stringify(updatedDetails), type, earlyPayout })
+}
+
 const updateBarChartColors = (barChartInfo) => {
     if (barChartInfo.datasets[0].data[barChartInfo.datasets[0].data.length - 1] >= 0) {
         barChartInfo.datasets[0].backgroundColor.push('#41b883')
@@ -67,5 +91,6 @@ module.exports = {
     updateBarChartColors,
     checkBetOutcome,
     projectColors,
+    updateBet,
     createBet
 }
