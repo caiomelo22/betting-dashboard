@@ -41,20 +41,7 @@ v-model="betTypeFilter" label="Bet Type" hide-details :items="betTypeOptions" ou
                                 {{ generalServices.formatDate(bet.date) }}
                             </td>
                             <td>
-                                {{
-                                    bet.league || '-'
-                                }}
-                            </td>
-                            <td>
                                 {{ `${bet.teamA} x ${bet.teamB}` }}
-                            </td>
-                            <td>
-                                {{
-                                    bet.sportsbook || '-'
-                                }}
-                            </td>
-                            <td>
-                                {{ bet.details.type }}
                             </td>
                             <td>
                                 {{ getBetPrediction(bet) }}

@@ -64,7 +64,7 @@ export default {
         },
         betHeaders() {
             return [
-                'Actions', 'Date', 'League', 'Matchup', 'Sportsbook', 'Bet Type', 'Prediction', 'Value', 'Odds', 'Won', 'Profit'
+                'Actions', 'Date', 'Matchup', 'Prediction', 'Value', 'Odds', 'Won', 'Profit'
             ]
         }
     },
