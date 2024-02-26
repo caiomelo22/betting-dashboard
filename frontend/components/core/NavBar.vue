@@ -3,10 +3,14 @@
         <nuxt-link :class="{ active: $route.path == '/dashboard' }" to="/dashboard">Dashboard</nuxt-link>
         <nuxt-link :class="{ active: $route.path == '/bets' }" to="/bets">Bets</nuxt-link>
 
-        <font-awesome-icon v-if="$vuetify.theme.dark" :icon="['fa', 'sun']"
-            style="color: #41b883; cursor: pointer; margin-left: 8px" @click="toggleTheme(false)" />
-        <font-awesome-icon v-else :icon="['fa', 'moon']" style="color: #41b883; cursor: pointer; margin-left: 8px"
-            @click="toggleTheme(true)" />
+        <font-awesome-icon
+v-if="$vuetify.theme.dark" :icon="['fa', 'sun']"
+            style="color: #41b883; cursor: pointer; margin-left: 8px" @click="toggleTheme(false)"
+/>
+        <font-awesome-icon
+v-else :icon="['fa', 'moon']" style="color: #41b883; cursor: pointer; margin-left: 8px"
+            @click="toggleTheme(true)"
+/>
     </div>
 </template>
 
