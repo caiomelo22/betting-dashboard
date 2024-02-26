@@ -14,7 +14,7 @@ export default class GeneralServices {
 
     formatDate(dateText) {
         // Removing the 'Z' to ignore timezones
-        return moment(dateText.replace('Z', '')).format('DD-MM-YYYY');
+        return moment(dateText.replace('Z', '')).format('DD-MM');
     }
 
     serialize(obj) {
