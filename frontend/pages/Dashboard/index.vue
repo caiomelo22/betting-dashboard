@@ -69,19 +69,10 @@
         <div class="section-div chart-div">
             <v-row no-gutters align="center" justify="center">
                 <p class="chart-header">Bet Progression</p>
-                <v-btn class="btn-primary ml-4" @click="reset_zoom(betLineChart)">Reset Zoom</v-btn>
+                <v-btn class="btn-primary ml-4" @click="reset_zoom(progressionChart)">Reset Zoom</v-btn>
             </v-row>
             <div>
-                <canvas id="lineChart" width="400" height="400"></canvas>
-            </div>
-        </div>
-        <div class="section-div chart-div">
-            <v-row no-gutters align="center" justify="center">
-                <p class="chart-header">Profit by Day</p>
-                <v-btn class="btn-primary ml-4" @click="reset_zoom(betBarChart)">Reset Zoom</v-btn>
-            </v-row>
-            <div>
-                <canvas id="barChart" width="400" height="400"></canvas>
+                <canvas id="progressionChart" width="400" height="400"></canvas>
             </div>
         </div>
         <div class="section-div">

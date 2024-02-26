@@ -175,28 +175,7 @@ router.get('/dashboard', async (req, res) => {
             })
         }
 
-        // Inicializando a estrutura base do gráfico utilizada pelo ChartJS
         let chartInfo = {
-            labels: [],
-            datasets: [
-                {
-                    label: 'Progression',
-                    fill: false,
-                    backgroundColor: '#41b883',
-                    borderColor: '#41b883',
-                    data: []
-                },
-                {
-                    label: 'Moving Average',
-                    fill: false,
-                    backgroundColor: '#9C9EFE',
-                    borderColor: '#9C9EFE',
-                    data: []
-                },
-            ]
-        }
-
-        let barChartInfo = {
             labels: [],
             datasets: [
                 {
@@ -204,6 +183,22 @@ router.get('/dashboard', async (req, res) => {
                     fill: false,
                     backgroundColor: [],
                     borderColor: [],
+                    data: []
+                },
+                {
+                    label: 'Progression',
+                    fill: false,
+                    backgroundColor: '#41b883',
+                    borderColor: '#41b883',
+                    type: 'line',
+                    data: []
+                },
+                {
+                    label: 'Moving Average',
+                    fill: false,
+                    backgroundColor: '#9C9EFE',
+                    borderColor: '#9C9EFE',
+                    type: 'line',
                     data: []
                 },
             ]
@@ -230,17 +225,17 @@ router.get('/dashboard', async (req, res) => {
             let betDate = moment.utc(bets[i].date).format('DD-MM-YYYY')
             if (labels[labels.length - 1] != betDate) {
 
-                BetService.updateBarChartColors(barChartInfo)
+                BetService.updateBarChartColors(chartInfo)
 
                 labels.push(betDate)
 
-                chartInfo.datasets[0].data.push(generalInfo.totalProfit)
-                barChartInfo.datasets[0].data.push(0)
+                chartInfo.datasets[1].data.push(generalInfo.totalProfit)
+                chartInfo.datasets[0].data.push(0)
 
-                const last5Profit = chartInfo.datasets[0].data.slice(-5).reduce((acc, val) => acc + val);
-                const last5Length = chartInfo.datasets[0].data.slice(-5).length
+                const last5Profit = chartInfo.datasets[1].data.slice(-5).reduce((acc, val) => acc + val);
+                const last5Length = chartInfo.datasets[1].data.slice(-5).length
                 movingAvg = last5Profit / last5Length
-                chartInfo.datasets[1].data.push(movingAvg)
+                chartInfo.datasets[2].data.push(movingAvg)
 
                 for (let j = 0; j < leagues.length; j++) {
                     leagueChartInfo.datasets[j].data.push(leagueChartInfo.datasets[j].data[leagueChartInfo.datasets[j].data.length - 1] || 0)
@@ -252,7 +247,7 @@ router.get('/dashboard', async (req, res) => {
 
                 let dateParlays = parlays.filter(x => moment(x.date).format('DD-MM-YYYY') == betDate)
                 for (let j = 0; j < dateParlays.length; j++) {
-                    const parlayValue = BetService.checkBetOutcome(dateParlays[j], generalInfo, barChartInfo, chartInfo)
+                    const parlayValue = BetService.checkBetOutcome(dateParlays[j], generalInfo, chartInfo)
 
                     const parlaySports = BetService.getBetsSports(dateParlays[j].bets)
 
@@ -276,7 +271,7 @@ router.get('/dashboard', async (req, res) => {
 
             generalInfo.totalBet += bets[i].value
 
-            betOutcomeValue = BetService.checkBetOutcome(bets[i], generalInfo, barChartInfo, chartInfo)
+            betOutcomeValue = BetService.checkBetOutcome(bets[i], generalInfo, chartInfo)
 
             if (bets[i].details.type == 'Moneyline') {
                 const details = JSON.parse(bets[i].details.details)
@@ -345,11 +340,10 @@ router.get('/dashboard', async (req, res) => {
             outcomeChartInfo.datasets[0].data.push(proiftByOutcome[outcome])
         }
 
-        BetService.updateBarChartColors(barChartInfo)
+        BetService.updateBarChartColors(chartInfo)
 
         sportChartInfo.labels = labels
         leagueChartInfo.labels = labels
-        barChartInfo.labels = labels
         chartInfo.labels = labels
 
         leagueChartInfo.datasets = leagueChartInfo.datasets.map(x => {
@@ -362,7 +356,7 @@ router.get('/dashboard', async (req, res) => {
             return x
         })
 
-        const data = { chartInfo, generalInfo, barChartInfo, leagueChartInfo, sportChartInfo, teamChartInfo, outcomeChartInfo }
+        const data = { generalInfo, chartInfo, leagueChartInfo, sportChartInfo, teamChartInfo, outcomeChartInfo }
 
         return res.json(data)
     } catch (error) {

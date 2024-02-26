@@ -52,13 +52,13 @@ const updateBet = async (betId, bet, userEmail) => {
     await detailsObj.update({ details: JSON.stringify(updatedDetails), type, earlyPayout })
 }
 
-const updateBarChartColors = (barChartInfo) => {
-    if (barChartInfo.datasets[0].data[barChartInfo.datasets[0].data.length - 1] >= 0) {
-        barChartInfo.datasets[0].backgroundColor.push('#41b883')
-        barChartInfo.datasets[0].borderColor.push('#41b883')
-    } else if (barChartInfo.datasets[0].data[barChartInfo.datasets[0].data.length - 1] < 0) {
-        barChartInfo.datasets[0].backgroundColor.push('#990000')
-        barChartInfo.datasets[0].borderColor.push('#990000')
+const updateBarChartColors = (chartInfo) => {
+    if (chartInfo.datasets[0].data[chartInfo.datasets[0].data.length - 1] >= 0) {
+        chartInfo.datasets[0].backgroundColor.push('#41b883')
+        chartInfo.datasets[0].borderColor.push('#41b883')
+    } else if (chartInfo.datasets[0].data[chartInfo.datasets[0].data.length - 1] < 0) {
+        chartInfo.datasets[0].backgroundColor.push('#990000')
+        chartInfo.datasets[0].borderColor.push('#990000')
     }
 }
 
@@ -66,7 +66,7 @@ const projectColors = [
     '#17408B', '#6594C0', '#38003c', '#0078AA', '#2B4865', '#dae025', '#41b883', '#774360', '#D3010C', '#9C9EFE', '#7DCE13', '#224B0C', '#fbec21', '#749F82', '#5837D0'
 ]
 
-const checkBetOutcome = (bet, generalInfo, barChartInfo, chartInfo) => {
+const checkBetOutcome = (bet, generalInfo, chartInfo) => {
     let betOutcomeValue
 
     if (bet.won) {
@@ -81,8 +81,8 @@ const checkBetOutcome = (bet, generalInfo, barChartInfo, chartInfo) => {
     }
 
     generalInfo.totalProfit += betOutcomeValue
-    barChartInfo.datasets[0].data[barChartInfo.datasets[0].data.length - 1] += betOutcomeValue
     chartInfo.datasets[0].data[chartInfo.datasets[0].data.length - 1] += betOutcomeValue
+    chartInfo.datasets[1].data[chartInfo.datasets[1].data.length - 1] += betOutcomeValue
 
     return betOutcomeValue
 }
