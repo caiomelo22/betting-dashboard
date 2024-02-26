@@ -51,6 +51,15 @@
                         :rules="[validationService.required(bet.type)]" class="text-field" @change="bet_type_changed" />
                 </div>
                 <div v-if="bet.type != 'Total'">
+                    <!-- Bet Details -->
+                    <div v-if="bet.type == 'Player Prop'">
+                        <span class="text-field-label">Player</span>
+                        <v-text-field v-model="bet.details.player" outlined dense class="text-field"></v-text-field>
+                    </div>
+                    <NumberField v-else-if="bet.type == 'Spread'" field-title="Spread" :type="numberFieldEnum.Line"
+                        :field-value="bet.details.spread" @update="(value) => (bet.details.spread = value)" />
+
+                    <!-- Bet Prediction  -->
                     <span class="text-field-label">Prediction</span>
                     <v-select v-if="bet.type == 'Moneyline' || bet.type == 'Spread'" v-model="bet.prediction"
                         :items="get_winner_options()" item-text="text" item-value="value" outlined dense
@@ -59,8 +68,6 @@
                         :items="bothScorePredictionOptions" outlined dense
                         :rules="[validationService.required(bet.prediction)]" class="text-field" />
                     <v-text-field v-else v-model="bet.prediction" outlined dense class="text-field"></v-text-field>
-                    <NumberField v-if="bet.type == 'Spread'" field-title="Spread" :type="numberFieldEnum.Line"
-                        :field-value="bet.details.spread" @update="(value) => (bet.details.spread = value)" />
                 </div>
                 <div v-else-if="bet.type == 'Total'">
                     <div>

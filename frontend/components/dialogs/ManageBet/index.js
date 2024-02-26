@@ -118,6 +118,11 @@ export default {
                         spread: null
                     }
                     break;
+                case 'Player Prop':
+                    this.bet.details = {
+                        player: null
+                    }
+                    break;
                 default:
                     this.bet.details = {}
             }
