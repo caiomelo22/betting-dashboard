@@ -1,4 +1,5 @@
 const BetService = require('../services/BetService');
+const ParlayService = require('../services/ParlayService');
 const Bet = require('../models/Bet').Bet;
 const { getUserDistinctLeagues, getUserDistinctSports, getUserSportsChain, getUserDistinctSportsbooks } = require('../database/functions')
 const moment = require('moment');
@@ -135,7 +136,7 @@ router.get('/dashboard', async (req, res) => {
         const user = await User.findOne({ where: { email: req.user.email } })
 
         const bets = await Bet.findAll({
-            where: { createdByEmail: req.user.email },
+            where: { createdByEmail: req.user.email, value: { [Op.ne]: null } },
             include: [{ model: BetDetails, as: 'details' }], order: [
                 ['date', 'ASC'],
                 ['createdAt', 'DESC'],
@@ -245,7 +246,7 @@ router.get('/dashboard', async (req, res) => {
             if (labels[labels.length - 1] != betDate) {
 
                 BetService.updateBarChartColors(chartInfo)
-
+ 
                 labels.push(betDate)
 
                 chartInfo.datasets[1].data.push(generalInfo.totalProfit)
@@ -268,18 +269,20 @@ router.get('/dashboard', async (req, res) => {
                 for (let j = 0; j < dateParlays.length; j++) {
                     const parlayValue = BetService.checkBetOutcome(dateParlays[j], generalInfo, chartInfo)
 
-                    const parlaySports = BetService.getBetsSports(dateParlays[j].bets)
+                    const parlaySports = ParlayService.getParlaySports(dateParlays[j])
+                    const parlayLeagues = ParlayService.getParlayLeagues(dateParlays[j])
 
-                    if (parlaySports.length == 1) {
-                        const index = sportChartInfo.datasets.map(x => x.leagueId).indexOf(parlaySports[0])
+                    let i, index;
+                    for(i = 0; i < parlaySports.length; i++)
+                    {
+                        index = sportChartInfo.datasets.map(x => x.label).indexOf(parlaySports[i])
                         sportChartInfo.datasets[index].data[sportChartInfo.datasets[index].data.length - 1] += parlayValue
+                    }
 
-                        const parlayLeagues = BetService.getBetsLeagues(dateParlays[j].bets)
-
-                        if (parlayLeagues.length == 1) {
-                            const index = leagueChartInfo.datasets.map(x => x.leagueId).indexOf(parlayLeagues[0])
-                            leagueChartInfo.datasets[index].data[leagueChartInfo.datasets[index].data.length - 1] += parlayValue
-                        }
+                    for(i = 0; i < parlayLeagues.length; i++)
+                    {
+                        index = leagueChartInfo.datasets.map(x => x.label).indexOf(parlayLeagues[i])
+                        leagueChartInfo.datasets[index].data[leagueChartInfo.datasets[index].data.length - 1] += parlayValue
                     }
                 }
             }
@@ -292,7 +295,7 @@ router.get('/dashboard', async (req, res) => {
 
             betOutcomeValue = BetService.checkBetOutcome(bets[i], generalInfo, chartInfo)
 
-            if (bets[i].details.type == 'Moneyline') {
+            if (bets[i].details.type == 'Moneyline' || bets[i].details.type == 'Spread') {
                 const details = JSON.parse(bets[i].details.details)
 
                 let team
@@ -308,6 +311,12 @@ router.get('/dashboard', async (req, res) => {
                 if (!(team in profitByTeam)) profitByTeam[team] = 0
                 if (details.prediction != 'C') profitByTeam[team] += betOutcomeValue
                 proiftByOutcome[details.prediction] += betOutcomeValue
+            } else if (bets[i].details.type !== 'Player Prop') {
+                if (!(bets[i].teamA in profitByTeam)) profitByTeam[bets[i].teamA] = 0
+                profitByTeam[bets[i].teamA] += betOutcomeValue
+                
+                if (!(bets[i].teamB in profitByTeam)) profitByTeam[bets[i].teamB] = 0
+                profitByTeam[bets[i].teamB] += betOutcomeValue
             }
 
             const leagueIndex = leagueChartInfo.datasets.map(x => x.label).indexOf(bets[i].league)

@@ -53,7 +53,7 @@ router.post('/create', async (req, res) => {
         const parlay = await Parlay.create({ value, odds, date, sportsbook, won, payout, push, createdByEmail: req.user.email })
 
         for (let i = 0; i < bets.length; i++) {
-            await BetService.createBet({ ...bets[i], parlayId: parlay.id, sportsbook }, req.user.email)
+            await BetService.createBet({ ...bets[i], parlayId: parlay.id, sportsbook, value: null, odds: null }, req.user.email)
         }
 
         return res.json(parlay)
@@ -76,7 +76,7 @@ router.put('/update/:parlayId', async (req, res) => {
         date = moment(date).format();
 
         const findParlay = await Parlay.findOne({ where: { id: parlayId, createdByEmail: req.user.email } })
-        await findParlay.update({ value, odds, date, sportsbook, won, payout, push })
+        await findParlay.update({ value, odds, date, sportsbook, value: null, odds: null, won, payout, push })
 
         for (let i = 0; i < bets.length; i++) {
             await BetService.updateBet({ ...bets[i], sportsbook })
