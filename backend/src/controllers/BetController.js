@@ -92,6 +92,25 @@ router.put('/update/:betId', async (req, res) => {
     }
 })
 
+router.delete('/delete/:betId', async (req, res) => {
+    try {
+        const { betId } = req.params
+
+        const findBet = await Bet.findOne({ where: { id: betId, createdByEmail: req.user.email } })
+        if (!findBet) {
+            return res.status(400).send("Bet not found.")
+        }
+
+        await findBet.destroy()
+
+        return res.sendStatus(204)
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).send(error.message)
+    }
+})
+
 router.delete('/remove/:betId', async (req, res) => {
     const { betId } = req.params;
 

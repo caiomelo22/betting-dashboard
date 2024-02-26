@@ -87,6 +87,10 @@ export default {
         closeDialog() {
             this.dialog = false
         },
+        async deleteClick(bet) {
+            await this.$axios.delete(`bet/delete/${bet.id}`)
+            await this.getBets();
+        },
         editClick(bet) {
             this.betToUpdate = bet
             this.dialog = true

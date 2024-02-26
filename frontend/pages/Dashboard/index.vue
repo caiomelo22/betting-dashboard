@@ -77,7 +77,7 @@
         </div>
         <div class="section-div">
             <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" lg="4">
                     <div class="chart-div">
                         <p class="chart-header">Profit by Outcome</p>
                         <div>
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" lg="8">
                     <div class="chart-div">
                         <v-row no-gutters align="center" justify="center">
                             <p class="chart-header">Profit by League</p>

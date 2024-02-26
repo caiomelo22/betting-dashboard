@@ -33,6 +33,9 @@ v-model="betTypeFilter" label="Bet Type" hide-details :items="betTypeOptions" ou
                                 <v-btn icon color="primary" @click="editClick(bet)">
                                     <v-icon primary small>mdi-pencil</v-icon>
                                 </v-btn>
+                                <v-btn icon color="red" @click="deleteClick(bet)">
+                                    <v-icon primary small>mdi-trash-can</v-icon>
+                                </v-btn>
                             </td>
                             <td>
                                 {{ generalServices.formatDate(bet.date) }}
