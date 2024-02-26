@@ -1,6 +1,6 @@
 const {BetType} = require('../models/BetType');
 const express = require('express');
-const { authenticate } = require('../middleware/Auth')
+const { authenticate, validateAdminPermission } = require('../middleware/Auth')
 
 const router = express.Router();
 
@@ -8,6 +8,10 @@ router.use(authenticate)
 
 router.get('/list', async (req, res) => {
     try {
+        if (!validateAdminPermission(req.user.email)) {
+            return res.sendStatus(403)
+        }
+
         const betTypes = await BetType.findAll();
 
         return res.json(betTypes)
@@ -19,6 +23,10 @@ router.get('/list', async (req, res) => {
 
 router.post('/create', async (req, res) => {
     try {
+        if (!validateAdminPermission(req.user.email)) {
+            return res.sendStatus(403)
+        }
+        
         const {name} = req.body
 
         const betType = await BetType.create({name})
