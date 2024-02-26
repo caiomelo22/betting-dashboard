@@ -2,19 +2,11 @@
     <div id="nav">
         <nuxt-link :class="{ active: $route.path == '/dashboard' }" to="/dashboard">Dashboard</nuxt-link>
         <nuxt-link :class="{ active: $route.path == '/bets' }" to="/bets">Bets</nuxt-link>
-        <nuxt-link
-:class="{ active: $route.path == '/parlays' }" to="/parlays"
-            style="margin-right: 8px"
->Parlays</nuxt-link>
 
-        <font-awesome-icon
-v-if="$vuetify.theme.dark" :icon="['fa', 'sun']" style="color: #41b883; cursor: pointer"
-            @click="toggleTheme(false)"
-/>
-        <font-awesome-icon
-v-else :icon="['fa', 'moon']" style="color: #41b883; cursor: pointer"
-            @click="toggleTheme(true)"
-/>
+        <font-awesome-icon v-if="$vuetify.theme.dark" :icon="['fa', 'sun']"
+            style="color: #41b883; cursor: pointer; margin-left: 8px" @click="toggleTheme(false)" />
+        <font-awesome-icon v-else :icon="['fa', 'moon']" style="color: #41b883; cursor: pointer; margin-left: 8px"
+            @click="toggleTheme(true)" />
     </div>
 </template>
 
