@@ -112,4 +112,23 @@ router.put('/update/:parlayId', async (req, res) => {
     }
 })
 
+router.delete('/delete/:parlayId', async (req, res) => {
+    try {
+        const { parlayId } = req.params
+
+        const findParlay = await Parlay.findOne({ where: { id: parlayId, createdByEmail: req.user.email } })
+        if (!findParlay) {
+            return res.status(400).send("Parlay not found.")
+        }
+
+        await findParlay.destroy()
+
+        return res.sendStatus(204)
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).send(error.message)
+    }
+})
+
 module.exports = router
