@@ -5,18 +5,12 @@
         </div>
         <div v-else>
             <div class="row">
-                <v-select
-v-model="sportFilter" label="Sport" hide-details :items="sportFilterOptions" outlined dense
-                    class="text-field select-field mr-4" @change="getBets()"
-/>
-                <v-select
-v-model="leagueFilter" label="League" hide-details :items="leagueFilterOptions" outlined dense
-                    class="text-field select-field mr-4" @change="getBets()"
-/>
-                <v-select
-v-model="betTypeFilter" label="Bet Type" hide-details :items="betTypeOptions" outlined dense
-                    class="text-field select-field mr-4" @change="getBets()"
-/>
+                <v-select v-model="sportFilter" label="Sport" hide-details :items="sportFilterOptions" outlined dense
+                    class="text-field select-field mr-4" @change="getBets()" />
+                <v-select v-model="leagueFilter" label="League" hide-details :items="leagueFilterOptions" outlined dense
+                    class="text-field select-field mr-4" @change="getBets()" />
+                <v-select v-model="betTypeFilter" label="Bet Type" hide-details :items="betTypeOptions" outlined dense
+                    class="text-field select-field mr-4" @change="getBets()" />
                 <v-btn color="#41b883" dark @click="dialog = true">
                     <font-awesome-icon :icon="['fa', 'plus']" style="color: white; margin-right: 8px" />
                     Add Bet
@@ -53,15 +47,11 @@ v-model="betTypeFilter" label="Bet Type" hide-details :items="betTypeOptions" ou
                                 {{ bet.odds }}
                             </td>
                             <td>
-                                <font-awesome-icon
-v-if="bet.won === null" :icon="['fa', 'arrows-rotate']"
-                                    style="color: #9FC9F3"
-/>
+                                <font-awesome-icon v-if="bet.won === null" :icon="['fa', 'arrows-rotate']"
+                                    style="color: #9FC9F3" />
                                 <font-awesome-icon v-else-if="bet.push" :icon="['fa', 'minus']" style="color: #FF6E31" />
-                                <font-awesome-icon
-v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
-                                    style="color: green"
-/>
+                                <font-awesome-icon v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
+                                    style="color: green" />
                                 <font-awesome-icon v-else :icon="['fa', 'xmark']" style="color: red" />
                             </td>
                             <td>
@@ -75,10 +65,8 @@ v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
             </v-pagination>
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
-            <ManageBetDialog
-:sports-chain="sportsChain" :sportsbook-options="sportsbooks" :bet-type-options="betTypes"
-                :bet-prop="betToUpdate" @close="closeDialog" @added="betAdded"
-/>
+            <ManageBetDialog :sports-chain="sportsChain" :sportsbook-options="sportsbooks" :bet-type-options="betTypes"
+                :bet-prop="betToUpdate" @close="closeDialog" @added="betAdded" />
         </v-dialog>
     </v-container>
 </template>

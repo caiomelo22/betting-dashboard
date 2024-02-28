@@ -9,7 +9,7 @@ export const getBetPrediction = (bet) => {
         case 'Total':
             return `${predictionStr} ${bet.details.details.line}`;
         case 'Both Score':
-            return bet.details.details.prediction ? 'Yes' : 'No';
+            return bet.details.details.prediction ? 'Both Score' : 'Not Both Score';
         case 'Spread':
             return `${bet.details.details.prediction} ${bet.details.details.spread >= 0 ? '+' : ''}${bet.details.details.spread}`;
         case 'Player Prop':

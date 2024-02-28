@@ -32,6 +32,15 @@ router.get('/list', async (req, res) => {
 
         const totalPages = Math.ceil(count / pageSize);
 
+        let i, j
+        for(i = 0; i < rows.length; i++)
+        {
+            for(j = 0; j < rows[i].bets.length; j++)
+            {
+                rows[i].bets[j].details.details = JSON.parse(rows[i].bets[j].details.details)
+            }
+        }
+
         const returnObject = {
             totalPages,
             parlays: rows
@@ -49,6 +58,10 @@ router.post('/create', async (req, res) => {
 
     try {
         date = moment(date).format();
+
+        if (won && !payout) {
+            payout = odds * value
+        }
 
         const parlay = await Parlay.create({ value, odds, date, sportsbook, won, payout, push, createdByEmail: req.user.email })
 
@@ -75,7 +88,12 @@ router.put('/update/:parlayId', async (req, res) => {
     try {
         date = moment(date).format();
 
+        if (won && !payout) {
+            payout = odds * value
+        }
+
         const findParlay = await Parlay.findOne({ where: { id: parlayId, createdByEmail: req.user.email } })
+        
         await findParlay.update({ value, odds, date, sportsbook, value: null, odds: null, won, payout, push })
 
         for (let i = 0; i < bets.length; i++) {
