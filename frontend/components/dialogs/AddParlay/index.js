@@ -6,10 +6,17 @@ export default {
     name: 'AddParlayDialog',
     components: { NumberField },
     computed: {
-        total_prediction_options() {
+        totalPredictionOptions() {
             return [
                 'Over',
                 'Under'
+            ]
+        },
+        wonOptions() {
+            return [
+                { text: "Pending", value: null },
+                { text: "Yes", value: true },
+                { text: "No", value: false },
             ]
         }
     },
@@ -17,8 +24,12 @@ export default {
         validationService: new ValidationService(),
         parlay: {
             date: null,
+            sportsbook: null,
             value: null,
             odds: null,
+            won: null,
+            push: false,
+            payout: null,
             bets: []
         },
         bothScorePredictionOptions,
@@ -26,23 +37,38 @@ export default {
         winnerPrediction: null,
         editIndex: null,
         bet: null,
+        leagueOptions: [],
         teamOptions: [],
         numberFieldEnum: NumberFieldEnum
     }),
     props: {
-        leagues: Array,
+        parlayProp: Object,
+        sportsChain: Array,
+        sportsbookOptions: Array,
         betTypeOptions: Array
     },
     created() {
         this.parlay.date = this.$moment().format('YYYY-MM-DD')
-
-        if (this.leagues.length === 1) {
-            this.bet.leagueId = this.leagues[0].id
-            this.league_changed(this.leagues[0])
-        }
     },
     methods: {
-        getBetPrediction (bet) {
+        parlayOddsChanged(value) {
+            this.parlay.odds = value
+
+            this.updateParlayPayout()
+        },
+        parlayValueChanged(value) {
+            this.parlay.value = value
+
+            this.updateParlayPayout()
+        },
+        updateParlayPayout() {
+            if (this.parlay.won) {
+                this.parlay.payout = parseFloat((this.parlay.odds * this.parlay.value).toFixed(2))
+            } else {
+                this.parlay.payout = 0
+            }
+        },
+        getBetPrediction(bet) {
             switch (bet.type) {
                 case 'Moneyline':
                     return bet.prediction;
@@ -54,89 +80,137 @@ export default {
                     return `${bet.prediction} +${bet.spread}`;
             }
         },
-        add_bet() {
+        betTypeChanged() {
+            switch (this.bet.type) {
+                case 'Total':
+                    this.bet.details = {
+                        line: null
+                    }
+                    break;
+                case 'Spread':
+                    this.bet.details = {
+                        spread: null
+                    }
+                    break;
+                case 'Player Prop':
+                    this.bet.details = {
+                        player: null
+                    }
+                    break;
+                default:
+                    this.bet.details = {}
+            }
+        },
+        addBet() {
             const result = this.$refs.betForm.validate()
             if (!result) {
                 return
             }
+            console.log('Bet', this.bet)
             this.parlay.bets.push(this.bet)
-            this.reset_new_bet()
+            console.log('Parlay Bets', this.parlay.bets)
+            this.resetNewBet()
         },
-        reset_new_bet() {
+        resetNewBet() {
             this.bet = null
             this.editIndex = null
             this.winnerPrediction = null
         },
-        remove_bet_click(i) {
+        removeBetClick(i) {
             this.parlay.bets.splice(i, 1)
         },
-        edit_bet_click(bet, i) {
+        editBetClick(bet, i) {
             this.editIndex = i
             this.bet = { ...bet }
         },
-        edit_bet() {
+        editBet() {
             this.parlay.bets[this.editIndex] = this.bet
-            this.reset_new_bet()
+            this.resetNewBet()
         },
-        add_bet_click() {
+        addBetClick() {
             if (!this.bet) {
                 this.bet = {
-                    leagueId: null,
-                    homeTeamId: null,
-                    awayTeamId: null,
-                    homeTeam: null,
-                    awayTeam: null,
+                    sport: null,
+                    league: null,
+                    teamA: null,
+                    teamB: null,
+                    sportsbook: null,
+                    date: this.parlay.date,
                     type: 'Moneyline',
+                    push: false,
                     prediction: null,
-                    spread: null,
-                    line: null
+                    won: null,
+                    payout: 0,
+                    details: {}
                 }
             }
         },
-        save_bet_click() {
+        saveBetClick() {
             if (this.editIndex == null) {
-                this.add_bet()
+                this.addBet()
             } else {
-                this.edit_bet()
+                this.editBet()
             }
         },
-        winner_prediction_changed() {
-            switch (this.winnerPrediction) {
-                case this.bet.homeTeamId:
-                    this.bet.prediction = 'Home'
-                    break;
-                case this.bet.awayTeamId:
-                    this.bet.prediction = 'Away'
-                    break;
-                case 0:
-                    this.bet.prediction = 'Draw'
-                    break;
-            }
-        },
-        get_winner_options() {
-            if (!this.bet.leagueId || !this.bet.homeTeamId || !this.bet.awayTeamId) {
+        getWinnerOptions() {
+            if (!this.bet.league || !this.bet.teamA || !this.bet.teamB) {
                 return []
             }
-            const leagueSelected = this.leagues.find(x => x.id === this.bet.leagueId)
             return [
-                leagueSelected.teams.find(x => x.teamId === this.bet.homeTeamId).team,
-                leagueSelected.teams.find(x => x.teamId === this.bet.awayTeamId).team,
-                { name: 'Draw', id: 0 }
+                { text: this.bet.teamA, value: "A" },
+                { text: this.bet.teamB, value: "B" },
+                { text: 'Draw', value: "C" },
             ]
         },
-        league_changed(leagueId) {
-            const league = this.leagues.find(x => x.id === leagueId)
-            this.bet.homeTeamId = null;
-            this.bet.awayTeamId = null;
-            this.teamOptions = league.teams.map(x => x.team);
+        sportChanged() {
+            this.league = null
+            this.leagueOptions = []
+
+            const sportIndex = this.sportsChain.map(x => x.name).indexOf(this.bet.sport)
+
+            if (sportIndex != -1) {
+                this.selectedSport = this.sportsChain[sportIndex]
+
+                this.leagueOptions = this.selectedSport.leagues;
+                if (this.leagueOptions.length == 1) {
+                    this.bet.league = this.leagueOptions[0].name
+                }
+            } else {
+                this.selectedSport = null
+            }
+
+            this.leagueChanged()
+        },
+        leagueChanged() {
+            this.bet.teamA = null
+            this.bet.teamB = null
+            this.teamOptions = []
+
+            if (this.leagueOptions) {
+                const leagueIndex = this.leagueOptions.map(x => x.name).indexOf(this.bet.league)
+
+                if (leagueIndex != -1) {
+                    this.selectedLeague = this.leagueOptions[leagueIndex]
+
+                    this.teamOptions = this.selectedLeague.teams;
+                }
+            }
         },
         async submit() {
             const result = this.$refs.form.validate();
             if (!result || this.parlay.bets.length == 0) {
                 return;
             }
+
             this.loading = true
-            await this.$axios.post(`parlay/create`, this.parlay)
+
+            const bets = this.parlay.bets
+
+            for (let i = 0; i < bets.length; i++) {
+                bets[i] = { ...bets[i], details: JSON.stringify(bets[i].details) }
+            }
+
+            await this.$axios.post(`parlay/create`, { ...this.parlay, bets })
                 .then((resp) => {
                     this.$emit('added')
                 });

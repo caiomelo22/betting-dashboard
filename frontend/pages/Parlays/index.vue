@@ -65,7 +65,8 @@
                                 style="width: 100%; display: table-row; border: 1px solid #DADADA">
                                 <td colspan="12">
                                     <div v-for="(bet, betIndex) in parlay.bets" :key="betIndex">
-                                        <div style="color: #41b883; font-size: 18px;" :style="`border-top: ${betIndex != 0? '1px solid #DADADA' : 'none'}`"
+                                        <div style="color: #41b883; font-size: 18px;"
+                                            :style="`border-top: ${betIndex != 0 ? '1px solid #DADADA' : 'none'}`"
                                             v-if="betIndex == 0 || (bet.teamA != parlay.bets[betIndex - 1].teamA || bet.teamB != parlay.bets[betIndex - 1].teamB)">
                                             {{ `${bet.teamA} x ${bet.teamB}` }}
                                         </div>
@@ -83,7 +84,8 @@
             </v-pagination>
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
-            <AddParlayDialog :leagues="leagues" @close="dialog = false" @added="parlayAdded" />
+            <AddParlayDialog :sports-chain="sportsChain" :sportsbook-options="sportsbooks" :bet-type-options="betTypes.map(x => x.name)"
+                @close="dialog = false" @added="parlayAdded" />
         </v-dialog>
     </v-container>
 </template>

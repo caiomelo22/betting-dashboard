@@ -6,13 +6,13 @@ export default {
     name: 'ManageBetDialog',
     components: { NumberField },
     computed: {
-        total_prediction_options() {
+        totalPredictionOptions() {
             return [
                 'Over',
                 'Under'
             ]
         },
-        won_options() {
+        wonOptions() {
             return [
                 { text: "Pending", value: null },
                 { text: "Yes", value: true },
@@ -73,7 +73,7 @@ export default {
             if (this.sportsChain.length === 1) {
                 this.selectedSport = this.sportsChain[0]
                 this.bet.sport = this.selectedSport.name
-                this.sport_changed()
+                this.sportChanged()
             }
         }
     },
@@ -106,7 +106,7 @@ export default {
             this.selectedLeague = this.leagueOptions[leagueIndex]
             this.teamOptions = this.selectedLeague.teams
         },
-        bet_type_changed() {
+        betTypeChanged() {
             switch (this.bet.type) {
                 case 'Total':
                     this.bet.details = {
@@ -127,7 +127,7 @@ export default {
                     this.bet.details = {}
             }
         },
-        get_winner_options() {
+        getWinnerOptions() {
             if (!this.bet.league || !this.bet.teamA || !this.bet.teamB) {
                 return []
             }
@@ -137,7 +137,7 @@ export default {
                 { text: 'Draw', value: "C" },
             ]
         },
-        sport_changed() {
+        sportChanged() {
             this.league = null
             this.leagueOptions = []
 
@@ -154,9 +154,9 @@ export default {
                 this.selectedSport = null
             }
 
-            this.league_changed()
+            this.leagueChanged()
         },
-        league_changed() {
+        leagueChanged() {
             this.bet.teamA = null
             this.bet.teamB = null
             this.teamOptions = []

@@ -26,4 +26,19 @@ export default class GeneralServices {
         }
         return str.join("&");
     }
+
+    async getSportsbooks(axios) {
+        const response = await axios.get(`bet/sportsbooks/list`)
+        return response.data
+    }
+
+    async getSportsChain(axios) {
+        const response = await axios.get(`bet/sports-chain`)
+        return response.data
+    }
+
+    async getBetTypeOptions(axios) {
+        const response = await axios.get(`bet-type/list`)
+        return response.data
+    }
 }

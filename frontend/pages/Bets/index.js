@@ -72,7 +72,7 @@ export default {
         if (this.$route.query.page) {
             this.page = parseInt(this.$route.query.page);
         }
-        await this.getBetTypeOptions()
+        this.betTypes = await this.generalServices.getBetTypeOptions(this.$axios)
         await this.getBets();
         await this.reloadAssets()
     },
@@ -96,15 +96,9 @@ export default {
             this.dialog = true
         },
         async reloadAssets() {
-            await this.getSportsChain();
+            this.sportsChain = await this.generalServices.getSportsChain(this.$axios);
+            this.sportsbooks = await this.generalServices.getSportsbooks(this.$axios)
             await this.getLeagues();
-            await this.getSportsbooks()
-        },
-        async getBetTypeOptions() {
-            await this.$axios.get(`bet-type/list`)
-                .then((resp) => {
-                    this.betTypes = resp.data.map(x => x.name)
-                });
         },
         getBetPrediction,
         getBetProfit(bet) {
@@ -136,22 +130,10 @@ export default {
             });
             this.getBets();
         },
-        async getSportsChain() {
-            await this.$axios.get(`bet/sports-chain`)
-                .then((resp) => {
-                    this.sportsChain = resp.data
-                });
-        },
         async getLeagues() {
             await this.$axios.get(`bet/leagues/list`)
                 .then((resp) => {
                     this.leagues = resp.data
-                });
-        },
-        async getSportsbooks() {
-            await this.$axios.get(`bet/sportsbooks/list`)
-                .then((resp) => {
-                    this.sportsbooks = resp.data
                 });
         },
         async getBets() {

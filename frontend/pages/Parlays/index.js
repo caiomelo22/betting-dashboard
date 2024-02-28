@@ -11,7 +11,9 @@ export default {
         loading: false,
         dialog: false,
         selectedParlay: null,
-        leagues: [],
+        betTypes: [],
+        sportsbooks: [],
+        sportsChain: [],
         showParlayDetails: null,
         parlays: []
     }),
@@ -26,6 +28,9 @@ export default {
         if (this.$route.query.page) {
             this.page = parseInt(this.$route.query.page);
         }
+        this.betTypes = await this.generalServices.getBetTypeOptions(this.$axios)
+        this.sportsChain = await this.generalServices.getSportsChain(this.$axios);
+        this.sportsbooks = await this.generalServices.getSportsbooks(this.$axios)
         await this.getParlays();
     },
     methods: {

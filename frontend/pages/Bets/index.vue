@@ -65,7 +65,7 @@
             </v-pagination>
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
-            <ManageBetDialog :sports-chain="sportsChain" :sportsbook-options="sportsbooks" :bet-type-options="betTypes"
+            <ManageBetDialog :sports-chain="sportsChain" :sportsbook-options="sportsbooks" :bet-type-options="betTypes.map(x => x.name)"
                 :bet-prop="betToUpdate" @close="closeDialog" @added="betAdded" />
         </v-dialog>
     </v-container>
