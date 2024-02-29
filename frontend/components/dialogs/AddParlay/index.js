@@ -49,7 +49,32 @@ export default {
         betTypeOptions: Array
     },
     created() {
-        this.parlay.date = this.$moment().format('YYYY-MM-DD')
+        if (this.parlayProp) {
+            this.parlay = {
+                ...this.parlayProp,
+                changed: true
+            }
+
+            const bets = [...this.parlay.bets]
+
+            for (let i = 0; i < bets.length; i++) {
+                bets[i] = {
+                    ...bets[i],
+                    type: bets[i].details.type,
+                    prediction: bets[i].details.details.prediction,
+                    earlyPayout: bets[i].details.earlyPayout,
+                    details: bets[i].details.details
+                }
+
+                bets[i].date = bets[i].date.split('T')[0]
+            }
+
+            this.parlay.bets = bets
+
+            this.parlay.date = this.parlay.date.split('T')[0]
+        } else {
+            this.parlay.date = this.$moment().format('YYYY-MM-DD')
+        }
     },
     methods: {
         getBetPrediction,
@@ -96,9 +121,7 @@ export default {
             if (!result) {
                 return
             }
-            console.log('Bet', this.bet)
             this.parlay.bets.push(this.bet)
-            console.log('Parlay Bets', this.parlay.bets)
             this.resetNewBet()
         },
         resetNewBet() {
@@ -112,6 +135,16 @@ export default {
         editBetClick(bet, i) {
             this.editIndex = i
             this.bet = { ...bet }
+
+            const sportIndex = this.sportsChain.map(x => x.name).indexOf(this.bet.sport)
+            const selectedSport = this.sportsChain[sportIndex]
+
+            this.leagueOptions = selectedSport.leagues
+
+            const leagueIndex = this.leagueOptions.map(x => x.name).indexOf(this.bet.league)
+
+            this.selectedLeague = this.leagueOptions[leagueIndex]
+            this.teamOptions = this.selectedLeague.teams
         },
         editBet() {
             this.parlay.bets[this.editIndex] = this.bet
@@ -197,10 +230,17 @@ export default {
                 bets[i] = { ...bets[i], details: JSON.stringify(bets[i].details) }
             }
 
-            await this.$axios.post(`parlay/create`, { ...this.parlay, bets })
-                .then((resp) => {
-                    this.$emit('added')
-                });
+            if (this.parlayProp) {
+                await this.$axios.put(`parlay/update/${this.parlayProp.id}`, { ...this.parlay, bets })
+                    .then((resp) => {
+                        this.$emit('added')
+                    });
+            } else {
+                await this.$axios.post(`parlay/create`, { ...this.parlay, bets })
+                    .then((resp) => {
+                        this.$emit('added')
+                    });
+            }
             this.loading = false
         }
     }

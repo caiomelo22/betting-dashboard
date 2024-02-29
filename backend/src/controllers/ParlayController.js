@@ -94,10 +94,22 @@ router.put('/update/:parlayId', async (req, res) => {
 
         const findParlay = await Parlay.findOne({ where: { id: parlayId, createdByEmail: req.user.email } })
         
-        await findParlay.update({ value, odds, date, sportsbook, value: null, odds: null, won, payout, push })
+        await findParlay.update({ value, odds, date, sportsbook, won, payout, push })
 
-        for (let i = 0; i < bets.length; i++) {
-            await BetService.updateBet({ ...bets[i], sportsbook })
+        // Fetch existing bets associated with the parlay
+        const existingBets = await findParlay.getBets();
+
+        // Delete bets that are not present in the updated array
+        for (let i = 0; i < existingBets.length; i++) {
+            const existingBet = existingBets[i];
+            const betIndex = bets.findIndex(bet => bet.id === existingBet.id);
+            if (betIndex === -1) {
+                // Delete the bet as it's not present in the updated array
+                await existingBet.destroy();
+            } else {
+                // Update the bet if it's present in the updated array
+                await BetService.updateBet(bets[betIndex].id, { ...bets[betIndex], sportsbook, value: null, odds: null }, req.user.email)
+            }
         }
 
         return res.sendStatus(204)

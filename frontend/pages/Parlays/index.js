@@ -10,7 +10,7 @@ export default {
         totalPages: 1,
         loading: false,
         dialog: false,
-        selectedParlay: null,
+        parlayToUpdate: null,
         betTypes: [],
         sportsbooks: [],
         sportsChain: [],
@@ -32,6 +32,13 @@ export default {
         this.sportsChain = await this.generalServices.getSportsChain(this.$axios);
         this.sportsbooks = await this.generalServices.getSportsbooks(this.$axios)
         await this.getParlays();
+    },
+    watch: {
+        dialog(value) {
+            if (!value) {
+                this.parlayToUpdate = null
+            }
+        }
     },
     methods: {
         getBetPrediction,
@@ -61,9 +68,13 @@ export default {
             await this.$axios.delete(`parlay/delete/${parlay.id}`)
             await this.getParlays();
         },
-        editClick(bet) {
-            // this.betToUpdate = bet
-            // this.dialog = true
+        editClick(parlay) {
+            this.parlayToUpdate = parlay
+            this.dialog = true
+        },
+        closeManageDialog() {
+            this.parlayToUpdate = null
+            this.dialog = false
         },
         detailsClick(parlay) {
             if (this.showParlayDetails != parlay) {

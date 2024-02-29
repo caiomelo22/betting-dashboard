@@ -84,7 +84,7 @@
             </v-pagination>
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
-            <AddParlayDialog :sports-chain="sportsChain" :sportsbook-options="sportsbooks" :bet-type-options="betTypes.map(x => x.name)"
+            <AddParlayDialog :sports-chain="sportsChain" :sportsbook-options="sportsbooks" :parlay-prop="parlayToUpdate" :bet-type-options="betTypes.map(x => x.name)"
                 @close="dialog = false" @added="parlayAdded" />
         </v-dialog>
     </v-container>
