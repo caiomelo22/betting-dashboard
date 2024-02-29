@@ -52,7 +52,7 @@
                                     {{ `${b.teamA} x ${b.teamB}` }}
                                 </td>
                                 <td>
-                                    {{ getBetPrediction(b) }}
+                                    {{ getBetPrediction(b.type, b.prediction, b.details) }}
                                 </td>
                                 <td>
                                     <v-icon color="#41b883" @click="editBetClick(b, i)">mdi-pencil</v-icon>
@@ -130,10 +130,17 @@
                             <font-awesome-icon :icon="['fa', 'floppy-disk']" style="color: white; margin-right: 8px" />
                             Save Bet
                         </v-btn>
-                        <v-btn v-else color="#41b883" dark @click="addBetClick">
-                            <font-awesome-icon :icon="['fa', 'plus']" style="color: white; margin-right: 8px" />
-                            Add Bet
-                        </v-btn>
+                        <div v-else>
+                            <v-btn v-if="parlay.bets.length > 0" color="#41b883" dark
+                                @click="addBetClick(parlay.bets[parlay.bets.length - 1])">
+                                <font-awesome-icon :icon="['fa', 'plus']" style="color: white; margin-right: 8px" />
+                                Add Same Game Bet
+                            </v-btn>
+                            <v-btn color="#41b883" dark @click="addBetClick(null)" class="ml-2">
+                                <font-awesome-icon :icon="['fa', 'plus']" style="color: white; margin-right: 8px" />
+                                Add Bet
+                            </v-btn>
+                        </div>
                         <v-btn v-if="bet" color="red" class="ml-2" dark @click="resetNewBet">
                             Cancel
                         </v-btn>

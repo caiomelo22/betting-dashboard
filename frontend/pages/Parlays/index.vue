@@ -71,7 +71,7 @@
                                             {{ `${bet.teamA} x ${bet.teamB}` }}
                                         </div>
                                         <div>
-                                            {{ `${bet.details.type}: ${getBetPrediction(bet)}` }}
+                                            {{ `${bet.details.type}: ${getBetPrediction(bet.details.type, bet.details.details.prediction, bet.details.details)}` }}
                                         </div>
                                     </div>
                                 </td>

@@ -2,6 +2,7 @@ import NumberField from "~/components/textFields/NumberField/index.vue";
 import ValidationService from "~/services/ValidationService";
 import { NumberFieldEnum } from "~/shared/enums/NumberFieldEnum";
 import { bothScorePredictionOptions } from "~/shared/enums/BothScorePredictionOptions";
+import { getBetPrediction } from "~/shared/functions/GetBetPrediction";
 export default {
     name: 'AddParlayDialog',
     components: { NumberField },
@@ -51,6 +52,7 @@ export default {
         this.parlay.date = this.$moment().format('YYYY-MM-DD')
     },
     methods: {
+        getBetPrediction,
         parlayOddsChanged(value) {
             this.parlay.odds = value
 
@@ -66,18 +68,6 @@ export default {
                 this.parlay.payout = parseFloat((this.parlay.odds * this.parlay.value).toFixed(2))
             } else {
                 this.parlay.payout = 0
-            }
-        },
-        getBetPrediction(bet) {
-            switch (bet.type) {
-                case 'Moneyline':
-                    return bet.prediction;
-                case 'Total':
-                    return `${bet.prediction} ${bet.line}`;
-                case 'Both Score':
-                    return bet.prediction ? 'Yes' : 'No';
-                case 'Spread':
-                    return `${bet.prediction} +${bet.spread}`;
             }
         },
         betTypeChanged() {
@@ -127,22 +117,19 @@ export default {
             this.parlay.bets[this.editIndex] = this.bet
             this.resetNewBet()
         },
-        addBetClick() {
-            if (!this.bet) {
-                this.bet = {
-                    sport: null,
-                    league: null,
-                    teamA: null,
-                    teamB: null,
-                    sportsbook: null,
-                    date: this.parlay.date,
-                    type: 'Moneyline',
-                    push: false,
-                    prediction: null,
-                    won: null,
-                    payout: 0,
-                    details: {}
-                }
+        addBetClick(lastBet) {
+            this.bet = {
+                sport: lastBet?.sport,
+                league: lastBet?.league,
+                teamA: lastBet?.teamA,
+                teamB: lastBet?.teamB,
+                date: this.parlay.date,
+                type: 'Moneyline',
+                push: false,
+                prediction: null,
+                won: null,
+                payout: 0,
+                details: {}
             }
         },
         saveBetClick() {

@@ -38,7 +38,7 @@
                                 {{ `${bet.teamA} x ${bet.teamB}` }}
                             </td>
                             <td>
-                                {{ getBetPrediction(bet) }}
+                                {{ getBetPrediction(bet.details.type, bet.details.details.prediction, bet.details.details) }}
                             </td>
                             <td>
                                 {{ generalServices.formatValue(bet.value) }}

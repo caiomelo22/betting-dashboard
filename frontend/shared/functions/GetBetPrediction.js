@@ -1,19 +1,19 @@
-export const getBetPrediction = (bet) => {
-    let predictionStr = bet.details.details.prediction.toString();
+export const getBetPrediction = (type, prediction, details) => {
+    let predictionStr = prediction.toString();
     predictionStr = predictionStr.replace('Over', '↑');
     predictionStr = predictionStr.replace('Under', '↓');
 
-    switch (bet.details.type) {
+    switch (type) {
         case 'Moneyline':
-            return `${bet.details.details.prediction}${bet.details.details.includeDraw ? '/Draw' : ''}`;
+            return `${prediction}${details.includeDraw ? '/Draw' : ''}`;
         case 'Total':
-            return `${predictionStr} ${bet.details.details.line}`;
+            return `${predictionStr} ${details.line}`;
         case 'Both Score':
-            return bet.details.details.prediction ? 'Both Score' : 'Not Both Score';
+            return prediction ? 'Both Score' : 'Not Both Score';
         case 'Spread':
-            return `${bet.details.details.prediction} ${bet.details.details.spread >= 0 ? '+' : ''}${bet.details.details.spread}`;
+            return `${prediction} ${details.spread >= 0 ? '+' : ''}${details.spread}`;
         case 'Player Prop':
-            return `${bet.details.details.player} ${predictionStr}`;
+            return `${details.player} ${predictionStr}`;
         default:
             return predictionStr;
     }
