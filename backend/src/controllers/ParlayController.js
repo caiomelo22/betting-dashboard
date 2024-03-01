@@ -112,6 +112,11 @@ router.put('/update/:parlayId', async (req, res) => {
             }
         }
 
+        const newBets = bets.filter(x => !x.id)
+        for (let i = 0; i < newBets.length; i++) {
+            await BetService.createBet({ ...newBets[i], parlayId, sportsbook, value: null, odds: null }, req.user.email)
+        }
+
         return res.sendStatus(204)
     } catch (error) {
         if (error.message == "Bet type does not exist.")
