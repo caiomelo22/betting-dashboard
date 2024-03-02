@@ -136,7 +136,7 @@ router.get('/dashboard', async (req, res) => {
         const user = await User.findOne({ where: { email: req.user.email } })
 
         const bets = await Bet.findAll({
-            where: { createdByEmail: req.user.email, value: { [Op.ne]: null } },
+            where: { createdByEmail: req.user.email },
             include: [{ model: BetDetails, as: 'details' }], order: [
                 ['date', 'ASC'],
                 ['createdAt', 'DESC'],
@@ -232,8 +232,10 @@ router.get('/dashboard', async (req, res) => {
         }
 
         const validBets = bets.filter(x => x.value)
+        console.log(parlays.reduce((prev, curr) => prev + curr.odds, 0), parlays.length)
         let generalInfo = {
-            avgOdds: (validBets.reduce((prev, curr) => prev + curr.odds, 0)) / validBets.length,
+            avgBetOdds: (validBets.reduce((prev, curr) => prev + curr.odds, 0)) / validBets.length,
+            avgParlayOdds: (parlays.reduce((prev, curr) => prev + curr.odds, 0)) / parlays.length,
             totalBet: 0,
             totalProfit: 0,
             totalGreens: 0,
