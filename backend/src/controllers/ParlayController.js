@@ -14,7 +14,7 @@ router.get('/list', async (req, res) => {
     try {
         const page = parseInt(req.query.page);
 
-        const pageSize = 15
+        const pageSize = 20
 
         const include = {
             model: Bet,
@@ -28,6 +28,7 @@ router.get('/list', async (req, res) => {
                 ['date', 'DESC'],
                 ['updatedAt', 'DESC'],
             ],
+            distinct: true
         });
 
         const totalPages = Math.ceil(count / pageSize);
