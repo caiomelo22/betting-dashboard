@@ -243,6 +243,23 @@ router.get('/dashboard', async (req, res) => {
             totalDeposited: user.totalDeposited
         }
 
+        if (bets.length > 0) {
+            let initialDate = moment.utc(bets[0].date).subtract(1, 'days').format('DD-MM-YYYY');
+            labels.push(initialDate)
+
+            for (let j = 0; j < leagues.length; j++) {
+                leagueChartInfo.datasets[j].data.push(0)
+            }
+
+            for (let j = 0; j < sports.length; j++) {
+                sportChartInfo.datasets[j].data.push(0)
+            }
+
+            for (let z = 0; z < chartInfo.datasets.length; z++) {
+                chartInfo.datasets[z].data.push(0)
+            }
+        }
+
         for (let i = 0; i < bets.length; i++) {
             let betDate = moment.utc(bets[i].date).format('DD-MM-YYYY')
             if (labels[labels.length - 1] != betDate) {
