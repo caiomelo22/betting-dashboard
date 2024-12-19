@@ -77,6 +77,29 @@ router.post('/create', async (req, res) => {
     }
 })
 
+router.post('/create-many', async (req, res) => {
+    const { bets } = req.body
+
+    let createdBets = []
+
+    for(let i = 0; i < bets.length; i++) {
+        try {
+            let newBet = await BetService.createBet(bets[i], req.user.email)
+            createdBets.push(newBet)
+        }
+        catch (error) {
+            if (error.message == "Bet type does not exist.") {
+                return res.status(400).send(error.message)
+            }
+
+            console.log(error)
+            return res.status(500).send(error.message)
+        }
+    }
+
+    return res.json(createdBets)
+})
+
 router.put('/update/:betId', async (req, res) => {
     try {
         const { betId } = req.params
@@ -265,7 +288,7 @@ router.get('/dashboard', async (req, res) => {
             if (labels[labels.length - 1] != betDate) {
 
                 BetService.updateBarChartColors(chartInfo)
- 
+
                 labels.push(betDate)
 
                 chartInfo.datasets[1].data.push(generalInfo.totalProfit)
@@ -292,14 +315,12 @@ router.get('/dashboard', async (req, res) => {
                     const parlayLeagues = ParlayService.getParlayLeagues(dateParlays[j])
 
                     let i, index;
-                    for(i = 0; i < parlaySports.length; i++)
-                    {
+                    for (i = 0; i < parlaySports.length; i++) {
                         index = sportChartInfo.datasets.map(x => x.label).indexOf(parlaySports[i])
                         sportChartInfo.datasets[index].data[sportChartInfo.datasets[index].data.length - 1] += parlayValue
                     }
 
-                    for(i = 0; i < parlayLeagues.length; i++)
-                    {
+                    for (i = 0; i < parlayLeagues.length; i++) {
                         index = leagueChartInfo.datasets.map(x => x.label).indexOf(parlayLeagues[i])
                         leagueChartInfo.datasets[index].data[leagueChartInfo.datasets[index].data.length - 1] += parlayValue
                     }
@@ -333,7 +354,7 @@ router.get('/dashboard', async (req, res) => {
             } else if (bets[i].details.type !== 'Player Prop') {
                 if (!(bets[i].teamA in profitByTeam)) profitByTeam[bets[i].teamA] = 0
                 profitByTeam[bets[i].teamA] += betOutcomeValue
-                
+
                 if (!(bets[i].teamB in profitByTeam)) profitByTeam[bets[i].teamB] = 0
                 profitByTeam[bets[i].teamB] += betOutcomeValue
             }
