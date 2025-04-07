@@ -40,6 +40,7 @@ router.get('/list', async (req, res) => {
             include: [{ model: BetDetails, as: 'details', where: detailsConditions }],
             offset: (page - 1) * pageSize, limit: pageSize, order: [
                 ['date', 'DESC'],
+                ['teamA', 'DESC'],
                 ['updatedAt', 'DESC'],
             ],
         });
