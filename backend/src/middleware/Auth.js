@@ -17,7 +17,7 @@ function authenticate(req, res, next) {
 }
 
 function validateAdminPermission(userEmail) {
-    return userEmail == "caio.g.melo@hotmail.com"
+    return userEmail == process.env.ADMIN_USER
 }
 
 module.exports = {
