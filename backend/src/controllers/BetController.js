@@ -256,7 +256,6 @@ router.get('/dashboard', async (req, res) => {
         }
 
         const validBets = bets.filter(x => x.value)
-        console.log(parlays.reduce((prev, curr) => prev + curr.odds, 0), parlays.length)
         let generalInfo = {
             avgBetOdds: (validBets.reduce((prev, curr) => prev + curr.odds, 0)) / validBets.length,
             avgParlayOdds: (parlays.reduce((prev, curr) => prev + curr.odds, 0)) / parlays.length,
