@@ -8,10 +8,6 @@ router.use(authenticate)
 
 router.get('/list', async (req, res) => {
     try {
-        if (!validateAdminPermission(req.user.email)) {
-            return res.sendStatus(403)
-        }
-
         const betTypes = await BetType.findAll();
 
         return res.json(betTypes)
