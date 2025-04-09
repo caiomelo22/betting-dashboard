@@ -1,29 +1,19 @@
 const { Router } = require("express");
 
-const leagueController = require('../controllers/LeagueController');
-const betController = require('../controllers/BetController');
-const matchController = require('../controllers/MatchController');
-const configController = require('../controllers/ConfigController');
-const parlayController = require('../controllers/ParlayController');
+const BetController = require('../controllers/BetController');
+const FinancialHistoryController = require('../controllers/FinancialHistoryController');
+const ParlayController = require('../controllers/ParlayController');
+const AuthController = require('../controllers/AuthController');
+const BetTypeController = require('../controllers/BetTypeController');
 
 const router = Router();
 
 router.get("/healthy", (req, res) => res.send("Everything is okay"));
 
-router.get("/league/list", leagueController.list);
-
-router.get("/bet/list", betController.list);
-router.post("/bet/create", betController.create);
-router.put("/bet/update", betController.update);
-router.delete("/bet/remove", betController.remove);
-router.get("/bet/dashboard", betController.dashboard);
-
-router.get("/parlay/list", parlayController.list);
-router.post("/parlay/create", parlayController.create);
-
-router.get("/match/list", matchController.list);
-router.put("/match/update", matchController.update);
-
-router.put("/config/update-deposited-value", configController.update_deposited_value);
+router.use('/auth', AuthController)
+router.use("/bet", BetController);
+router.use("/parlay", ParlayController);
+router.use("/bet-type", BetTypeController);
+router.use("/financial-history", FinancialHistoryController);
 
 module.exports = router;

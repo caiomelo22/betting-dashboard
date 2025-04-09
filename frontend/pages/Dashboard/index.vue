@@ -1,40 +1,47 @@
 <template>
     <div class="mx-12">
         <v-row style="margin-bottom: 16px">
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="4" lg="2">
                 <div class="general-info">
                     <p class="dashboard-info-title">Red/Green Ratio</p>
-                    <p class="dashboard-info-value" :style="`color: ${$vuetify.theme.dark?'white':'black'}`"><span
-                            style="color: #990000">{{ generalInfo.totalReds
+                    <p class="dashboard-info-value" :style="`color: ${$vuetify.theme.dark ? 'white' : 'black'}`"><span
+                            style="color: #990000"
+>{{ generalInfo.totalReds
                             }}</span>:<span style="color: green">{{ generalInfo.totalGreens }}</span></p>
                 </div>
             </v-col>
-            <v-col cols="12" md="2">
+            <v-col cols="12" md="4" lg="2">
                 <div class="general-info">
-                    <p class="dashboard-info-title">Average Odds</p>
-                    <p class="dashboard-info-value">{{ (generalInfo.avgOdds || 0).toFixed(2) }}</p>
+                    <p class="dashboard-info-title">Average Bet Odds</p>
+                    <p class="dashboard-info-value">{{ (generalInfo.avgBetOdds || 0).toFixed(2) }}</p>
                 </div>
             </v-col>
-            <v-col cols="12" md="2">
+            <v-col cols="12" md="4" lg="2">
+                <div class="general-info">
+                    <p class="dashboard-info-title">Average Parlay Odds</p>
+                    <p class="dashboard-info-value">{{ (generalInfo.avgParlayOdds || 0).toFixed(2) }}</p>
+                </div>
+            </v-col>
+            <v-col cols="12" md="4" lg="2">
                 <div class="general-info">
                     <p class="dashboard-info-title">Green %</p>
                     <p class="dashboard-info-value">{{ (generalInfo.totalGreens * 100 / (generalInfo.totalReds +
-                    generalInfo.totalGreens)).toFixed(2)
+                        generalInfo.totalGreens)).toFixed(2)
                     }}%</p>
                 </div>
             </v-col>
-            <v-col cols="12" md="2">
+            <v-col cols="12" md="4" lg="2">
                 <div class="general-info">
                     <p class="dashboard-info-title">ROI</p>
-                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalDeposited +
-                    generalInfo.totalProfit)).toFixed(2) }}%
+                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalDeposited)).toFixed(2) }}%
                     </p>
                 </div>
             </v-col>
-            <v-col cols="12" md="2">
+            <v-col cols="12" md="4" lg="2">
                 <div class="general-info">
                     <p class="dashboard-info-title">Yield</p>
-                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalBet)).toFixed(2) }}%
+                    <p class="dashboard-info-value">{{ (generalInfo.totalProfit * 100 / (generalInfo.totalBet)).toFixed(2)
+                    }}%
                     </p>
                 </div>
             </v-col>
@@ -45,7 +52,7 @@
                     <v-row align="center" no-gutters>
                         <div>
                             <p class="dashboard-info-title">Deposited Value</p>
-                            <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalDeposited)
+                            <p class="dashboard-info-value">{{ generalServices.formatValue(generalInfo.totalDeposited)
                             }}</p>
                         </div>
                         <v-spacer />
@@ -56,37 +63,28 @@
             <v-col cols="12" md="4">
                 <div class="general-info">
                     <p class="dashboard-info-title">Total Bet</p>
-                    <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalBet) }}</p>
+                    <p class="dashboard-info-value">{{ generalServices.formatValue(generalInfo.totalBet) }}</p>
                 </div>
             </v-col>
             <v-col cols="12" md="4">
                 <div class="general-info">
                     <p class="dashboard-info-title">Net Gains</p>
-                    <p class="dashboard-info-value">{{ generalServices.format_value(generalInfo.totalProfit) }}</p>
+                    <p class="dashboard-info-value">{{ generalServices.formatValue(generalInfo.totalProfit) }}</p>
                 </div>
             </v-col>
         </v-row>
         <div class="section-div chart-div">
             <v-row no-gutters align="center" justify="center">
                 <p class="chart-header">Bet Progression</p>
-                <v-btn class="btn-primary ml-4" @click="reset_zoom(betLineChart)">Reset Zoom</v-btn>
+                <v-btn class="btn-primary ml-4" @click="reset_zoom(progressionChart)">Reset Zoom</v-btn>
             </v-row>
             <div>
-                <canvas id="lineChart" width="400" height="400"></canvas>
-            </div>
-        </div>
-        <div class="section-div chart-div">
-            <v-row no-gutters align="center" justify="center">
-                <p class="chart-header">Profit by Day</p>
-                <v-btn class="btn-primary ml-4" @click="reset_zoom(betBarChart)">Reset Zoom</v-btn>
-            </v-row>
-            <div>
-                <canvas id="barChart" width="400" height="400"></canvas>
+                <canvas id="progressionChart" width="400" height="400"></canvas>
             </div>
         </div>
         <div class="section-div">
             <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" lg="4">
                     <div class="chart-div">
                         <p class="chart-header">Profit by Outcome</p>
                         <div>
@@ -94,7 +92,7 @@
                         </div>
                     </div>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" lg="8">
                     <div class="chart-div">
                         <v-row no-gutters align="center" justify="center">
                             <p class="chart-header">Profit by League</p>
@@ -116,9 +114,11 @@
                 <canvas id="teamChart" width="400" height="400"></canvas>
             </div>
         </div>
-        <v-dialog v-model="editDepositedValueDialog" v-if="editDepositedValueDialog" width="700px" max-width="100%">
-            <EditDepositedValueDialog :deposited-value-prop="generalInfo.totalDeposited"
-                @update="update_deposited_value" @close="editDepositedValueDialog = false" />
+        <v-dialog v-if="editDepositedValueDialog" v-model="editDepositedValueDialog" width="700px" max-width="100%">
+            <AddFinancialActionDialog
+:deposited-value-prop="generalInfo.totalDeposited" @update="updateDepositedValue"
+                @close="editDepositedValueDialog = false"
+/>
         </v-dialog>
     </div>
 </template>

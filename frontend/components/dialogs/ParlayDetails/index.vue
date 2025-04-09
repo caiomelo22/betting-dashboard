@@ -15,7 +15,7 @@
                 <tbody>
                     <tr v-for="(bet, i) in parlay.bets" :key="i">
                         <td>
-                            {{ generalServices.format_date(bet.match.matchDate) }}
+                            {{ generalServices.formatDate(bet.match.date) }}
                         </td>
                         <td>
                             {{
@@ -23,8 +23,8 @@
 }}
                         </td>
                         <td>
-                            {{ `${bet.match.homeTeam.name} ${bet.match.scoreHomeTeam != null ? bet.match.scoreHomeTeam :
-        ''} x ${bet.match.scoreAwayTeam != null ? bet.match.scoreAwayTeam : ''}
+                            {{ `${bet.match.homeTeam.name} ${bet.match.homeScore != null ? bet.match.homeScore :
+        ''} x ${bet.match.awayScore != null ? bet.match.awayScore : ''}
                             ${bet.match.awayTeam.name}`
 }}
                         </td>
@@ -32,17 +32,21 @@
                             {{ bet.type }}
                         </td>
                         <td>
-                            {{ get_bet_prediction(bet) }}
+                            {{ getBetPrediction(bet.details.type, bet.details.details.prediction, bet.details.details) }}
                         </td>
                         <td>
                             {{ bet.odds }}
                         </td>
                         <td>
-                            <font-awesome-icon v-if="bet.match.scoreHomeTeam == null" :icon="['fa', 'arrows-rotate']"
-                                style="color: #9FC9F3" />
+                            <font-awesome-icon
+v-if="bet.match.homeScore == null" :icon="['fa', 'arrows-rotate']"
+                                style="color: #9FC9F3"
+/>
                             <font-awesome-icon v-else-if="bet.push" :icon="['fa', 'minus']" style="color: #FF6E31" />
-                            <font-awesome-icon v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
-                                style="color: green" />
+                            <font-awesome-icon
+v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
+                                style="color: green"
+/>
                             <font-awesome-icon v-else :icon="['fa', 'xmark']" style="color: red" />
                         </td>
                     </tr>

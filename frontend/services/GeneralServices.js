@@ -1,7 +1,7 @@
 import moment from "moment";
 
 export default class GeneralServices {
-    format_value(value) {
+    formatValue(value) {
         if (value == null) {
             return '-'
         }
@@ -12,9 +12,9 @@ export default class GeneralServices {
         return formatter.format(value);
     }
 
-    format_date(dateText) {
+    formatDate(dateText) {
         // Removing the 'Z' to ignore timezones
-        return moment(dateText.replace('Z', '')).format('DD-MM-YYYY');
+        return moment(dateText.replace('Z', '')).format('DD-MM');
     }
 
     serialize(obj) {
@@ -25,5 +25,20 @@ export default class GeneralServices {
             }
         }
         return str.join("&");
+    }
+
+    async getSportsbooks(axios) {
+        const response = await axios.get(`bet/sportsbooks/list`)
+        return response.data
+    }
+
+    async getSportsChain(axios) {
+        const response = await axios.get(`bet/sports-chain`)
+        return response.data
+    }
+
+    async getBetTypeOptions(axios) {
+        const response = await axios.get(`bet-type/list`)
+        return response.data
     }
 }

@@ -5,10 +5,12 @@
         </div>
         <div v-else>
             <div class="row">
-                <v-select label="League" hide-details v-model="league_filter" :items="league_filter_options" outlined
-                    dense class="text-field select-field mr-4" @change="get_bets()" />
-                <v-select label="Bet Type" hide-details v-model="bet_type_filter" :items="bet_type_filter_options"
-                    outlined dense class="text-field select-field mr-4" @change="get_bets()" />
+                <v-select v-model="sportFilter" label="Sport" hide-details :items="sportFilterOptions" outlined dense
+                    class="text-field select-field mr-4" @change="getBets()" />
+                <v-select v-model="leagueFilter" label="League" hide-details :items="leagueFilterOptions" outlined dense
+                    class="text-field select-field mr-4" @change="getBets()" />
+                <v-select v-model="betTypeFilter" label="Bet Type" hide-details :items="betTypeOptions" outlined dense
+                    class="text-field select-field mr-4" @change="getBets()" />
                 <v-btn color="#41b883" dark @click="dialog = true">
                     <font-awesome-icon :icon="['fa', 'plus']" style="color: white; margin-right: 8px" />
                     Add Bet
@@ -17,57 +19,54 @@
             <div class="table-wrapper">
                 <table class="data-table mt-0">
                     <thead>
-                        <th v-for="(header, i) in bets_headers" :key="i">{{ header }}</th>
+                        <th v-for="(header, i) in betHeaders" :key="i">{{ header }}</th>
                     </thead>
                     <tbody>
                         <tr v-for="(bet, i) in bets" :key="i">
                             <td>
-                                {{ generalServices.format_date(bet.match.matchDate) }}
+                                <v-btn icon color="primary" @click="editClick(bet)">
+                                    <v-icon primary small>mdi-pencil</v-icon>
+                                </v-btn>
+                                <v-btn icon color="red" @click="deleteClick(bet)">
+                                    <v-icon primary small>mdi-trash-can</v-icon>
+                                </v-btn>
                             </td>
                             <td>
-                                {{
-        bet.match.league.name
-}}
+                                {{ generalServices.formatDate(bet.date) }}
                             </td>
                             <td>
-                                {{ `${bet.match.homeTeam.name} ${bet.match.scoreHomeTeam != null ?
-        bet.match.scoreHomeTeam : ''} x ${bet.match.scoreAwayTeam != null ?
-            bet.match.scoreAwayTeam : ''} ${bet.match.awayTeam.name}`
-}}
+                                {{ `${bet.teamA} x ${bet.teamB}` }}
                             </td>
                             <td>
-                                {{ bet.type }}
+                                {{ getBetPrediction(bet.details.type, bet.details.details.prediction, bet.details.details) }}
                             </td>
                             <td>
-                                {{ get_bet_prediction(bet) }}
-                            </td>
-                            <td>
-                                {{ generalServices.format_value(bet.value) }}
+                                {{ generalServices.formatValue(bet.value) }}
                             </td>
                             <td>
                                 {{ bet.odds }}
                             </td>
                             <td>
-                                <font-awesome-icon v-if="bet.match.scoreHomeTeam == null"
-                                    :icon="['fa', 'arrows-rotate']" style="color: #9FC9F3" />
+                                <font-awesome-icon v-if="bet.won === null" :icon="['fa', 'arrows-rotate']"
+                                    style="color: #9FC9F3" />
                                 <font-awesome-icon v-else-if="bet.push" :icon="['fa', 'minus']" style="color: #FF6E31" />
                                 <font-awesome-icon v-else-if="bet.won || bet.earlyPayout" :icon="['fa', 'check']"
                                     style="color: green" />
                                 <font-awesome-icon v-else :icon="['fa', 'xmark']" style="color: red" />
                             </td>
                             <td>
-                                {{ get_bet_profit(bet) }}
+                                {{ getBetProfit(bet) }}
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <v-pagination v-model="page" color="#41b883" :length="totalPages" style="margin-top: 16px"
-                @input="change_page">
+            <v-pagination v-model="page" color="#41b883" :length="totalPages" style="margin-top: 16px" @input="changePage">
             </v-pagination>
         </div>
         <v-dialog v-if="dialog" v-model="dialog" max-width="100%" width="700px">
-            <AddBetDialog :leagues="leagues" @close="dialog = false" @added="bet_added" />
+            <ManageBetDialog :sports-chain="sportsChain" :sportsbook-options="sportsbooks" :bet-type-options="betTypes.map(x => x.name)"
+                :bet-prop="betToUpdate" @close="closeDialog" @added="betAdded" />
         </v-dialog>
     </v-container>
 </template>

@@ -1,23 +1,19 @@
 import Chart from "chart.js/auto";
 import GeneralServices from "@/services/GeneralServices";
-import EditDepositedValueDialog from "@/components/dialogs/EditDepositedValue/index.vue";
+import AddFinancialActionDialog from "@/components/dialogs/AddFinancialAction/index.vue";
 export default {
     name: 'Dashboard',
     components: {
-        EditDepositedValueDialog
+        AddFinancialActionDialog
     },
     data: () => ({
         generalServices: new GeneralServices(),
         editDepositedValueDialog: false,
-        chartInfo: {
-            labels: [],
-            datasets: []
-        },
         teamChartInfo: {
             labels: [],
             datasets: []
         },
-        barChartInfo: {
+        chartInfo: {
             labels: [],
             datasets: []
         },
@@ -27,7 +23,7 @@ export default {
         },
         generalInfo: {},
         leagueChartInfo: {},
-        betLineChart: null,
+        progressionChart: null,
         betBarChart: null,
         leagueChart: null,
         outcomeChart: null,
@@ -161,8 +157,8 @@ export default {
             chart.resetZoom();
         },
         destroy_charts() {
-            if (this.betLineChart) {
-                this.betLineChart.destroy()
+            if (this.progressionChart) {
+                this.progressionChart.destroy()
             }
             if (this.betBarChart) {
                 this.betBarChart.destroy()
@@ -179,17 +175,11 @@ export default {
         },
         reload_charts() {
             this.destroy_charts()
-            const ctx = document.getElementById("lineChart");
-            this.betLineChart = new Chart(ctx, {
-                type: "line",
+            const ctx = document.getElementById("progressionChart");
+            this.progressionChart = new Chart(ctx, {
+                type: "bar",
                 data: this.chartInfo,
                 options: this.options
-            });
-            const ctxBar = document.getElementById("barChart");
-            this.betBarChart = new Chart(ctxBar, {
-                type: "bar",
-                data: this.barChartInfo,
-                options: this.options_no_legend
             });
             const ctxLeague = document.getElementById("leagueChart");
             this.leagueChart = new Chart(ctxLeague, {
@@ -210,8 +200,8 @@ export default {
                 options: this.pie_options
             });
         },
-        update_deposited_value(value) {
-            this.generalInfo.totalDeposited = value
+        updateDepositedValue(value) {
+            this.generalInfo.totalDeposited += value
             this.editDepositedValueDialog = false
         },
         async get_dashboard_info() {
@@ -219,13 +209,9 @@ export default {
                 .then((resp) => {
                     this.chartInfo = resp.data.chartInfo
                     this.generalInfo = resp.data.generalInfo
-                    this.barChartInfo = resp.data.barChartInfo
                     this.leagueChartInfo = resp.data.leagueChartInfo
                     this.teamChartInfo = resp.data.teamChartInfo
                     this.outcomeChartInfo = resp.data.outcomeChartInfo
-                })
-                .catch((err) => {
-                    this.$toast.error(err.message)
                 });
         }
     }

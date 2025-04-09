@@ -1,15 +1,34 @@
 const database = require("../database/db");
-const BetMoneyline = require('./BetMoneyline').BetMoneyline;
-const BetTotal = require('./BetTotal').BetTotal;
-const { BetBothScore } = require('./BetBothScore')
+const { BetDetails } = require('./BetDetails')
 
 const Bet = database.sequelize.define("bets", {
-    matchId: {
-        type: database.Sequelize.INTEGER,
+    createdByEmail: {
+        type: database.Sequelize.STRING,
         allowNull: false,
-        references: { model: 'matches', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
+    },
+    sport: {
+        type: database.Sequelize.STRING,
+        allowNull: true
+    },
+    league: {
+        type: database.Sequelize.STRING,
+        allowNull: true
+    },
+    teamA: {
+        type: database.Sequelize.STRING,
+        allowNull: false
+    },
+    teamB: {
+        type: database.Sequelize.STRING,
+        allowNull: false
+    },
+    sportsbook: {
+        type: database.Sequelize.STRING,
+        allowNull: false
+    },
+    date: {
+        type: database.Sequelize.DATE,
+        allowNull: false
     },
     value: {
         type: database.Sequelize.FLOAT,
@@ -21,40 +40,29 @@ const Bet = database.sequelize.define("bets", {
     },
     won: {
         type: database.Sequelize.BOOLEAN,
-        defaultValue: false,
-        allowNull: false,
+        allowNull: true,
     },
-    earlyPayout: {
-        type: database.Sequelize.BOOLEAN,
-        defaultValue: false,
+    payout: {
+        type: database.Sequelize.FLOAT,
         allowNull: false,
+        defaultValue: 0,
     },
     push: {
-      type: database.Sequelize.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
-    type: {
-        type: database.Sequelize.ENUM('Moneyline', 'Total', 'BothScore', 'Spread'),
+        type: database.Sequelize.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
     },
     parlayId: {
         type: database.Sequelize.INTEGER,
-        allowNull: null,
+        allowNull: true,
         references: { model: 'parlays', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
 });
 
-BetMoneyline.belongsTo(Bet, { as: 'bet' });
-Bet.hasOne(BetMoneyline, { foreignKey: 'betId', as: 'moneyline' });
-
-BetTotal.belongsTo(Bet, { as: 'bet' });
-Bet.hasOne(BetTotal, { foreignKey: 'betId', as: 'total' });
-
-BetBothScore.belongsTo(Bet, { as: 'bet' });
-Bet.hasOne(BetBothScore, { foreignKey: 'betId', as: 'bothScore' });
+BetDetails.belongsTo(Bet, { as: 'bet' });
+Bet.hasOne(BetDetails, { foreignKey: 'betId', as: 'details' });
 
 module.exports = {
     Bet

@@ -1,50 +1,70 @@
-import ApiService from "@/services/ApiService";
 import GeneralServices from "@/services/GeneralServices";
-import AddBetDialog from "~/components/dialogs/AddBet/index.vue";
-import { betTypeOptions } from "~/shared/enums/BetTypeOptions";
-import { get_bet_prediction } from "~/shared/functions/GetBetPrediction";
+import ManageBetDialog from "~/components/dialogs/ManageBet/index.vue";
+import { getBetPrediction } from "~/shared/functions/GetBetPrediction";
 export default {
     name: 'Bets',
-    components: { AddBetDialog },
+    components: { ManageBetDialog },
     data: () => ({
         generalServices: new GeneralServices(),
-        api: new ApiService(),
         page: 1,
         totalPages: 1,
         loading: false,
         dialog: false,
-        league_filter: null,
-        bet_type_filter: null,
-        betTypeOptions,
+        sportFilter: null,
+        leagueFilter: null,
+        betTypeFilter: null,
+        betTypes: [],
         leagues: [],
+        sportsbooks: [],
+        sportsChain: [],
+        betToUpdate: null,
         bets: []
     }),
     computed: {
-        bet_type_filter_options() {
+        betTypeOptions() {
             const options = [
                 { text: 'All', value: null }
             ]
 
-            for (let i = 0; i < this.betTypeOptions.length; i++) {
-                options.push({ text: this.betTypeOptions[i], value: this.betTypeOptions[i] })
+            for (let i = 0; i < this.betTypes.length; i++) {
+                options.push({ text: this.betTypes[i].name, value: this.betTypes[i].name })
             }
 
             return options
         },
-        league_filter_options() {
+        sportFilterOptions() {
             const options = [
                 { text: 'All', value: null }
             ]
 
-            for (let i = 0; i < this.leagues.length; i++) {
-                options.push({ text: this.leagues[i].name, value: this.leagues[i].id })
+            for (let i = 0; i < this.sportsChain.length; i++) {
+                options.push({ text: this.sportsChain[i].name, value: this.sportsChain[i].name })
             }
 
             return options
         },
-        bets_headers() {
+        leagueFilterOptions() {
+            const options = [
+                { text: 'All', value: null }
+            ]
+
+            if (this.sportFilter) {
+                const sportIndex = this.sportsChain.map(x => x.name).indexOf(this.sportFilter)
+                for (let i = 0; i < this.sportsChain[sportIndex].leagues.length; i++) {
+                    const league = this.sportsChain[sportIndex].leagues[i].name
+                    options.push({ text: league, value: league })
+                }
+            } else {
+                for (let i = 0; i < this.leagues.length; i++) {
+                    options.push({ text: this.leagues[i], value: this.leagues[i] })
+                }
+            }
+
+            return options
+        },
+        betHeaders() {
             return [
-                'Date', 'League', 'Matchup', 'Bet Type', 'Prediction', 'Value', 'Odds', 'Won', 'Profit'
+                'Actions', 'Date', 'Matchup', 'Prediction', 'Value', 'Odds', 'Won', 'Profit'
             ]
         }
     },
@@ -52,55 +72,82 @@ export default {
         if (this.$route.query.page) {
             this.page = parseInt(this.$route.query.page);
         }
-        await this.get_bets();
-        await this.get_leagues();
+        this.betTypes = await this.generalServices.getBetTypeOptions(this.$axios)
+        await this.getBets();
+        await this.reloadAssets()
+    },
+    watch: {
+        dialog(value) {
+            if (!value) {
+                this.betToUpdate = null
+            }
+        }
     },
     methods: {
-        get_bet_prediction,
-        get_bet_profit(bet) {
-            if (bet.match.scoreHomeTeam === null || bet.match.awayHomeTeam) {
+        closeDialog() {
+            this.dialog = false
+        },
+        async deleteClick(bet) {
+            await this.$axios.delete(`bet/delete/${bet.id}`)
+            await this.getBets();
+        },
+        editClick(bet) {
+            this.betToUpdate = bet
+            this.dialog = true
+        },
+        async reloadAssets() {
+            this.sportsChain = await this.generalServices.getSportsChain(this.$axios);
+            this.sportsbooks = await this.generalServices.getSportsbooks(this.$axios)
+            await this.getLeagues();
+        },
+        getBetPrediction,
+        getBetProfit(bet) {
+            if (bet.won === null) {
                 return '-'
             }
 
-            let profit = 0
-            if (bet.won || bet.earlyPayout) {
-                profit = bet.value * bet.odds - bet.value
+            let profit
+            if (bet.won) {
+                profit = bet.payout - bet.value
             } else if (bet.push) {
-                profit = 0
+                profit = bet.payout
             } else {
-                profit -= bet.value
+                profit = -bet.value
             }
-            return this.generalServices.format_value(profit)
+
+            return this.generalServices.formatValue(profit)
         },
-        async bet_added() {
+        async betAdded() {
             this.dialog = false
-            await this.get_bets()
+            this.betToUpdate = null
+
+            await this.getBets()
+            await this.reloadAssets()
         },
-        change_page() {
+        changePage() {
             this.$router.replace({
                 query: { page: this.page }
             });
-            this.get_bets();
+            this.getBets();
         },
-        async get_leagues() {
-            await this.$axios.get(`league/list`)
+        async getLeagues() {
+            await this.$axios.get(`bet/leagues/list`)
                 .then((resp) => {
                     this.leagues = resp.data
-                })
-                .catch((err) => {
-                    this.$toast.error(err.message)
                 });
         },
-        async get_bets() {
+        async getBets() {
             this.loading = true
-            const params = this.generalServices.serialize({ page: this.page, league_id: this.league_filter, bet_type: this.bet_type_filter });
+            const params = this.generalServices.serialize({
+                page: this.page,
+                sport: this.sportFilter,
+                league: this.leagueFilter,
+                betType: this.betTypeFilter
+            });
             await this.$axios.get(`bet/list?${params}`)
                 .then((resp) => {
                     this.bets = resp.data.bets
                     this.totalPages = resp.data.totalPages
-                })
-                .catch((err) => {
-                    this.$toast.error(err.message)
                 });
             this.loading = false
         }

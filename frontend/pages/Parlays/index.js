@@ -1,26 +1,26 @@
-import ApiService from "@/services/ApiService";
 import GeneralServices from "@/services/GeneralServices";
 import AddParlayDialog from "~/components/dialogs/AddParlay/index.vue";
-import ParlayDetailsDialog from "~/components/dialogs/ParlayDetails/index.vue";
+import { getBetPrediction } from "~/shared/functions/GetBetPrediction";
 export default {
     name: 'Parlays',
-    components: { AddParlayDialog, ParlayDetailsDialog },
+    components: { AddParlayDialog },
     data: () => ({
         generalServices: new GeneralServices(),
-        api: new ApiService(),
         page: 1,
         totalPages: 1,
         loading: false,
         dialog: false,
-        detailsDialog: false,
-        selectedParlay: null,
-        leagues: [],
+        parlayToUpdate: null,
+        betTypes: [],
+        sportsbooks: [],
+        sportsChain: [],
+        showParlayDetails: null,
         parlays: []
     }),
     computed: {
         parlays_headers() {
             return [
-                'Date', 'League', 'Value', 'Odds', 'Details', 'Won', 'Profit'
+                'Actions', 'Date', 'Description', 'Value', 'Odds', 'Won', 'Profit'
             ]
         }
     },
@@ -28,64 +28,94 @@ export default {
         if (this.$route.query.page) {
             this.page = parseInt(this.$route.query.page);
         }
-        await this.get_parlays();
-        await this.get_leagues();
+        this.betTypes = await this.generalServices.getBetTypeOptions(this.$axios)
+        this.sportsChain = await this.generalServices.getSportsChain(this.$axios);
+        this.sportsbooks = await this.generalServices.getSportsbooks(this.$axios)
+        await this.getParlays();
+    },
+    watch: {
+        dialog(value) {
+            if (!value) {
+                this.parlayToUpdate = null
+            }
+        }
     },
     methods: {
-        open_details_dialog(parlay) {
-            this.selectedParlay = parlay
-            this.detailsDialog = true
+        getBetPrediction,
+        getParlayDescription(parlay) {
+            const teamsA = [...new Set(parlay.bets.map(x => x.teamA))]
+            const teamsB = [...new Set(parlay.bets.map(x => x.teamB))]
+
+            if (teamsA.length == 1 && teamsB.length == 1) {
+                return `${teamsA[0]} x ${teamsB[0]} Parlay`
+            }
+
+            const leagues = [...new Set(parlay.bets.map(x => x.league))]
+
+            if (leagues.length == 1) {
+                return `${leagues[0]} Parlay`
+            }
+
+            const sports = [...new Set(parlay.bets.map(x => x.sport))]
+
+            if (sports.length == 1) {
+                return `${sports[0]} Parlay`
+            }
+
+            return "Multisport Parlay"
         },
-        reset_details_dialog() {
-            this.detailsDialog = false
-            this.selectedParlay = null
+        async deleteClick(parlay) {
+            await this.$axios.delete(`parlay/delete/${parlay.id}`)
+            await this.getParlays();
         },
-        get_league(parlay) {
-            const set = [...new Set(parlay.bets.map(x => x.match.league.name))]
-            return set.join('/')
+        editClick(parlay) {
+            this.parlayToUpdate = parlay
+            this.dialog = true
         },
-        get_parlay_profit(parlay) {
-            if (!parlay.finished) {
+        closeManageDialog() {
+            this.parlayToUpdate = null
+            this.dialog = false
+        },
+        detailsClick(parlay) {
+            if (this.showParlayDetails != parlay) {
+                this.showParlayDetails = parlay
+            } else {
+                this.showParlayDetails = null
+            }
+        },
+        getParlayProfit(parlay) {
+            if (parlay.won === null) {
                 return '-'
             }
 
-            let profit = 0
+            let profit
             if (parlay.won) {
-                profit = parlay.value * parlay.odds - parlay.value
+                profit = parlay.payout - parlay.value
+            } else if (parlay.push) {
+                profit = parlay.payout
             } else {
-                profit -= parlay.value
+                profit = -parlay.value
             }
-            return this.generalServices.format_value(profit)
+
+            return this.generalServices.formatValue(profit)
         },
-        async parlay_added() {
+        async parlayAdded() {
             this.dialog = false
-            await this.get_parlays()
+            await this.getParlays()
         },
-        change_page() {
+        changePage() {
             this.$router.replace({
                 query: { page: this.page }
             });
-            this.get_parlays();
+            this.getParlays();
         },
-        async get_leagues() {
-            await this.$axios.get(`league/list`)
-                .then((resp) => {
-                    this.leagues = resp.data
-                })
-                .catch((err) => {
-                    this.$toast.error(err.message)
-                });
-        },
-        async get_parlays() {
+        async getParlays() {
             this.loading = true
             const params = this.generalServices.serialize({ page: this.page });
             await this.$axios.get(`parlay/list?${params}`)
                 .then((resp) => {
                     this.parlays = resp.data.parlays
                     this.totalPages = resp.data.totalPages
-                })
-                .catch((err) => {
-                    this.$toast.error(err.message)
                 });
             this.loading = false
         }

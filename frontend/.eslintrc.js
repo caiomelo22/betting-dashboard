@@ -29,8 +29,8 @@ module.exports = {
     'vue/max-attributes-per-line': 'off',
     'no-new': 'off',
     'vue/html-indent': 'off',
-    'eqeqeq': 'off',
-    'camelcase': 'off',
+    eqeqeq: 'off',
+    camelcase: 'off',
     indent: 'off'
   }
 }
